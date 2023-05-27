@@ -1,10 +1,12 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 using Json.Pointer;
 using Json.Schema;
 
 namespace OpenApi.Models;
 
+[JsonConverter(typeof(OpenApiDocumentJsonConverter))]
 public class OpenApiDocument : IBaseDocument
 {
 	private static readonly string[] KnownKeys =
@@ -61,6 +63,22 @@ public class OpenApiDocument : IBaseDocument
 	}
 
 	JsonSchema? IBaseDocument.FindSubschema(JsonPointer pointer, EvaluationOptions options)
+	{
+		throw new NotImplementedException();
+	}
+}
+
+public class OpenApiDocumentJsonConverter : JsonConverter<OpenApiDocument>
+{
+	public override OpenApiDocument? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	{
+		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
+		          throw new JsonException("Expected an object");
+
+		return OpenApiDocument.FromNode(obj, options);
+	}
+
+	public override void Write(Utf8JsonWriter writer, OpenApiDocument value, JsonSerializerOptions options)
 	{
 		throw new NotImplementedException();
 	}

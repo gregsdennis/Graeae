@@ -66,7 +66,7 @@ public class PathItem
 				Head = obj.TryGetPropertyValue("head", out var head) ? Operation.FromNode(head, options) : null,
 				Patch = obj.TryGetPropertyValue("patch", out var patch) ? Operation.FromNode(patch, options) : null,
 				Trace = obj.TryGetPropertyValue("trace", out var trace) ? Operation.FromNode(trace, options) : null,
-				Servers = obj.MaybeArray("servers", x => Server.FromNode(x)),
+				Servers = obj.MaybeArray("servers", Server.FromNode),
 				Parameters = obj.MaybeArray("parameters", x => Parameter.FromNode(x, options)),
 				ExtensionData = ExtensionData.FromNode(obj)
 			};

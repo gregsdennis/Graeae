@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 
 namespace OpenApi.Models;
 
-public class Callback : Dictionary<CallbackExpression, PathItem>
+public class Callback : Dictionary<RuntimeExpression, PathItem>
 {
 	public ExtensionData? ExtensionData { get; set; }
 
@@ -34,10 +34,7 @@ public class Callback : Dictionary<CallbackExpression, PathItem>
 			foreach (var (key, value) in obj)
 			{
 				if (key.StartsWith("x-")) continue;
-				if (!CallbackExpression.TryParse(key, out var expression))
-					throw new JsonException($"`{key}` is not a valid callback expression");
-
-				callback.Add(expression, PathItem.FromNode(value, options));
+				callback.Add(RuntimeExpression.Parse(key), PathItem.FromNode(value, options));
 			}
 
 			// Validating extra keys is done in the loop.
