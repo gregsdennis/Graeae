@@ -1,27 +1,71 @@
-﻿using System.Text.Json.Nodes;
+﻿using Json.More;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace OpenApi.Models;
 
 public class Example
 {
+	private static readonly string[] KnownKeys =
+	{
+		"summary",
+		"description",
+		"value",
+		"externalValue"
+	};
+
 	public string? Summary { get; set; }
 	public string? Description { get; set; }
 	public JsonNode? Value { get; set; } // use JsonNull
 	public string? ExternalValue { get; set; }
 	public ExtensionData? ExtensionData { get; set; }
+
+	public static Example FromNode(JsonNode? node)
+	{
+		if (node is not JsonObject obj)
+			throw new JsonException("Expected an object");
+
+		if (obj.ContainsKey("$ref"))
+		{
+			var example = new ExampleRef(obj.ExpectUri("$ref", "reference"))
+			{
+				Description = obj.MaybeString("description", "reference"),
+				Summary = obj.MaybeString("summary", "reference")
+			};
+
+			obj.ValidateReferenceKeys();
+
+			return example;
+		}
+		else
+		{
+			var example = new Example
+			{
+				Summary = obj.MaybeString("summary", "example"),
+				Description = obj.MaybeString("description", "example"),
+				Value = obj.TryGetPropertyValue("value", out var v) ? v ?? JsonNull.SignalNode : null,
+				ExternalValue = obj.MaybeString("externalValue", "example"),
+				ExtensionData = ExtensionData.FromNode(obj)
+			};
+
+			obj.ValidateNoExtraKeys(KnownKeys, example.ExtensionData?.Keys);
+
+			return example;
+		}
+	}
 }
 
 public class ExampleRef : Example
 {
-	public Uri Ref { get; }
+	public Uri Ref { get; set; }
 	public new string? Summary { get; set; }
 	public new string? Description { get; set; }
 
 	public bool IsResolved { get; private set; }
 
-	public ExampleRef(Uri refUri)
+	public ExampleRef(Uri reference)
 	{
-		Ref = refUri ?? throw new ArgumentNullException(nameof(refUri));
+		Ref = reference ?? throw new ArgumentNullException(nameof(reference));
 	}
 
 	public void Resolve()

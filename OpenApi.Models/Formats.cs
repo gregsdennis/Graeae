@@ -34,4 +34,4 @@ public static class Formats
 	}
 
 	public static readonly Format Password = new("password");
-}
+}	

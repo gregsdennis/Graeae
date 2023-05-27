@@ -1,7 +1,21 @@
-﻿namespace OpenApi.Models;
+﻿using System.Text.Json;
+using System.Text.Json.Nodes;
+
+namespace OpenApi.Models;
 
 public class OpenApiInfo
 {
+	private static readonly string[] KnownKeys =
+	{
+		"title",
+		"summary",
+		"description",
+		"termsOfService",
+		"contact",
+		"license",
+		"version"
+	};
+
 	public string Title { get; set; }
 	public string? Summary { get; set; }
 	public string? Description { get; set; }
@@ -11,9 +25,25 @@ public class OpenApiInfo
 	public string Version { get; set; }
 	public ExtensionData? ExtensionData { get; set; }
 
-	public OpenApiInfo(string title, string version)
+	public static OpenApiInfo FromNode(JsonNode? node)
 	{
-		Title = title ?? throw new ArgumentNullException(nameof(title));
-		Version = version ?? throw new ArgumentNullException(nameof(version));
+		if (node is not JsonObject obj)
+			throw new JsonException("Expected an object");
+
+		var info = new OpenApiInfo
+		{
+			Title = obj.ExpectString("title", "open api info"),
+			Summary = obj.MaybeString("summary", "open api info"),
+			Description = obj.MaybeString("description", "open api info"),
+			TermsOfService = obj.MaybeString("termsOfService", "open api info"),
+			Contact = obj.Maybe("contact", ContactInfo.FromNode),
+			License = obj.Maybe("license", LicenseInfo.FromNode),
+			Version = obj.ExpectString("version", "open api info"),
+			ExtensionData = ExtensionData.FromNode(obj)
+		};
+
+		obj.ValidateNoExtraKeys(KnownKeys, info.ExtensionData?.Keys);
+
+		return info;
 	}
 }

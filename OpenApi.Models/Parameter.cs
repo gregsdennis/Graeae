@@ -1,11 +1,28 @@
-﻿using System.Text.Json.Nodes;
+﻿using System.Text.Json;
+using System.Text.Json.Nodes;
+using Json.More;
 using Json.Schema;
 
 namespace OpenApi.Models;
 
 public class Parameter
 {
-	public string Name { get; private protected set; }
+	private static readonly string[] KnownKeys =
+	{
+		"description",
+		"required",
+		"deprecated",
+		"allowEmptyValue",
+		"style",
+		"explode",
+		"allowReserved",
+		"schema",
+		"example",
+		"examples",
+		"content"
+	};
+
+	public string Name { get; set; }
 	public ParameterLocation In { get; set; }
 	public string? Description { get; set; }
 	public bool? Required { get; set; }
@@ -20,13 +37,46 @@ public class Parameter
 	public Dictionary<string, MediaType>? Content { get; set; }
 	public ExtensionData? ExtensionData { get; set; }
 
-	public Parameter(string name)
+	public static Parameter FromNode(JsonNode? node, JsonSerializerOptions? options)
 	{
-		Name = name ?? throw new ArgumentNullException(nameof(name));
+		if (node is not JsonObject obj)
+			throw new JsonException("Expected an object");
+
+		if (obj.ContainsKey("$ref"))
+		{
+			var response = new ParameterRef(obj.ExpectUri("$ref", "reference"))
+			{
+				Description = obj.MaybeString("description", "reference"),
+				Summary = obj.MaybeString("summary", "reference")
+			};
+
+			obj.ValidateReferenceKeys();
+
+			return response;
+		}
+		else
+		{
+			var response = new Parameter
+			{
+				Description = obj.ExpectString("description", "header"),
+				Required = obj.MaybeBool("required", "header"),
+				Deprecated = obj.MaybeBool("deprecated", "header"),
+				AllowEmptyValue = obj.MaybeBool("allowEmptyValue", "header"),
+				Style = obj.MaybeEnum<ParameterStyle>("style", "header"),
+				Explode = obj.MaybeBool("explode", "header"),
+				AllowReserved = obj.MaybeBool("allowReserved", "header"),
+				Schema = obj.MaybeDeserialize<JsonSchema>("schema", options),
+				Example = obj.TryGetPropertyValue("example", out var v) ? v ?? JsonNull.SignalNode : null,
+				Examples = obj.MaybeMap("examples", Models.Example.FromNode),
+				Content = obj.MaybeMap("content", x => MediaType.FromNode(x, options)),
+				ExtensionData = ExtensionData.FromNode(obj)
+			};
+
+			obj.ValidateNoExtraKeys(KnownKeys, response.ExtensionData?.Keys);
+
+			return response;
+		}
 	}
-#pragma warning disable CS8618
-	internal Parameter(){}
-#pragma warning restore CS8618
 }
 
 public class ParameterRef : Parameter
@@ -37,9 +87,9 @@ public class ParameterRef : Parameter
 
 	public bool IsResolved { get; private set; }
 
-	public ParameterRef(Uri refUri)
+	public ParameterRef(Uri reference)
 	{
-		Ref = refUri ?? throw new ArgumentNullException(nameof(refUri));
+		Ref = reference ?? throw new ArgumentNullException(nameof(reference));
 	}
 
 	public void Resolve()

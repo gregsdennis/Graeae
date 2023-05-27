@@ -1,19 +1,54 @@
-﻿namespace OpenApi.Models;
+﻿using System.Text.Json;
+using System.Text.Json.Nodes;
+
+namespace OpenApi.Models;
 
 public class RequestBody
 {
+	private static readonly string[] KnownKeys =
+	{
+		"description",
+		"content",
+		"required"
+	};
+
 	public string? Description { get; set; }
-	public Dictionary<string, MediaType> Content { get; private protected set; }
+	public Dictionary<string, MediaType> Content { get; set; }
 	public bool? Required { get; set; }
 	public ExtensionData? ExtensionData { get; set; }
 
-	public RequestBody(Dictionary<string, MediaType> content)
+	public static RequestBody FromNode(JsonNode? node, JsonSerializerOptions? options)
 	{
-		Content = content ?? throw new ArgumentNullException(nameof(content));
+		if (node is not JsonObject obj)
+			throw new JsonException("Expected an object");
+
+		if (obj.ContainsKey("$ref"))
+		{
+			var link = new RequestBodyRef(obj.ExpectUri("$ref", "reference"))
+			{
+				Description = obj.MaybeString("description", "reference"),
+				Summary = obj.MaybeString("summary", "reference")
+			};
+
+			obj.ValidateReferenceKeys();
+
+			return link;
+		}
+		else
+		{
+			var link = new RequestBody
+			{
+				Description = obj.ExpectString("description", "request body"),
+				Content = obj.ExpectMap("content", "request body", x => MediaType.FromNode(x, options)),
+				Required = obj.MaybeBool("required", "request body"),
+				ExtensionData = ExtensionData.FromNode(obj)
+			};
+
+			obj.ValidateNoExtraKeys(KnownKeys, link.ExtensionData?.Keys);
+
+			return link;
+		}
 	}
-#pragma warning disable CS8618
-	internal RequestBody(){}
-#pragma warning restore CS8618
 }
 
 public class RequestBodyRef : RequestBody
@@ -24,9 +59,9 @@ public class RequestBodyRef : RequestBody
 
 	public bool IsResolved { get; private set; }
 
-	public RequestBodyRef(Uri refUri)
+	public RequestBodyRef(Uri reference)
 	{
-		Ref = refUri ?? throw new ArgumentNullException(nameof(refUri));
+		Ref = reference ?? throw new ArgumentNullException(nameof(reference));
 	}
 
 	public void Resolve()

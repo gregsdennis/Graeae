@@ -1,33 +1,69 @@
-﻿namespace OpenApi.Models;
+﻿using System.Text.Json;
+using System.Text.Json.Nodes;
 
-public class SecurityScheme // need to break out into subclasses
+namespace OpenApi.Models;
+
+public class SecurityScheme
 {
-	public SecuritySchemeType Type { get; private protected set; }
+	private static readonly string[] KnownKeys =
+	{
+		"type",
+		"description",
+		"name",
+		"in",
+		"scheme",
+		"bearerFormat",
+		"flows",
+		"openIdConnectUrl",
+	};
+
+	public SecuritySchemeType Type { get; set; }
 	public string? Description { get; set; }
-	public string Name { get; private protected set; }
-	public SecuritySchemeLocation In { get; private protected set; }
-	public string Scheme { get; private protected set; }
+	public string? Name { get; set; }
+	public SecuritySchemeLocation In { get; set; }
+	public string? Scheme { get; set; }
 	public string? BearerFormat { get; set; }
-	public OAuthFlowCollection Flows { get; private protected set; }
-	public Uri OpenIdConnectUrl { get; private protected set; }
+	public OAuthFlowCollection? Flows { get; set; }
+	public Uri? OpenIdConnectUrl { get; set; }
 	public ExtensionData? ExtensionData { get; set; }
 
-	public SecurityScheme(SecuritySchemeType type, string name, SecuritySchemeLocation location, string scheme, OAuthFlowCollection flows, Uri openIdConnectUrl)
+	public static SecurityScheme FromNode(JsonNode? node)
 	{
-		if (type == SecuritySchemeType.Unspecified)
-			throw new ArgumentException("Type cannot be unspecified");
-		Type = type;
-		Name = name ?? throw new ArgumentNullException(nameof(name));
-		if (location == SecuritySchemeLocation.Unspecified)
-			throw new ArgumentException("In cannot be unspecified");
-		In = location;
-		Scheme = scheme ?? throw new ArgumentNullException(nameof(scheme));
-		Flows = flows ?? throw new ArgumentNullException(nameof(flows));
-		OpenIdConnectUrl = openIdConnectUrl ?? throw new ArgumentNullException(nameof(openIdConnectUrl));
+		if (node is not JsonObject obj)
+			throw new JsonException("Expected an object");
+
+		if (obj.ContainsKey("$ref"))
+		{
+			var scheme = new SecuritySchemeRef(obj.ExpectUri("$ref", "reference"))
+			{
+				Description = obj.MaybeString("description", "reference"),
+				Summary = obj.MaybeString("summary", "reference")
+			};
+
+			obj.ValidateReferenceKeys();
+
+			return scheme;
+		}
+		else
+		{
+			var scheme = new SecurityScheme
+			{
+				Type = obj.ExpectEnum<SecuritySchemeType>("type", "securityScheme"),
+				Description = obj.MaybeString("description", "response"),
+				Name = obj.ExpectString("name", "securityScheme"),
+				In = obj.ExpectEnum<SecuritySchemeLocation>("in", "securityScheme"),
+				Scheme = obj.ExpectString("scheme", "securityScheme"),
+				BearerFormat = obj.MaybeString("bearerFormat", "securityScheme"),
+				Flows = obj.TryGetPropertyValue("flows", out var v) ? OAuthFlowCollection.FromNode(v) : null,
+				OpenIdConnectUrl = obj.ExpectUri("openIdConnectUrl", "securityScheme"),
+				ExtensionData = ExtensionData.FromNode(obj)
+			};
+
+			obj.ValidateNoExtraKeys(KnownKeys, scheme.ExtensionData?.Keys);
+
+			return scheme;
+		}
 	}
-#pragma warning disable CS8618
-	internal SecurityScheme(){}
-#pragma warning restore CS8618
 }
 
 public class SecuritySchemeRef : SecurityScheme
@@ -38,9 +74,9 @@ public class SecuritySchemeRef : SecurityScheme
 
 	public bool IsResolved { get; private set; }
 
-	public SecuritySchemeRef(Uri refUri)
+	public SecuritySchemeRef(Uri reference)
 	{
-		Ref = refUri ?? throw new ArgumentNullException(nameof(refUri));
+		Ref = reference ?? throw new ArgumentNullException(nameof(reference));
 	}
 
 	public void Resolve()
