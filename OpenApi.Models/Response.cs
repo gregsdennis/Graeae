@@ -53,6 +53,30 @@ public class Response
 			return response;
 		}
 	}
+
+	public static JsonNode? ToNode(Response? response, JsonSerializerOptions? options)
+	{
+		if (response == null) return null;
+
+		var obj = new JsonObject();
+		
+		if (response is ResponseRef reference)
+		{
+			obj.Add("$ref", reference.Ref.ToString());
+			obj.MaybeAdd("description", reference.Description);
+			obj.MaybeAdd("summary", reference.Summary);
+		}
+		else
+		{
+			obj.MaybeAdd("description", response.Description);
+			obj.MaybeAddMap("headers", response.Headers, x => Header.ToNode(x, options));
+			obj.MaybeAddMap("content", response.Content, x => MediaType.ToNode(x, options));
+			obj.MaybeAddMap("links", response.Links, x => Link.ToNode(x, options));
+			obj.AddExtensions(response.ExtensionData);
+		}
+
+		return obj;
+	}
 }
 
 public class ResponseRef : Response

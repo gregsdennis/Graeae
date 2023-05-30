@@ -22,6 +22,7 @@ public class ResponseCollection : Dictionary<HttpStatusCode, Response>
 
 		foreach (var (key, value) in obj)
 		{
+			if (key == "default") continue;
 			if (key.StartsWith("x-")) continue;
 			if (!short.TryParse(key, out var code))
 				throw new JsonException($"`{key}` is not a valid status code");
@@ -34,5 +35,23 @@ public class ResponseCollection : Dictionary<HttpStatusCode, Response>
 		// Validating extra keys is done in the loop.
 
 		return collection;
+	}
+
+	public static JsonNode? ToNode(ResponseCollection? responses, JsonSerializerOptions? options)
+	{
+		if (responses == null) return null;
+
+		var obj = new JsonObject();
+
+		obj.MaybeAdd("default", Response.ToNode(responses.Default, options));
+
+		foreach (var (key, value) in responses)
+		{
+			obj.Add(((int)key).ToString(), Response.ToNode(value, options));
+		}
+
+		obj.AddExtensions(responses.ExtensionData);
+
+		return obj;
 	}
 }

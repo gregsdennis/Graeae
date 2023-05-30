@@ -20,7 +20,7 @@ public class SecurityScheme
 	public SecuritySchemeType Type { get; set; }
 	public string? Description { get; set; }
 	public string? Name { get; set; }
-	public SecuritySchemeLocation In { get; set; }
+	public SecuritySchemeLocation? In { get; set; }
 	public string? Scheme { get; set; }
 	public string? BearerFormat { get; set; }
 	public OAuthFlowCollection? Flows { get; set; }
@@ -50,12 +50,12 @@ public class SecurityScheme
 			{
 				Type = obj.ExpectEnum<SecuritySchemeType>("type", "securityScheme"),
 				Description = obj.MaybeString("description", "response"),
-				Name = obj.ExpectString("name", "securityScheme"),
-				In = obj.ExpectEnum<SecuritySchemeLocation>("in", "securityScheme"),
-				Scheme = obj.ExpectString("scheme", "securityScheme"),
+				Name = obj.MaybeString("name", "securityScheme"),
+				In = obj.MaybeEnum<SecuritySchemeLocation>("in", "securityScheme"),
+				Scheme = obj.MaybeString("scheme", "securityScheme"),
 				BearerFormat = obj.MaybeString("bearerFormat", "securityScheme"),
 				Flows = obj.TryGetPropertyValue("flows", out var v) ? OAuthFlowCollection.FromNode(v) : null,
-				OpenIdConnectUrl = obj.ExpectUri("openIdConnectUrl", "securityScheme"),
+				OpenIdConnectUrl = obj.MaybeUri("openIdConnectUrl", "securityScheme"),
 				ExtensionData = ExtensionData.FromNode(obj)
 			};
 
@@ -63,6 +63,34 @@ public class SecurityScheme
 
 			return scheme;
 		}
+	}
+
+	public static JsonNode? ToNode(SecurityScheme? scheme)
+	{
+		if (scheme == null) return null;
+
+		var obj = new JsonObject();
+
+		if (scheme is SecuritySchemeRef reference)
+		{
+			obj.Add("$ref", reference.Ref.ToString());
+			obj.MaybeAdd("description", reference.Description);
+			obj.MaybeAdd("summary", reference.Summary);
+		}
+		else
+		{
+			obj.MaybeAddEnum<SecuritySchemeType>("type", scheme.Type);
+			obj.MaybeAdd("description", scheme.Description);
+			obj.MaybeAdd("name", scheme.Name);
+			obj.MaybeAddEnum("in", scheme.In);
+			obj.MaybeAdd("scheme", scheme.Scheme);
+			obj.MaybeAdd("bearerFormat", scheme.BearerFormat);
+			obj.MaybeAdd("flows", OAuthFlowCollection.ToNode(scheme.Flows));
+			obj.MaybeAdd("openIdConnectUrl", scheme.OpenIdConnectUrl?.ToString());
+			obj.AddExtensions(scheme.ExtensionData);
+		}
+
+		return obj;
 	}
 }
 

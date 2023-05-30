@@ -38,7 +38,7 @@ public class RequestBody
 		{
 			var link = new RequestBody
 			{
-				Description = obj.ExpectString("description", "request body"),
+				Description = obj.MaybeString("description", "request body"),
 				Content = obj.ExpectMap("content", "request body", x => MediaType.FromNode(x, options)),
 				Required = obj.MaybeBool("required", "request body"),
 				ExtensionData = ExtensionData.FromNode(obj)
@@ -48,6 +48,29 @@ public class RequestBody
 
 			return link;
 		}
+	}
+
+	public static JsonNode? ToNode(RequestBody? body, JsonSerializerOptions? options)
+	{
+		if (body == null) return null;
+
+		var obj = new JsonObject();
+
+		if (body is RequestBodyRef reference)
+		{
+			obj.Add("$ref", reference.Ref.ToString());
+			obj.MaybeAdd("description", reference.Description);
+			obj.MaybeAdd("summary", reference.Summary);
+		}
+		else
+		{
+			obj.MaybeAdd("description", body.Description);
+			obj.MaybeAddMap("content", body.Content, x => MediaType.ToNode(x, options));
+			obj.MaybeAdd("required", body.Required);
+			obj.AddExtensions(body.ExtensionData);
+		}
+
+		return obj;
 	}
 }
 

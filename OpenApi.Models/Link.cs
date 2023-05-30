@@ -48,7 +48,7 @@ public class Link
 				OperationId = obj.MaybeString("operationId", "link"),
 				Parameters = obj.MaybeMap("parameters", x => RuntimeExpression.FromNode(x, options)),
 				RequestBody = obj.Maybe("requestBody", x => RuntimeExpression.FromNode(x, options)),
-				Description = obj.ExpectString("description", "link"),
+				Description = obj.MaybeString("description", "link"),
 				Server = obj.Maybe("server", Server.FromNode),
 				ExtensionData = ExtensionData.FromNode(obj)
 			};
@@ -57,6 +57,32 @@ public class Link
 
 			return link;
 		}
+	}
+
+	public static JsonNode? ToNode(Link? link, JsonSerializerOptions? options)
+	{
+		if (link == null) return null;
+
+		var obj = new JsonObject();
+
+		if (link is LinkRef reference)
+		{
+			obj.Add("$ref", reference.Ref.ToString());
+			obj.MaybeAdd("description", reference.Description);
+			obj.MaybeAdd("summary", reference.Summary);
+		}
+		else
+		{
+			obj.MaybeAdd("operationRef", link.OperationRef?.ToString());
+			obj.MaybeAdd("operationId", link.OperationId);
+			obj.MaybeAddMap("parameters", link.Parameters, x => x.ToString());
+			obj.MaybeAdd("requestBody", link.RequestBody?.ToString());
+			obj.MaybeAdd("description", link.Description);
+			obj.MaybeAdd("server", Server.ToNode(link.Server, options));
+			obj.AddExtensions(link.ExtensionData);
+		}
+
+		return obj;
 	}
 }
 

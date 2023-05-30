@@ -34,4 +34,20 @@ public class ServerVariable
 
 		return vars;
 	}
+
+	public static JsonNode? ToNode(ServerVariable? variable, JsonSerializerOptions? options)
+	{
+		if (variable == null) return null;
+
+		var obj = new JsonObject
+		{
+			["default"] = variable.Default
+		};
+
+		obj.MaybeAddArray("enum", variable.Enum, x => x);
+		obj.MaybeAdd("description", variable.Description);
+		obj.AddExtensions(variable.ExtensionData);
+
+		return obj;
+	}
 }

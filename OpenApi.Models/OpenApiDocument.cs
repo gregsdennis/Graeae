@@ -49,10 +49,10 @@ public class OpenApiDocument : IBaseDocument
 			JsonSchemaDialect = obj.MaybeUri("jsonSchemaDialect", "open api document"),
 			Servers = obj.MaybeArray("servers", Server.FromNode),
 			Paths = obj.Maybe("paths", x => PathCollection.FromNode(x, options)),
-			Webhooks = obj.MaybeMap("webhooks", x =>PathItem.FromNode(x, options)),
-			Components = obj.Maybe("components", x=> ComponentCollection.FromNode(x, options)),
+			Webhooks = obj.MaybeMap("webhooks", x => PathItem.FromNode(x, options)),
+			Components = obj.Maybe("components", x => ComponentCollection.FromNode(x, options)),
 			Security = obj.MaybeArray("security", SecurityRequirement.FromNode),
-			Tags = obj.MaybeArray("tags", x => Tag.FromNode(x, options)),
+			Tags = obj.MaybeArray("tags", Tag.FromNode),
 			ExternalDocs = obj.Maybe("externalDocs", ExternalDocumentation.FromNode),
 			ExtensionData = ExtensionData.FromNode(obj)
 		};
@@ -60,6 +60,28 @@ public class OpenApiDocument : IBaseDocument
 		obj.ValidateNoExtraKeys(KnownKeys, document.ExtensionData?.Keys);
 
 		return document;
+	}
+
+	public static JsonNode? ToNode(OpenApiDocument? document, JsonSerializerOptions? options)
+	{
+		if (document == null) return null;
+
+		var obj = new JsonObject
+		{
+			["openapi"] = document.OpenApi,
+			["info"] = OpenApiInfo.ToNode(document.Info)
+		};
+
+		obj.MaybeAdd("jsonSchemaDialect", document.JsonSchemaDialect?.ToString());
+		obj.MaybeAddArray("servers", document.Servers, x => Server.ToNode(x, options));
+		obj.MaybeAdd("paths", PathCollection.ToNode(document.Paths, options));
+		obj.MaybeAddMap("webhooks", document.Webhooks, x => PathItem.ToNode(x, options));
+		obj.MaybeAdd("components", ComponentCollection.ToNode(document.Components, options));
+		obj.MaybeAddArray("security", document.Security, x => SecurityRequirement.ToNode(x, options));
+		obj.MaybeAddArray("tags", document.Tags, x => Tag.ToNode(x, options));
+		obj.AddExtensions(document.ExtensionData);
+
+		return obj;
 	}
 
 	JsonSchema? IBaseDocument.FindSubschema(JsonPointer pointer, EvaluationOptions options)
@@ -80,6 +102,8 @@ public class OpenApiDocumentJsonConverter : JsonConverter<OpenApiDocument>
 
 	public override void Write(Utf8JsonWriter writer, OpenApiDocument value, JsonSerializerOptions options)
 	{
-		throw new NotImplementedException();
+		var json = OpenApiDocument.ToNode(value, options);
+
+		JsonSerializer.Serialize(writer, json, options);
 	}
 }

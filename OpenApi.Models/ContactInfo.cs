@@ -34,4 +34,18 @@ public class ContactInfo
 
 		return info;
 	}
+
+	public static JsonNode? ToNode(ContactInfo? contact)
+	{
+		if (contact == null) return null;
+
+		var obj = new JsonObject();
+
+		obj.MaybeAdd("name", contact.Name);
+		obj.MaybeAdd("url", contact.Url?.ToString());
+		obj.MaybeAdd("email", contact.Email);
+		obj.AddExtensions(contact.ExtensionData);
+
+		return obj;
+	}
 }

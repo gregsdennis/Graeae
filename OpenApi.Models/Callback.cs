@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 
 namespace OpenApi.Models;
 
-public class Callback : Dictionary<RuntimeExpression, PathItem>
+public class Callback : Dictionary<string, PathItem>
 {
 	public ExtensionData? ExtensionData { get; set; }
 
@@ -34,13 +34,30 @@ public class Callback : Dictionary<RuntimeExpression, PathItem>
 			foreach (var (key, value) in obj)
 			{
 				if (key.StartsWith("x-")) continue;
-				callback.Add(RuntimeExpression.Parse(key), PathItem.FromNode(value, options));
+				//callback.Add(RuntimeExpression.Parse(key), PathItem.FromNode(value, options));
+				callback.Add(key, PathItem.FromNode(value, options));
 			}
 
 			// Validating extra keys is done in the loop.
 
 			return callback;
 		}
+	}
+
+	public static JsonNode? ToNode(Callback? callback, JsonSerializerOptions? options)
+	{
+		if (callback == null) return null;
+
+		var obj = new JsonObject();
+
+		foreach (var (key, value) in callback)
+		{
+			obj.Add(key, PathItem.ToNode(value, options));
+		}
+
+		obj.AddExtensions(callback.ExtensionData);
+
+		return obj;
 	}
 }
 

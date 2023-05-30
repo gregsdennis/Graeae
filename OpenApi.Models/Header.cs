@@ -56,7 +56,7 @@ public class Header
 		{
 			var response = new Header
 			{
-				Description = obj.ExpectString("description", "header"),
+				Description = obj.MaybeString("description", "header"),
 				Required = obj.MaybeBool("required", "header"),
 				Deprecated = obj.MaybeBool("deprecated", "header"),
 				AllowEmptyValue = obj.MaybeBool("allowEmptyValue", "header"),
@@ -74,6 +74,37 @@ public class Header
 
 			return response;
 		}
+	}
+
+	public static JsonNode? ToNode(Header? header, JsonSerializerOptions? options)
+	{
+		if (header == null) return null;
+
+		var obj = new JsonObject();
+
+		if (header is HeaderRef reference)
+		{
+			obj.Add("$ref", reference.Ref.ToString());
+			obj.MaybeAdd("description", reference.Description);
+			obj.MaybeAdd("summary", reference.Summary);
+		}
+		else
+		{
+			obj.MaybeAdd("description", header.Description);
+			obj.MaybeAdd("required", header.Required);
+			obj.MaybeAdd("deprecated", header.Deprecated);
+			obj.MaybeAdd("allowEmptyValues", header.AllowEmptyValue);
+			obj.MaybeAddEnum("style", header.Style);
+			obj.MaybeAdd("explode", header.Explode);
+			obj.MaybeAdd("allowReserved", header.AllowReserved);
+			obj.MaybeSerialize("schema", header.Schema, options);
+			obj.MaybeAdd("example", header.Example.Copy());
+			obj.MaybeAddMap("examples", header.Examples, x => Models.Example.ToNode(x, options));
+			obj.MaybeAddMap("content", header.Content, x => MediaType.ToNode(x, options));
+			obj.AddExtensions(header.ExtensionData);
+		}
+
+		return obj;
 	}
 }
 

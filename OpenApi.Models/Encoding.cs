@@ -28,7 +28,7 @@ public class Encoding
 
 		var encoding = new Encoding
 		{
-			ContentType = obj.ExpectString("contentType", "encoding"),
+			ContentType = obj.MaybeString("contentType", "encoding"),
 			Headers = obj.MaybeMap("headers", x => Header.FromNode(x, options)),
 			Style = obj.MaybeEnum<ParameterStyle>("style", "encoding"),
 			Explode = obj.MaybeBool("explode", "encoding"),
@@ -39,5 +39,21 @@ public class Encoding
 		obj.ValidateNoExtraKeys(KnownKeys, encoding.ExtensionData?.Keys);
 
 		return encoding;
+	}
+
+	public static JsonNode? ToNode(Encoding? encoding, JsonSerializerOptions? options)
+	{
+		if (encoding == null) return null;
+
+		var obj = new JsonObject();
+
+		obj.MaybeAdd("contentType", encoding.ContentType);
+		obj.MaybeAddMap("headers", encoding.Headers, x => Header.ToNode(x, options));
+		obj.MaybeAddEnum("style", encoding.Style);
+		obj.MaybeAdd("explode", encoding.Explode);
+		obj.MaybeAdd("allowReserved", encoding.AllowReserved);
+		obj.AddExtensions(encoding.ExtensionData);
+
+		return obj;
 	}
 }

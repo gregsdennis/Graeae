@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using Json.More;
 
 namespace OpenApi.Models;
 
@@ -24,5 +25,19 @@ public class SecurityRequirement : Dictionary<string, IEnumerable<string>>
 		// Validating extra keys is done in the loop.
 
 		return callback;
+	}
+
+	public static JsonNode? ToNode(SecurityRequirement? requirement, JsonSerializerOptions? options)
+	{
+		if (requirement == null) return null;
+
+		var obj = new JsonObject();
+
+		foreach (var (key, value) in requirement)
+		{
+			obj.Add(key, value.Select(x => (JsonNode?)x).ToJsonArray());
+		}
+
+		return obj;
 	}
 }

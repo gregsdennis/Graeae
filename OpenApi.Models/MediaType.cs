@@ -39,4 +39,19 @@ public class MediaType
 
 		return mediaType;
 	}
+
+	public static JsonNode? ToNode(MediaType? mediaType, JsonSerializerOptions? options)
+	{
+		if (mediaType == null) return null;
+
+		var obj = new JsonObject();
+
+		obj.MaybeSerialize("schema", mediaType.Schema, options);
+		obj.MaybeAdd("example", mediaType.Example.Copy());
+		obj.MaybeAddMap("examples", mediaType.Examples, x => Models.Example.ToNode(x, options));
+		obj.MaybeAddMap("encoding", mediaType.Encoding, x => Models.Encoding.ToNode(x, options));
+		obj.AddExtensions(mediaType.ExtensionData);
+
+		return obj;
+	}
 }

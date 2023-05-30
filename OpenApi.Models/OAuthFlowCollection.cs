@@ -26,15 +26,30 @@ public class OAuthFlowCollection
 
 		var flows = new OAuthFlowCollection
 		{
-			Implicit = obj.Maybe("implicit", x => OAuthFlow.FromNode(x)),
-			Password = obj.Maybe("password", x => OAuthFlow.FromNode(x)),
-			ClientCredentials = obj.Maybe("clientCredentials", x => OAuthFlow.FromNode(x)),
-			AuthorizationCode = obj.Maybe("authorizationCode", x => OAuthFlow.FromNode(x)),
+			Implicit = obj.Maybe("implicit", OAuthFlow.FromNode),
+			Password = obj.Maybe("password", OAuthFlow.FromNode),
+			ClientCredentials = obj.Maybe("clientCredentials", OAuthFlow.FromNode),
+			AuthorizationCode = obj.Maybe("authorizationCode", OAuthFlow.FromNode),
 			ExtensionData = ExtensionData.FromNode(obj)
 		};
 
 		obj.ValidateNoExtraKeys(KnownKeys, flows.ExtensionData?.Keys);
 
 		return flows;
+	}
+
+	public static JsonNode? ToNode(OAuthFlowCollection? flows)
+	{
+		if (flows == null) return null;
+
+		var obj = new JsonObject();
+
+		obj.MaybeAdd("implicit", OAuthFlow.ToNode(flows.Implicit));
+		obj.MaybeAdd("password", OAuthFlow.ToNode(flows.Password));
+		obj.MaybeAdd("clientCredentials", OAuthFlow.ToNode(flows.ClientCredentials));
+		obj.MaybeAdd("authorizationCode", OAuthFlow.ToNode(flows.AuthorizationCode));
+		obj.AddExtensions(flows.ExtensionData);
+
+		return obj;
 	}
 }

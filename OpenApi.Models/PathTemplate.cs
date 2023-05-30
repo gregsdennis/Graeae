@@ -26,6 +26,11 @@ public class PathTemplate : IEquatable<PathTemplate>
 		return true;
 	}
 
+	public override string ToString()
+	{
+		return string.Concat(Segments.Select(x => $"/{x}"));
+	}
+
 	public bool Equals(PathTemplate? other)
 	{
 		if (ReferenceEquals(null, other)) return false;

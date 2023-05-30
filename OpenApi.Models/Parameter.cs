@@ -9,6 +9,8 @@ public class Parameter
 {
 	private static readonly string[] KnownKeys =
 	{
+		"name",
+		"in",
 		"description",
 		"required",
 		"deprecated",
@@ -58,13 +60,15 @@ public class Parameter
 		{
 			var response = new Parameter
 			{
-				Description = obj.ExpectString("description", "header"),
-				Required = obj.MaybeBool("required", "header"),
-				Deprecated = obj.MaybeBool("deprecated", "header"),
-				AllowEmptyValue = obj.MaybeBool("allowEmptyValue", "header"),
-				Style = obj.MaybeEnum<ParameterStyle>("style", "header"),
-				Explode = obj.MaybeBool("explode", "header"),
-				AllowReserved = obj.MaybeBool("allowReserved", "header"),
+				Name = obj.ExpectString("name", "parameter"),
+				In = obj.ExpectEnum<ParameterLocation>("in", "parameter"),
+				Description = obj.MaybeString("description", "parameter"),
+				Required = obj.MaybeBool("required", "parameter"),
+				Deprecated = obj.MaybeBool("deprecated", "parameter"),
+				AllowEmptyValue = obj.MaybeBool("allowEmptyValue", "parameter"),
+				Style = obj.MaybeEnum<ParameterStyle>("style", "parameter"),
+				Explode = obj.MaybeBool("explode", "parameter"),
+				AllowReserved = obj.MaybeBool("allowReserved", "parameter"),
 				Schema = obj.MaybeDeserialize<JsonSchema>("schema", options),
 				Example = obj.TryGetPropertyValue("example", out var v) ? v ?? JsonNull.SignalNode : null,
 				Examples = obj.MaybeMap("examples", Models.Example.FromNode),
@@ -76,6 +80,39 @@ public class Parameter
 
 			return response;
 		}
+	}
+
+	public static JsonNode? ToNode(Parameter? parameter, JsonSerializerOptions? options)
+	{
+		if (parameter == null) return null;
+
+		var obj = new JsonObject();
+
+		if (parameter is ParameterRef reference)
+		{
+			obj.Add("$ref", reference.Ref.ToString());
+			obj.MaybeAdd("description", reference.Description);
+			obj.MaybeAdd("summary", reference.Summary);
+		}
+		else
+		{
+			obj.Add("name", parameter.Name);
+			obj.MaybeAddEnum<ParameterLocation>("in", parameter.In);
+			obj.MaybeAdd("description", parameter.Description);
+			obj.MaybeAdd("required", parameter.Required);
+			obj.MaybeAdd("deprecated", parameter.Deprecated);
+			obj.MaybeAdd("allowEmptyValue", parameter.AllowEmptyValue);
+			obj.MaybeAddEnum("style", parameter.Style);
+			obj.MaybeAdd("explode", parameter.Explode);
+			obj.MaybeAdd("allowReserved", parameter.AllowReserved);
+			obj.MaybeSerialize("schema", parameter.Schema, options);
+			obj.MaybeAdd("example", parameter.Example.Copy());
+			obj.MaybeAddMap("examples", parameter.Examples, x => Models.Example.ToNode(x, options));
+			obj.MaybeAddMap("content", parameter.Content, x => MediaType.ToNode(x, options));
+			obj.AddExtensions(parameter.ExtensionData);
+		}
+
+		return obj;
 	}
 }
 

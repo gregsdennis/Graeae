@@ -61,4 +61,27 @@ public class Operation
 
 		return operation;
 	}
+
+	public static JsonNode? ToNode(Operation? operation, JsonSerializerOptions? options)
+	{
+		if (operation == null) return null;
+
+		var obj = new JsonObject();
+
+		obj.MaybeAddArray("tags", operation.Tags, x => x);
+		obj.MaybeAdd("summary", operation.Summary);
+		obj.MaybeAdd("description", operation.Description);
+		obj.MaybeAdd("externalDocs", ExternalDocumentation.ToNode(operation.ExternalDocs));
+		obj.MaybeAdd("operationId", operation.OperationId);
+		obj.MaybeAddArray("parameters", operation.Parameters, x => Parameter.ToNode(x, options));
+		obj.MaybeAdd("requestBody", RequestBody.ToNode(operation.RequestBody, options));
+		obj.MaybeAdd("responses", ResponseCollection.ToNode(operation.Responses, options));
+		obj.MaybeAddMap("callbacks", operation.Callbacks, x => Callback.ToNode(x, options));
+		obj.MaybeAdd("deprecated", operation.Deprecated);
+		obj.MaybeAddArray("security", operation.Security, x => SecurityRequirement.ToNode(x, options));
+		obj.MaybeAddArray("servers", operation.Servers, x => Server.ToNode(x, options));
+		obj.AddExtensions(operation.ExtensionData);
+
+		return obj;
+	}
 }

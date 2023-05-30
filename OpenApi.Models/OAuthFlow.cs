@@ -37,4 +37,27 @@ public class OAuthFlow
 
 		return flow;
 	}
+
+	public static JsonNode? ToNode(OAuthFlow? flow)
+	{
+		if (flow == null) return null;
+
+		var obj = new JsonObject
+		{
+			["authorizationUrl"] = flow.AuthorizationUrl.ToString(),
+			["tokenUrl"] = flow.TokenUrl.ToString()
+		};
+
+		var scopes = new JsonObject();
+		foreach (var (key, value) in flow.Scopes)
+		{
+			scopes.Add(key, value);
+		}
+		obj.Add("scopes", scopes);
+
+		obj.MaybeAdd("refreshUrl", flow.RefreshUrl?.ToString());
+		obj.AddExtensions(flow.ExtensionData);
+
+		return obj;
+	}
 }

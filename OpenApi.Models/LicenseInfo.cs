@@ -34,4 +34,20 @@ public class LicenseInfo
 
 		return info;
 	}
+
+	public static JsonNode? ToNode(LicenseInfo? license)
+	{
+		if (license == null) return null;
+
+		var obj = new JsonObject
+		{
+			["name"] = license.Name
+		};
+
+		obj.MaybeAdd("identifier", license.Identifier);
+		obj.MaybeAdd("url", license.Url?.ToString());
+		obj.AddExtensions(license.ExtensionData);
+
+		return obj;
+	}
 }

@@ -46,4 +46,24 @@ public class OpenApiInfo
 
 		return info;
 	}
+
+	public static JsonNode? ToNode(OpenApiInfo? info)
+	{
+		if (info == null) return null;
+
+		var obj = new JsonObject
+		{
+			["title"] = info.Title,
+			["version"] = info.Version
+		};
+
+		obj.MaybeAdd("summary", info.Summary);
+		obj.MaybeAdd("description", info.Summary);
+		obj.MaybeAdd("termsOfService", info.Summary);
+		obj.MaybeAdd("contact", ContactInfo.ToNode(info.Contact));
+		obj.MaybeAdd("license", LicenseInfo.ToNode(info.License));
+		obj.AddExtensions(info.ExtensionData);
+
+		return obj;
+	}
 }

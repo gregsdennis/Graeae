@@ -25,6 +25,8 @@ public class RuntimeExpression
 	// tchar = "!" / "#" / "$" / "%" / "&" / "'" / "*" / "+" / "-" / "." /
 	//         "^" / "_" / "`" / "|" / "~" / DIGIT / ALPHA
 
+	private string _source;
+
 	public RuntimeExpressionType ExpressionType { get; set; }
 	public RuntimeExpressionSourceType? SourceType { get; set; }
 	public char? Token { get; set; }
@@ -41,7 +43,7 @@ public class RuntimeExpression
 
 	public static RuntimeExpression Parse(string source)
 	{
-		var expr = new RuntimeExpression();
+		var expr = new RuntimeExpression{_source = source};
 		var i = 0;
 
 		source.Expect(ref i, "$");
@@ -67,26 +69,25 @@ public class RuntimeExpression
 
 		source.Expect(ref i, ".");
 		var sourceType = source.Expect(ref i, "header", "query", "path", "body");
-		i++;
 		switch (sourceType)
 		{
 			case "header":
-				expr.SourceType = Models.RuntimeExpressionSourceType.Header;
+				expr.SourceType = RuntimeExpressionSourceType.Header;
 				source.Expect(ref i, ".");
 				expr.Token = source[i];
 				break;
 			case "query":
-				expr.SourceType = Models.RuntimeExpressionSourceType.Query;
+				expr.SourceType = RuntimeExpressionSourceType.Query;
 				source.Expect(ref i, ".");
 				expr.Name = source[i..];
 				break;
 			case "path":
-				expr.SourceType = Models.RuntimeExpressionSourceType.Path;
+				expr.SourceType = RuntimeExpressionSourceType.Path;
 				source.Expect(ref i, ".");
 				expr.Name = source[i..];
 				break;
 			case "body":
-				expr.SourceType = Models.RuntimeExpressionSourceType.Body;
+				expr.SourceType = RuntimeExpressionSourceType.Body;
 				source.Expect(ref i, "#");
 				if (i < source.Length)
 				{
@@ -100,5 +101,11 @@ public class RuntimeExpression
 		}
 
 		return expr;
+	}
+
+	public override string ToString()
+	{
+		// TODO: need generation logic for this
+		return _source;
 	}
 }

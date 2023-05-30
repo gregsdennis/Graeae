@@ -76,6 +76,38 @@ public class PathItem
 			return item;
 		}
 	}
+
+	public static JsonNode? ToNode(PathItem? item, JsonSerializerOptions? options)
+	{
+		if (item == null) return null;
+
+		var obj = new JsonObject();
+
+		if (item is PathItemRef reference)
+		{
+			obj.Add("$ref", reference.Ref.ToString());
+			obj.MaybeAdd("description", reference.Description);
+			obj.MaybeAdd("summary", reference.Summary);
+		}
+		else
+		{
+			obj.MaybeAdd("summary", item.Summary);
+			obj.MaybeAdd("description", item.Description);
+			obj.MaybeAdd("get", Operation.ToNode(item.Get, options));
+			obj.MaybeAdd("put", Operation.ToNode(item.Put, options));
+			obj.MaybeAdd("post", Operation.ToNode(item.Post, options));
+			obj.MaybeAdd("delete", Operation.ToNode(item.Delete, options));
+			obj.MaybeAdd("options", Operation.ToNode(item.Options, options));
+			obj.MaybeAdd("head", Operation.ToNode(item.Head, options));
+			obj.MaybeAdd("patch", Operation.ToNode(item.Patch, options));
+			obj.MaybeAdd("trace", Operation.ToNode(item.Trace, options));
+			obj.MaybeAddArray("servers", item.Servers, x => Server.ToNode(x, options));
+			obj.MaybeAddArray("parameters", item.Parameters, x => Parameter.ToNode(x, options));
+			obj.AddExtensions(item.ExtensionData);
+		}
+
+		return obj;
+	}
 }
 
 public class PathItemRef : PathItem

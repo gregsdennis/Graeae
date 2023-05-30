@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using Json.More;
 
 namespace OpenApi.Models;
 
@@ -102,19 +103,27 @@ public static class SerializationExtensions
 	{
 		if (!obj.TryGetPropertyValue(propertyName, out var n))
 			throw new JsonException($"`{propertyName}` is required for {objectType} object");
-		if (n is not JsonValue v || !v.TryGetValue<string>(out var s) || !Uri.IsWellFormedUriString(s, UriKind.RelativeOrAbsolute))
-			throw new JsonException($"`{propertyName}` in {objectType} object must be a string containing a valid URI");
+		string? s = null;
+		if (n is not JsonValue v || !v.TryGetValue(out s) || !Uri.TryCreate(s, UriKind.RelativeOrAbsolute, out var uri))
+			throw new JsonException($"`{propertyName}` in {objectType} object must be a string containing a valid URI")
+			{
+				Data = { ["Value"] = s }
+			};
 
-		return new Uri(s);
+		return uri;
 	}
 
 	public static Uri? MaybeUri(this JsonObject obj, string propertyName, string objectType)
 	{
 		if (!obj.TryGetPropertyValue(propertyName, out var n)) return null;
-		if (n is not JsonValue v || !v.TryGetValue<string>(out var s) || !Uri.IsWellFormedUriString(s, UriKind.RelativeOrAbsolute))
-			throw new JsonException($"`{propertyName}` in {objectType} object must be a string containing a valid URI");
+		string? s = null;
+		if (n is not JsonValue v || !v.TryGetValue(out s) || !Uri.TryCreate(s, UriKind.RelativeOrAbsolute, out var uri))
+			throw new JsonException($"`{propertyName}` in {objectType} object must be a string containing a valid URI")
+			{
+				Data = { ["Value"] = s }
+			};
 
-		return new Uri(s);
+		return uri;
 	}
 
 	public static bool ExpectBool(this JsonObject obj, string propertyName, string objectType)
@@ -141,8 +150,12 @@ public static class SerializationExtensions
 	{
 		if (!obj.TryGetPropertyValue(propertyName, out var n))
 			throw new JsonException($"`{propertyName}` is required for {objectType} object");
-		if (n is not JsonValue v || !v.TryGetValue<string>(out var s) || !Enum.TryParse(s, out T e))
-			throw new JsonException($"`{propertyName}` in {objectType} object must be one of the predefined string values");
+		string? s = null;
+		if (n is not JsonValue v || !v.TryGetValue(out s) || !Enum.TryParse(s, true, out T e))
+			throw new JsonException($"`{propertyName}` in {objectType} object must be one of the predefined string values")
+			{
+				Data = { ["Value"] = s }
+			};
 
 		return e;
 	}
@@ -151,9 +164,68 @@ public static class SerializationExtensions
 		where T : struct, Enum
 	{
 		if (!obj.TryGetPropertyValue(propertyName, out var n)) return null;			
-		if (n is not JsonValue v || !v.TryGetValue<string>(out var s) || !Enum.TryParse(s, out T e))
-			throw new JsonException($"`{propertyName}` in {objectType} object must be one of the predefined string values");
+		//string? s = null;
+		//if (n is not JsonValue v || !v.TryGetValue(out s) || !Enum.TryParse(s, true, out T e))
+		//	throw new JsonException($"`{propertyName}` in {objectType} object must be one of the predefined string values")
+		//	{
+		//		Data = { ["Value"] = s }
+		//	};
 
-		return e;
+		return n.Deserialize<T>();
+	}
+
+	public static void MaybeAdd(this JsonObject obj, string propertyName, JsonNode? value)
+	{
+		if (value == null) return;
+
+		obj.Add(propertyName, value);
+	}
+
+	public static void AddExtensions(this JsonObject obj, ExtensionData? extensionData)
+	{
+		if (extensionData == null) return;
+
+		foreach (var (key, value) in extensionData)
+		{
+			obj.Add(key, value.Copy());
+		}
+	}
+
+	public static void MaybeAddArray<T>(this JsonObject obj, string propertyName, IEnumerable<T>? values, Func<T, JsonNode?> convert)
+	{
+		if (values == null) return;
+
+		obj.Add(propertyName, values.Select(convert).ToJsonArray());
+	}
+
+	public static void MaybeAddMap<T>(this JsonObject obj, string propertyName, Dictionary<string, T>? values, Func<T, JsonNode?> convert)
+	{
+		if (values == null) return;
+
+		// We do this manually here because .ToDictionary() allocates an intermediate dictionary
+		var newObj = new JsonObject();
+		foreach (var (key, value) in values)
+		{
+			var node = convert(value);
+			newObj.Add(key, node);
+		}
+
+		obj.Add(propertyName, newObj);
+	}
+
+	public static void MaybeAddEnum<T>(this JsonObject obj, string propertyName, T? value)
+		where T : struct, Enum
+	{
+		if (value == null) return;
+
+		obj.Add(propertyName, JsonSerializer.Serialize(value));
+	}
+
+	public static void MaybeSerialize<T>(this JsonObject obj, string propertyName, T? value, JsonSerializerOptions? options)
+		where T : class
+	{
+		if (value == null) return;
+
+		obj.Add(propertyName, JsonSerializer.SerializeToNode(obj, options));
 	}
 }

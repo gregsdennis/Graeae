@@ -53,6 +53,30 @@ public class Example
 			return example;
 		}
 	}
+
+	public static JsonNode? ToNode(Example? example, JsonSerializerOptions? options)
+	{
+		if (example == null) return null;
+
+		var obj = new JsonObject();
+
+		if (example is ExampleRef reference)
+		{
+			obj.Add("$ref", reference.Ref.ToString());
+			obj.MaybeAdd("description", reference.Description);
+			obj.MaybeAdd("summary", reference.Summary);
+		}
+		else
+		{
+			obj.MaybeAdd("summary", example.Summary);
+			obj.MaybeAdd("description", example.Description);
+			obj.MaybeAdd("value", example.Value.Copy());
+			obj.MaybeAdd("externalValue", example.ExternalValue);
+			obj.AddExtensions(example.ExtensionData);
+		}
+
+		return obj;
+	}
 }
 
 public class ExampleRef : Example

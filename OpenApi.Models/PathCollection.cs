@@ -30,4 +30,20 @@ public class PathCollection : Dictionary<PathTemplate, PathItem>
 
 		return collection;
 	}
+
+	public static JsonNode? ToNode(PathCollection? paths, JsonSerializerOptions? options)
+	{
+		if (paths == null) return null;
+
+		var obj = new JsonObject();
+
+		foreach (var (key, value) in paths)
+		{
+			obj.Add(key.ToString(), PathItem.ToNode(value, options));
+		}
+
+		obj.AddExtensions(paths.ExtensionData);
+
+		return obj;
+	}
 }

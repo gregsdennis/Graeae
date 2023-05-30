@@ -31,4 +31,19 @@ public class ExternalDocumentation
 
 		return docs;
 	}
+
+	public static JsonNode? ToNode(ExternalDocumentation? docs)
+	{
+		if (docs == null) return null;
+
+		var obj = new JsonObject
+		{
+			["url"] = docs.Url.ToString()
+		};
+
+		obj.MaybeAdd("description", docs.Description);
+		obj.AddExtensions(docs.ExtensionData);
+
+		return obj;
+	}
 }

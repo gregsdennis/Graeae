@@ -17,7 +17,7 @@ public class Tag
 	public ExternalDocumentation? ExternalDocs { get; set; }
 	public ExtensionData? ExtensionData { get; set; }
 
-	public static Tag FromNode(JsonNode? node, JsonSerializerOptions? options)
+	public static Tag FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -33,5 +33,21 @@ public class Tag
 		obj.ValidateNoExtraKeys(KnownKeys, tag.ExtensionData?.Keys);
 
 		return tag;
+	}
+
+	public static JsonNode? ToNode(Tag? tag, JsonSerializerOptions? options)
+	{
+		if (tag == null) return null;
+
+		var obj = new JsonObject
+		{
+			["name"] = tag.Name
+		};
+
+		obj.MaybeAdd("description", tag.Description);
+		obj.MaybeAdd("externalDocs", ExternalDocumentation.ToNode(tag.ExternalDocs));
+		obj.AddExtensions(tag.ExtensionData);
+
+		return obj;
 	}
 }
