@@ -15,6 +15,16 @@ public static class YamlSerializer
 		return Serialize(yaml);
 	}
 
+	public static string Serialize(YamlDocument yaml)
+	{
+		var yamlStream = new YamlStream(yaml);
+		var buffer = new StringBuilder();
+		using var writer = new StringWriter(buffer);
+		yamlStream.Save(writer);
+
+		return writer.ToString();
+	}
+
 	public static string Serialize(YamlNode yaml)
 	{
 		var yamlStream = new YamlStream(new YamlDocument(yaml));

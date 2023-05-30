@@ -1,7 +1,5 @@
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using System.Xml;
-using Json.More;
 using Yaml2JsonNode;
 using YamlDotNet.RepresentationModel;
 
@@ -9,12 +7,6 @@ namespace OpenApi.Models.Tests;
 
 public class OpenApiDotNetRepoExamples
 {
-	private static string GetFile(string name)
-	{
-		return Path.Combine(TestContext.CurrentContext.WorkDirectory, "Files", name)
-			.AdjustForPlatform();
-	}
-
 	[TestCase("api-with-examples.yaml")]
 	[TestCase("callback-example.yaml")]
 	[TestCase("link-example.yaml")]

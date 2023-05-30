@@ -9,4 +9,10 @@ public static class PathExtensions
 			? path.Replace("\\", "/")
 			: path.Replace("/", "\\");
 	}
+
+	public static string GetFile(string name)
+	{
+		return Path.Combine(TestContext.CurrentContext.WorkDirectory, "Files", name)
+			.AdjustForPlatform();
+	}
 }
