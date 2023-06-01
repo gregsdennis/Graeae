@@ -1,8 +1,10 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace OpenApi.Models;
 
+[JsonConverter(typeof(ExternalDocumentationJsonConverter))]
 public class ExternalDocumentation : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
@@ -52,5 +54,23 @@ public class ExternalDocumentation : IRefResolvable
 		if (keys.Length == 0) return this;
 
 		return ExtensionData?.Resolve(keys);
+	}
+}
+
+public class ExternalDocumentationJsonConverter : JsonConverter<ExternalDocumentation>
+{
+	public override ExternalDocumentation? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	{
+		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
+		          throw new JsonException("Expected an object");
+
+		return ExternalDocumentation.FromNode(obj);
+	}
+
+	public override void Write(Utf8JsonWriter writer, ExternalDocumentation value, JsonSerializerOptions options)
+	{
+		var json = ExternalDocumentation.ToNode(value);
+
+		JsonSerializer.Serialize(writer, json, options);
 	}
 }

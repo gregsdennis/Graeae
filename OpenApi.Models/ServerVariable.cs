@@ -1,8 +1,10 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace OpenApi.Models;
 
+[JsonConverter(typeof(ServerVariableJsonConverter))]
 public class ServerVariable : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
@@ -35,7 +37,7 @@ public class ServerVariable : IRefResolvable
 		return vars;
 	}
 
-	public static JsonNode? ToNode(ServerVariable? variable, JsonSerializerOptions? options)
+	public static JsonNode? ToNode(ServerVariable? variable)
 	{
 		if (variable == null) return null;
 
@@ -56,5 +58,23 @@ public class ServerVariable : IRefResolvable
 		if (keys.Length == 0) return this;
 
 		return ExtensionData?.Resolve(keys);
+	}
+}
+
+public class ServerVariableJsonConverter : JsonConverter<ServerVariable>
+{
+	public override ServerVariable? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	{
+		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
+		          throw new JsonException("Expected an object");
+
+		return ServerVariable.FromNode(obj);
+	}
+
+	public override void Write(Utf8JsonWriter writer, ServerVariable value, JsonSerializerOptions options)
+	{
+		var json = ServerVariable.ToNode(value);
+
+		JsonSerializer.Serialize(writer, json, options);
 	}
 }

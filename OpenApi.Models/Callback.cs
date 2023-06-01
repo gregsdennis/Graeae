@@ -1,8 +1,10 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace OpenApi.Models;
 
+[JsonConverter(typeof(CallbackJsonConverter))]
 public class Callback : Dictionary<string, PathItem>, IRefResolvable
 {
 	public ExtensionData? ExtensionData { get; set; }
@@ -88,5 +90,23 @@ public class CallbackRef : Callback
 		// remember to use base.Description
 
 		IsResolved = true;
+	}
+}
+
+public class CallbackJsonConverter : JsonConverter<Callback>
+{
+	public override Callback? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	{
+		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
+		          throw new JsonException("Expected an object");
+
+		return Callback.FromNode(obj, options);
+	}
+
+	public override void Write(Utf8JsonWriter writer, Callback value, JsonSerializerOptions options)
+	{
+		var json = Callback.ToNode(value, options);
+
+		JsonSerializer.Serialize(writer, json, options);
 	}
 }

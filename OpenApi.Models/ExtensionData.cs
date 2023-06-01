@@ -1,5 +1,4 @@
 ﻿using System.Text.Json.Nodes;
-using Json.Pointer;
 
 namespace OpenApi.Models;
 

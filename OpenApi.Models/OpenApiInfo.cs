@@ -1,9 +1,10 @@
-﻿using System.Diagnostics;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace OpenApi.Models;
 
+[JsonConverter(typeof(OpenApiInfoJsonConverter))]
 public class OpenApiInfo : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
@@ -87,5 +88,23 @@ public class OpenApiInfo : IRefResolvable
 		return target != null
 			? target.Resolve(keys[keysConsumed..])
 			: ExtensionData?.Resolve(keys);
+	}
+}
+
+public class OpenApiInfoJsonConverter : JsonConverter<OpenApiInfo>
+{
+	public override OpenApiInfo? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	{
+		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
+		          throw new JsonException("Expected an object");
+
+		return OpenApiInfo.FromNode(obj);
+	}
+
+	public override void Write(Utf8JsonWriter writer, OpenApiInfo value, JsonSerializerOptions options)
+	{
+		var json = OpenApiInfo.ToNode(value);
+
+		JsonSerializer.Serialize(writer, json, options);
 	}
 }

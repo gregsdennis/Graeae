@@ -1,9 +1,11 @@
 ﻿using System.Net;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace OpenApi.Models;
 
+[JsonConverter(typeof(ResponseCollectionJsonConverter))]
 public class ResponseCollection : Dictionary<HttpStatusCode, Response>, IRefResolvable
 {
 	public Response? Default { get; set; }
@@ -62,5 +64,23 @@ public class ResponseCollection : Dictionary<HttpStatusCode, Response>, IRefReso
 		var first = keys[0];
 		return this.FirstOrDefault(x => ((int)x.Key).ToString() == first).Value?.Resolve(keys[1..]) ??
 		       ExtensionData?.Resolve(keys);
+	}
+}
+
+public class ResponseCollectionJsonConverter : JsonConverter<ResponseCollection>
+{
+	public override ResponseCollection? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	{
+		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
+		          throw new JsonException("Expected an object");
+
+		return ResponseCollection.FromNode(obj, options);
+	}
+
+	public override void Write(Utf8JsonWriter writer, ResponseCollection value, JsonSerializerOptions options)
+	{
+		var json = ResponseCollection.ToNode(value, options);
+
+		JsonSerializer.Serialize(writer, json, options);
 	}
 }

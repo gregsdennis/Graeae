@@ -1,10 +1,12 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 using Json.More;
 using Json.Schema;
 
 namespace OpenApi.Models;
 
+[JsonConverter(typeof(MediaTypeJsonConverter))]
 public class MediaType : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
@@ -84,5 +86,23 @@ public class MediaType : IRefResolvable
 		return target != null
 			? target.Resolve(keys[keysConsumed..])
 			: ExtensionData?.Resolve(keys);
+	}
+}
+
+public class MediaTypeJsonConverter : JsonConverter<MediaType>
+{
+	public override MediaType? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	{
+		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
+		          throw new JsonException("Expected an object");
+
+		return MediaType.FromNode(obj, options);
+	}
+
+	public override void Write(Utf8JsonWriter writer, MediaType value, JsonSerializerOptions options)
+	{
+		var json = MediaType.ToNode(value, options);
+
+		JsonSerializer.Serialize(writer, json, options);
 	}
 }

@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Json.Pointer;
@@ -76,11 +75,11 @@ public class OpenApiDocument : IBaseDocument
 		};
 
 		obj.MaybeAdd("jsonSchemaDialect", document.JsonSchemaDialect?.ToString());
-		obj.MaybeAddArray("servers", document.Servers, x => Server.ToNode(x, options));
+		obj.MaybeAddArray("servers", document.Servers, Server.ToNode);
 		obj.MaybeAdd("paths", PathCollection.ToNode(document.Paths, options));
 		obj.MaybeAddMap("webhooks", document.Webhooks, x => PathItem.ToNode(x, options));
 		obj.MaybeAdd("components", ComponentCollection.ToNode(document.Components, options));
-		obj.MaybeAddArray("security", document.Security, x => SecurityRequirement.ToNode(x, options));
+		obj.MaybeAddArray("security", document.Security, SecurityRequirement.ToNode);
 		obj.MaybeAddArray("tags", document.Tags, Tag.ToNode);
 		obj.MaybeAdd("externalDocs", ExternalDocumentation.ToNode(document.ExternalDocs));
 		obj.AddExtensions(document.ExtensionData);

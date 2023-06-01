@@ -1,9 +1,10 @@
-﻿using System.Diagnostics;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace OpenApi.Models;
 
+[JsonConverter(typeof(OAuthFlowCollectionJsonConverter))]
 public class OAuthFlowCollection : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
@@ -79,5 +80,23 @@ public class OAuthFlowCollection : IRefResolvable
 		return target != null
 			? target.Resolve(keys[keysConsumed..])
 			: ExtensionData?.Resolve(keys);
+	}
+}
+
+public class OAuthFlowCollectionJsonConverter : JsonConverter<OAuthFlowCollection>
+{
+	public override OAuthFlowCollection? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	{
+		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
+		          throw new JsonException("Expected an object");
+
+		return OAuthFlowCollection.FromNode(obj);
+	}
+
+	public override void Write(Utf8JsonWriter writer, OAuthFlowCollection value, JsonSerializerOptions options)
+	{
+		var json = OAuthFlowCollection.ToNode(value);
+
+		JsonSerializer.Serialize(writer, json, options);
 	}
 }

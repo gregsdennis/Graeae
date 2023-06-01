@@ -1,8 +1,10 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace OpenApi.Models;
 
+[JsonConverter(typeof(PathItemJsonConverter))]
 public class PathItem : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
@@ -101,7 +103,7 @@ public class PathItem : IRefResolvable
 			obj.MaybeAdd("head", Operation.ToNode(item.Head, options));
 			obj.MaybeAdd("patch", Operation.ToNode(item.Patch, options));
 			obj.MaybeAdd("trace", Operation.ToNode(item.Trace, options));
-			obj.MaybeAddArray("servers", item.Servers, x => Server.ToNode(x, options));
+			obj.MaybeAddArray("servers", item.Servers, Server.ToNode);
 			obj.MaybeAddArray("parameters", item.Parameters, x => Parameter.ToNode(x, options));
 			obj.AddExtensions(item.ExtensionData);
 		}
@@ -178,5 +180,23 @@ public class PathItemRef : PathItem
 		// remember to use base.*
 
 		IsResolved = true;
+	}
+}
+
+public class PathItemJsonConverter : JsonConverter<PathItem>
+{
+	public override PathItem? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	{
+		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
+		          throw new JsonException("Expected an object");
+
+		return PathItem.FromNode(obj, options);
+	}
+
+	public override void Write(Utf8JsonWriter writer, PathItem value, JsonSerializerOptions options)
+	{
+		var json = PathItem.ToNode(value, options);
+
+		JsonSerializer.Serialize(writer, json, options);
 	}
 }

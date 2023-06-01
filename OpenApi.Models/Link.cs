@@ -1,8 +1,10 @@
 ﻿using System.Text.Json.Nodes;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace OpenApi.Models;
 
+[JsonConverter(typeof(LinkJsonConverter))]
 public class Link : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
@@ -78,7 +80,7 @@ public class Link : IRefResolvable
 			obj.MaybeAddMap("parameters", link.Parameters, x => x.ToString());
 			obj.MaybeAdd("requestBody", link.RequestBody?.ToString());
 			obj.MaybeAdd("description", link.Description);
-			obj.MaybeAdd("server", Server.ToNode(link.Server, options));
+			obj.MaybeAdd("server", Server.ToNode(link.Server));
 			obj.AddExtensions(link.ExtensionData);
 		}
 
@@ -118,5 +120,23 @@ public class LinkRef : Link
 		// remember to use base.Description
 
 		IsResolved = true;
+	}
+}
+
+public class LinkJsonConverter : JsonConverter<Link>
+{
+	public override Link? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	{
+		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
+		          throw new JsonException("Expected an object");
+
+		return Link.FromNode(obj, options);
+	}
+
+	public override void Write(Utf8JsonWriter writer, Link value, JsonSerializerOptions options)
+	{
+		var json = Link.ToNode(value, options);
+
+		JsonSerializer.Serialize(writer, json, options);
 	}
 }

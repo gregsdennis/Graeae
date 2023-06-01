@@ -1,8 +1,10 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace OpenApi.Models;
 
+[JsonConverter(typeof(SecuritySchemeJsonConverter))]
 public class SecurityScheme : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
@@ -126,5 +128,23 @@ public class SecuritySchemeRef : SecurityScheme
 		// remember to use base.Description
 
 		IsResolved = true;
+	}
+}
+
+public class SecuritySchemeJsonConverter : JsonConverter<SecurityScheme>
+{
+	public override SecurityScheme? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	{
+		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
+		          throw new JsonException("Expected an object");
+
+		return SecurityScheme.FromNode(obj);
+	}
+
+	public override void Write(Utf8JsonWriter writer, SecurityScheme value, JsonSerializerOptions options)
+	{
+		var json = SecurityScheme.ToNode(value);
+
+		JsonSerializer.Serialize(writer, json, options);
 	}
 }

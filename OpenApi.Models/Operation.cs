@@ -1,8 +1,10 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace OpenApi.Models;
 
+[JsonConverter(typeof(OperationJsonConverter))]
 public class Operation : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
@@ -78,8 +80,8 @@ public class Operation : IRefResolvable
 		obj.MaybeAdd("responses", ResponseCollection.ToNode(operation.Responses, options));
 		obj.MaybeAddMap("callbacks", operation.Callbacks, x => Callback.ToNode(x, options));
 		obj.MaybeAdd("deprecated", operation.Deprecated);
-		obj.MaybeAddArray("security", operation.Security, x => SecurityRequirement.ToNode(x, options));
-		obj.MaybeAddArray("servers", operation.Servers, x => Server.ToNode(x, options));
+		obj.MaybeAddArray("security", operation.Security, SecurityRequirement.ToNode);
+		obj.MaybeAddArray("servers", operation.Servers, Server.ToNode);
 		obj.AddExtensions(operation.ExtensionData);
 
 		return obj;
@@ -122,5 +124,23 @@ public class Operation : IRefResolvable
 		return target != null
 			? target.Resolve(keys[keysConsumed..])
 			: ExtensionData?.Resolve(keys);
+	}
+}
+
+public class OperationJsonConverter : JsonConverter<Operation>
+{
+	public override Operation? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	{
+		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
+		          throw new JsonException("Expected an object");
+
+		return Operation.FromNode(obj, options);
+	}
+
+	public override void Write(Utf8JsonWriter writer, Operation value, JsonSerializerOptions options)
+	{
+		var json = Operation.ToNode(value, options);
+
+		JsonSerializer.Serialize(writer, json, options);
 	}
 }

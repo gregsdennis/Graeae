@@ -1,8 +1,10 @@
 ﻿using System.Text.Json.Nodes;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace OpenApi.Models;
 
+[JsonConverter(typeof(EncodingJsonConverter))]
 public class Encoding : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
@@ -68,5 +70,23 @@ public class Encoding : IRefResolvable
 		}
 
 		return ExtensionData?.Resolve(keys);
+	}
+}
+
+public class EncodingJsonConverter : JsonConverter<Encoding>
+{
+	public override Encoding? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	{
+		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
+		          throw new JsonException("Expected an object");
+
+		return Encoding.FromNode(obj, options);
+	}
+
+	public override void Write(Utf8JsonWriter writer, Encoding value, JsonSerializerOptions options)
+	{
+		var json = Encoding.ToNode(value, options);
+
+		JsonSerializer.Serialize(writer, json, options);
 	}
 }

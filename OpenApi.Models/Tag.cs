@@ -1,8 +1,10 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace OpenApi.Models;
 
+[JsonConverter(typeof(TagJsonConverter))]
 public class Tag : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
@@ -62,5 +64,23 @@ public class Tag : IRefResolvable
 		}
 
 		return ExtensionData?.Resolve(keys);
+	}
+}
+
+public class TagJsonConverter : JsonConverter<Tag>
+{
+	public override Tag? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	{
+		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
+		          throw new JsonException("Expected an object");
+
+		return Tag.FromNode(obj);
+	}
+
+	public override void Write(Utf8JsonWriter writer, Tag value, JsonSerializerOptions options)
+	{
+		var json = Tag.ToNode(value);
+
+		JsonSerializer.Serialize(writer, json, options);
 	}
 }

@@ -1,8 +1,10 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace OpenApi.Models;
 
+[JsonConverter(typeof(LicenseInfoJsonConverter))]
 public class LicenseInfo : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
@@ -56,5 +58,23 @@ public class LicenseInfo : IRefResolvable
 		if (keys.Length == 0) return this;
 
 		return ExtensionData?.Resolve(keys);
+	}
+}
+
+public class LicenseInfoJsonConverter : JsonConverter<LicenseInfo>
+{
+	public override LicenseInfo? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	{
+		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
+		          throw new JsonException("Expected an object");
+
+		return LicenseInfo.FromNode(obj);
+	}
+
+	public override void Write(Utf8JsonWriter writer, LicenseInfo value, JsonSerializerOptions options)
+	{
+		var json = LicenseInfo.ToNode(value);
+
+		JsonSerializer.Serialize(writer, json, options);
 	}
 }

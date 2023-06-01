@@ -1,9 +1,11 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 using Json.More;
 
 namespace OpenApi.Models;
 
+[JsonConverter(typeof(SecurityRequirementJsonConverter))]
 public class SecurityRequirement : Dictionary<string, IEnumerable<string>>
 {
 	public static SecurityRequirement FromNode(JsonNode? node)
@@ -27,7 +29,7 @@ public class SecurityRequirement : Dictionary<string, IEnumerable<string>>
 		return callback;
 	}
 
-	public static JsonNode? ToNode(SecurityRequirement? requirement, JsonSerializerOptions? options)
+	public static JsonNode? ToNode(SecurityRequirement? requirement)
 	{
 		if (requirement == null) return null;
 
@@ -39,5 +41,23 @@ public class SecurityRequirement : Dictionary<string, IEnumerable<string>>
 		}
 
 		return obj;
+	}
+}
+
+public class SecurityRequirementJsonConverter : JsonConverter<SecurityRequirement>
+{
+	public override SecurityRequirement? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	{
+		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
+		          throw new JsonException("Expected an object");
+
+		return SecurityRequirement.FromNode(obj);
+	}
+
+	public override void Write(Utf8JsonWriter writer, SecurityRequirement value, JsonSerializerOptions options)
+	{
+		var json = SecurityRequirement.ToNode(value);
+
+		JsonSerializer.Serialize(writer, json, options);
 	}
 }

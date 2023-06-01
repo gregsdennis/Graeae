@@ -1,9 +1,11 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 using Json.Schema;
 
 namespace OpenApi.Models;
 
+[JsonConverter(typeof(ComponentCollectionJsonConverter))]
 public class ComponentCollection : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
@@ -130,5 +132,23 @@ public class ComponentCollection : IRefResolvable
 		return target != null
 			? target.Resolve(keys[2..])
 			: ExtensionData?.Resolve(keys);
+	}
+}
+
+public class ComponentCollectionJsonConverter : JsonConverter<ComponentCollection>
+{
+	public override ComponentCollection? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	{
+		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
+		          throw new JsonException("Expected an object");
+
+		return ComponentCollection.FromNode(obj, options);
+	}
+
+	public override void Write(Utf8JsonWriter writer, ComponentCollection value, JsonSerializerOptions options)
+	{
+		var json = ComponentCollection.ToNode(value, options);
+
+		JsonSerializer.Serialize(writer, json, options);
 	}
 }

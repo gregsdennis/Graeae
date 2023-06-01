@@ -1,8 +1,10 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace OpenApi.Models;
 
+[JsonConverter(typeof(RequestBodyJsonConverter))]
 public class RequestBody : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
@@ -107,5 +109,23 @@ public class RequestBodyRef : RequestBody
 		// remember to use base.*
 
 		IsResolved = true;
+	}
+}
+
+public class RequestBodyJsonConverter : JsonConverter<RequestBody>
+{
+	public override RequestBody? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	{
+		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
+		          throw new JsonException("Expected an object");
+
+		return RequestBody.FromNode(obj, options);
+	}
+
+	public override void Write(Utf8JsonWriter writer, RequestBody value, JsonSerializerOptions options)
+	{
+		var json = RequestBody.ToNode(value, options);
+
+		JsonSerializer.Serialize(writer, json, options);
 	}
 }

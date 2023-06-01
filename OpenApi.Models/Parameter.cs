@@ -1,10 +1,12 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 using Json.More;
 using Json.Schema;
 
 namespace OpenApi.Models;
 
+[JsonConverter(typeof(ParameterJsonConverter))]
 public class Parameter : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
@@ -166,5 +168,23 @@ public class ParameterRef : Parameter
 		// remember to use base.Description
 
 		IsResolved = true;
+	}
+}
+
+public class ParameterJsonConverter : JsonConverter<Parameter>
+{
+	public override Parameter? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	{
+		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
+		          throw new JsonException("Expected an object");
+
+		return Parameter.FromNode(obj, options);
+	}
+
+	public override void Write(Utf8JsonWriter writer, Parameter value, JsonSerializerOptions options)
+	{
+		var json = Parameter.ToNode(value, options);
+
+		JsonSerializer.Serialize(writer, json, options);
 	}
 }

@@ -143,6 +143,8 @@ public class ResponseJsonConverter : JsonConverter<Response>
 
 	public override void Write(Utf8JsonWriter writer, Response value, JsonSerializerOptions options)
 	{
-		throw new NotImplementedException();
+		var json = Response.ToNode(value, options);
+
+		JsonSerializer.Serialize(writer, json, options);
 	}
 }

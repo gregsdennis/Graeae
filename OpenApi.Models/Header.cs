@@ -1,10 +1,12 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 using Json.More;
 using Json.Schema;
 
 namespace OpenApi.Models;
 
+[JsonConverter(typeof(HeaderJsonConverter))]
 public class Header : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
@@ -158,5 +160,23 @@ public class HeaderRef : Header
 		// remember to use base.Description
 
 		IsResolved = true;
+	}
+}
+
+public class HeaderJsonConverter : JsonConverter<Header>
+{
+	public override Header? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	{
+		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
+		          throw new JsonException("Expected an object");
+
+		return Header.FromNode(obj, options);
+	}
+
+	public override void Write(Utf8JsonWriter writer, Header value, JsonSerializerOptions options)
+	{
+		var json = Header.ToNode(value, options);
+
+		JsonSerializer.Serialize(writer, json, options);
 	}
 }

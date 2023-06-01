@@ -1,8 +1,10 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace OpenApi.Models;
 
+[JsonConverter(typeof(PathCollectionJsonConverter))]
 public class PathCollection : Dictionary<PathTemplate, PathItem>, IRefResolvable
 {
 	public ExtensionData? ExtensionData { get; set; }
@@ -53,5 +55,23 @@ public class PathCollection : Dictionary<PathTemplate, PathItem>, IRefResolvable
 
 		return this.GetFromMap(keys[0])?.Resolve(keys[1..]) ??
 		       ExtensionData?.Resolve(keys);
+	}
+}
+
+public class PathCollectionJsonConverter : JsonConverter<PathCollection>
+{
+	public override PathCollection? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	{
+		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
+		          throw new JsonException("Expected an object");
+
+		return PathCollection.FromNode(obj, options);
+	}
+
+	public override void Write(Utf8JsonWriter writer, PathCollection value, JsonSerializerOptions options)
+	{
+		var json = PathCollection.ToNode(value, options);
+
+		JsonSerializer.Serialize(writer, json, options);
 	}
 }
