@@ -90,10 +90,10 @@ public class OpenApiDocument : IBaseDocument
 
 	JsonSchema? IBaseDocument.FindSubschema(JsonPointer pointer, EvaluationOptions options)
 	{
-		return !TryFind(pointer, out JsonSchema? schema) ? null : schema;
+		return Find<JsonSchema>(pointer);
 	}
 
-	public bool TryFind<T>(JsonPointer pointer, out T? value)
+	public T? Find<T>(JsonPointer pointer)
 		where T : class
 	{
 		if (!_lookup.TryGetValue(pointer, out var val))
@@ -105,8 +105,10 @@ public class OpenApiDocument : IBaseDocument
 				_lookup[pointer] = val;
 		}
 
-		value = val as T;
-		return value != null;
+		if (val is JsonNode node && typeof(T) != typeof(JsonNode))
+			return node.Deserialize<T>();
+
+		return val as T;
 	}
 
 	private object? PerformLookup(Span<string> keys)

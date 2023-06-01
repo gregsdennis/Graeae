@@ -46,7 +46,9 @@ public class PathTemplate : IEquatable<PathTemplate>, IEquatable<string>
 
 	public bool Equals(string? other)
 	{
-		throw new NotImplementedException();
+		if (ReferenceEquals(null, other)) return false;
+		if (!TryParse(other, out var otherTemplate)) return false;
+		return Equals(otherTemplate);
 	}
 
 	public override bool Equals(object? obj)
