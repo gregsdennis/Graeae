@@ -4,7 +4,7 @@ using System.Text.Json.Nodes;
 
 namespace OpenApi.Models;
 
-public class Example
+public class Example : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
 	{
@@ -16,7 +16,7 @@ public class Example
 
 	public string? Summary { get; set; }
 	public string? Description { get; set; }
-	public JsonNode? Value { get; set; } // use JsonNull
+	public JsonNode? Value { get; set; }
 	public string? ExternalValue { get; set; }
 	public ExtensionData? ExtensionData { get; set; }
 
@@ -54,7 +54,7 @@ public class Example
 		}
 	}
 
-	public static JsonNode? ToNode(Example? example, JsonSerializerOptions? options)
+	public static JsonNode? ToNode(Example? example)
 	{
 		if (example == null) return null;
 
@@ -76,6 +76,20 @@ public class Example
 		}
 
 		return obj;
+	}
+
+	public object? Resolve(Span<string> keys)
+	{
+		if (keys.Length == 0) return this;
+
+		if (keys[0] == "value")
+		{
+			if (keys.Length == 1) return Value;
+			keys[1..].ToPointer().TryEvaluate(Value, out var target);
+			return target;
+		}
+
+		return ExtensionData?.Resolve(keys);
 	}
 }
 

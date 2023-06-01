@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 
 namespace OpenApi.Models;
 
-public class Callback : Dictionary<string, PathItem>
+public class Callback : Dictionary<string, PathItem>, IRefResolvable
 {
 	public ExtensionData? ExtensionData { get; set; }
 
@@ -58,6 +58,14 @@ public class Callback : Dictionary<string, PathItem>
 		obj.AddExtensions(callback.ExtensionData);
 
 		return obj;
+	}
+
+	public object? Resolve(Span<string> keys)
+	{
+		if (keys.Length == 0) return null;
+
+		return this.GetFromMap(keys[0])?.Resolve(keys[1..]) ??
+		       ExtensionData?.Resolve(keys);
 	}
 }
 

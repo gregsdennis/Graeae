@@ -5,7 +5,7 @@ using Json.Schema;
 
 namespace OpenApi.Models;
 
-public class Header
+public class Header : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
 	{
@@ -99,12 +99,43 @@ public class Header
 			obj.MaybeAdd("allowReserved", header.AllowReserved);
 			obj.MaybeSerialize("schema", header.Schema, options);
 			obj.MaybeAdd("example", header.Example.Copy());
-			obj.MaybeAddMap("examples", header.Examples, x => Models.Example.ToNode(x, options));
+			obj.MaybeAddMap("examples", header.Examples, Models.Example.ToNode);
 			obj.MaybeAddMap("content", header.Content, x => MediaType.ToNode(x, options));
 			obj.AddExtensions(header.ExtensionData);
 		}
 
 		return obj;
+	}
+
+	public object? Resolve(Span<string> keys)
+	{
+		if (keys.Length == 0) return this;
+
+		int keysConsumed = 1;
+		IRefResolvable? target = null;
+		switch (keys[0])
+		{
+			case "schema":
+				if (Schema == null) return null;
+				// TODO: consider some other kind of value being buried in a schema
+				throw new NotImplementedException();
+			case "example":
+				return Example?.GetFromNode(keys[1..]);
+			case "examples":
+				if (keys.Length == 1) return null;
+				keysConsumed++;
+				target = Examples?.GetFromMap(keys[1]);
+				break;
+			case "content":
+				if (keys.Length == 1) return null;
+				keysConsumed++;
+				target = Content?.GetFromMap(keys[1]);
+				break;
+		}
+
+		return target != null
+			? target.Resolve(keys[keysConsumed..])
+			: ExtensionData?.Resolve(keys);
 	}
 }
 

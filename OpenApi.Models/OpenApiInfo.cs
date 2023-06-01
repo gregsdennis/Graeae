@@ -1,9 +1,10 @@
-﻿using System.Text.Json;
+﻿using System.Diagnostics;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 
 namespace OpenApi.Models;
 
-public class OpenApiInfo
+public class OpenApiInfo : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
 	{
@@ -65,5 +66,26 @@ public class OpenApiInfo
 		obj.AddExtensions(info.ExtensionData);
 
 		return obj;
+	}
+
+	public object? Resolve(Span<string> keys)
+	{
+		if (keys.Length == 0) return this;
+
+		int keysConsumed = 1;
+		IRefResolvable? target = null;
+		switch (keys[0])
+		{
+			case "contact":
+				target = Contact;
+				break;
+			case "license":
+				target = License;
+				break;
+		}
+
+		return target != null
+			? target.Resolve(keys[keysConsumed..])
+			: ExtensionData?.Resolve(keys);
 	}
 }

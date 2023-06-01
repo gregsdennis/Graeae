@@ -4,7 +4,7 @@ using System.Text.Json.Nodes;
 
 namespace OpenApi.Models;
 
-public class ResponseCollection : Dictionary<HttpStatusCode, Response>
+public class ResponseCollection : Dictionary<HttpStatusCode, Response>, IRefResolvable
 {
 	public Response? Default { get; set; }
 	public ExtensionData? ExtensionData { get; set; }
@@ -53,5 +53,14 @@ public class ResponseCollection : Dictionary<HttpStatusCode, Response>
 		obj.AddExtensions(responses.ExtensionData);
 
 		return obj;
+	}
+
+	public object? Resolve(Span<string> keys)
+	{
+		if (keys.Length == 0) return null;
+
+		var first = keys[0];
+		return this.FirstOrDefault(x => ((int)x.Key).ToString() == first).Value?.Resolve(keys[1..]) ??
+		       ExtensionData?.Resolve(keys);
 	}
 }

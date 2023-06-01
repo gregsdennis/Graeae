@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace OpenApi.Models;
 
-public class Link
+public class Link : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
 	{
@@ -83,6 +83,19 @@ public class Link
 		}
 
 		return obj;
+	}
+
+	public object? Resolve(Span<string> keys)
+	{
+		if (keys.Length == 0) return this;
+
+		if (keys[0] == "server")
+		{
+			if (keys.Length == 1) return Server;
+			return Server?.Resolve(keys[1..]);
+		}
+
+		return ExtensionData?.Resolve(keys);
 	}
 }
 

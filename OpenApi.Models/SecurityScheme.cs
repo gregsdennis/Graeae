@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 
 namespace OpenApi.Models;
 
-public class SecurityScheme
+public class SecurityScheme : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
 	{
@@ -91,6 +91,19 @@ public class SecurityScheme
 		}
 
 		return obj;
+	}
+
+	public object? Resolve(Span<string> keys)
+	{
+		if (keys.Length == 0) return this;
+
+		if (keys[0] == "flows")
+		{
+			if (keys.Length == 1) return Flows;
+			return Flows?.Resolve(keys[1..]);
+		}
+
+		return ExtensionData?.Resolve(keys);
 	}
 }
 

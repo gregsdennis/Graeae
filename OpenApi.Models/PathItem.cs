@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 
 namespace OpenApi.Models;
 
-public class PathItem
+public class PathItem : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
 	{
@@ -107,6 +107,55 @@ public class PathItem
 		}
 
 		return obj;
+	}
+
+	public object? Resolve(Span<string> keys)
+	{
+		if (keys.Length == 0) return this;
+
+		int keysConsumed = 1;
+		IRefResolvable? target = null;
+		switch (keys[0])
+		{
+			case "get":
+				target = Get;
+				break;
+			case "put":
+				target = Put;
+				break;
+			case "post":
+				target = Post;
+				break;
+			case "delete":
+				target = Delete;
+				break;
+			case "options":
+				target = Options;
+				break;
+			case "head":
+				target = Head;
+				break;
+			case "patch":
+				target = Patch;
+				break;
+			case "trace":
+				target = Trace;
+				break;
+			case "servers":
+				if (keys.Length == 1) return null;
+				keysConsumed++;
+				target = Servers?.GetFromArray(keys[1]);
+				break;
+			case "parameters":
+				if (keys.Length == 1) return null;
+				keysConsumed++;
+				target = Parameters?.GetFromArray(keys[1]);
+				break;
+		}
+
+		return target != null
+			? target.Resolve(keys[keysConsumed..])
+			: ExtensionData?.Resolve(keys);
 	}
 }
 

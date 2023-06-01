@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 
 namespace OpenApi.Models;
 
-public class Operation
+public class Operation : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
 	{
@@ -83,5 +83,44 @@ public class Operation
 		obj.AddExtensions(operation.ExtensionData);
 
 		return obj;
+	}
+
+	public object? Resolve(Span<string> keys)
+	{
+		if (keys.Length == 0) return this;
+
+		int keysConsumed = 1;
+		IRefResolvable? target = null;
+		switch (keys[0])
+		{
+			case "externalDocs":
+				target = ExternalDocs;
+				break;
+			case "parameters":
+				if (keys.Length == 1) return null;
+				keysConsumed++;
+				target = Parameters?.GetFromArray(keys[1]);
+				break;
+			case "requestBody":
+				target = RequestBody;
+				break;
+			case "responses":
+				target = Responses;
+				break;
+			case "callbacks":
+				if (keys.Length == 1) return null;
+				keysConsumed++;
+				target = Callbacks?.GetFromMap(keys[1]);
+				break;
+			case "servers":
+				if (keys.Length == 1) return null;
+				keysConsumed++;
+				target = Servers?.GetFromArray(keys[1]);
+				break;
+		}
+
+		return target != null
+			? target.Resolve(keys[keysConsumed..])
+			: ExtensionData?.Resolve(keys);
 	}
 }

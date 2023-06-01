@@ -2,6 +2,7 @@
 using System.Text.Json;
 using Yaml2JsonNode;
 using YamlDotNet.RepresentationModel;
+using YamlDotNet.Serialization;
 
 namespace OpenApi.Models;
 
@@ -17,22 +18,14 @@ public static class YamlSerializer
 
 	public static string Serialize(YamlDocument yaml)
 	{
-		var yamlStream = new YamlStream(yaml);
-		var buffer = new StringBuilder();
-		using var writer = new StringWriter(buffer);
-		yamlStream.Save(writer);
+		var serializer = new SerializerBuilder().Build();
 
-		return writer.ToString();
+		return serializer.Serialize(yaml.RootNode);
 	}
 
 	public static string Serialize(YamlNode yaml)
 	{
-		var yamlStream = new YamlStream(new YamlDocument(yaml));
-		var buffer = new StringBuilder();
-		using var writer = new StringWriter(buffer);
-		yamlStream.Save(writer);
-
-		return writer.ToString();
+		return Serialize(new YamlDocument(yaml));
 	}
 
 	public static T? Deserialize<T>(string yamlText, JsonSerializerOptions? options = null)

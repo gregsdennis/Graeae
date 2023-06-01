@@ -1,9 +1,10 @@
-﻿using System.Text.Json;
+﻿using System.Diagnostics;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 
 namespace OpenApi.Models;
 
-public class OAuthFlowCollection
+public class OAuthFlowCollection : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
 	{
@@ -51,5 +52,32 @@ public class OAuthFlowCollection
 		obj.AddExtensions(flows.ExtensionData);
 
 		return obj;
+	}
+
+	public object? Resolve(Span<string> keys)
+	{
+		if (keys.Length == 0) return this;
+
+		int keysConsumed = 1;
+		IRefResolvable? target = null;
+		switch (keys[0])
+		{
+			case "implicit":
+				target = Implicit;
+				break;
+			case "password":
+				target = Password;
+				break;
+			case "clientCredentials":
+				target = ClientCredentials;
+				break;
+			case "authorizationCode":
+				target = AuthorizationCode;
+				break;
+		}
+
+		return target != null
+			? target.Resolve(keys[keysConsumed..])
+			: ExtensionData?.Resolve(keys);
 	}
 }

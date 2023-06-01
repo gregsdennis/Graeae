@@ -3,7 +3,7 @@ using Json.Pointer;
 
 namespace OpenApi.Models;
 
-public class PathTemplate : IEquatable<PathTemplate>
+public class PathTemplate : IEquatable<PathTemplate>, IEquatable<string>
 {
 	// /path/{item} and /path/{otherItem} are equal
 	// /path/{item} and /{path}/item are not equal, but are ambiguous
@@ -42,6 +42,11 @@ public class PathTemplate : IEquatable<PathTemplate>
 
 		return zipped.All(x => x.First == x.Second ||
 		                       TemplatedSegmentPattern.IsMatch(x.First) && TemplatedSegmentPattern.IsMatch(x.Second));
+	}
+
+	public bool Equals(string? other)
+	{
+		throw new NotImplementedException();
 	}
 
 	public override bool Equals(object? obj)

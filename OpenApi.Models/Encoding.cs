@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace OpenApi.Models;
 
-public class Encoding
+public class Encoding : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
 	{
@@ -55,5 +55,18 @@ public class Encoding
 		obj.AddExtensions(encoding.ExtensionData);
 
 		return obj;
+	}
+
+	public object? Resolve(Span<string> keys)
+	{
+		if (keys.Length == 0) return this;
+
+		if (keys[0] == "headers")
+		{
+			if (keys.Length == 1) return null;
+			return Headers.GetFromMap(keys[1])?.Resolve(keys[2..]);
+		}
+
+		return ExtensionData?.Resolve(keys);
 	}
 }

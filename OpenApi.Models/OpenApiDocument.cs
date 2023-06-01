@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Json.Pointer;
@@ -22,6 +23,8 @@ public class OpenApiDocument : IBaseDocument
 		"tags",
 		"externalDocs"
 	};
+
+	private readonly Dictionary<JsonPointer, object> _lookup = new();
 
 	public string OpenApi { get; set; }
 	public OpenApiInfo Info { get; set; }
@@ -78,7 +81,8 @@ public class OpenApiDocument : IBaseDocument
 		obj.MaybeAddMap("webhooks", document.Webhooks, x => PathItem.ToNode(x, options));
 		obj.MaybeAdd("components", ComponentCollection.ToNode(document.Components, options));
 		obj.MaybeAddArray("security", document.Security, x => SecurityRequirement.ToNode(x, options));
-		obj.MaybeAddArray("tags", document.Tags, x => Tag.ToNode(x, options));
+		obj.MaybeAddArray("tags", document.Tags, Tag.ToNode);
+		obj.MaybeAdd("externalDocs", ExternalDocumentation.ToNode(document.ExternalDocs));
 		obj.AddExtensions(document.ExtensionData);
 
 		return obj;
@@ -86,7 +90,65 @@ public class OpenApiDocument : IBaseDocument
 
 	JsonSchema? IBaseDocument.FindSubschema(JsonPointer pointer, EvaluationOptions options)
 	{
-		throw new NotImplementedException();
+		return !TryFind(pointer, out JsonSchema? schema) ? null : schema;
+	}
+
+	public bool TryFind<T>(JsonPointer pointer, out T? value)
+		where T : class
+	{
+		if (!_lookup.TryGetValue(pointer, out var val))
+		{
+			var keys = pointer.Segments.Select(x => x.Value).ToArray();
+
+			val = PerformLookup(keys) as T;
+			if (val != null)
+				_lookup[pointer] = val;
+		}
+
+		value = val as T;
+		return value != null;
+	}
+
+	private object? PerformLookup(Span<string> keys)
+	{
+		if (keys.Length == 0) return this;
+
+		int keysConsumed = 1;
+		IRefResolvable? target = null;
+		switch (keys[0])
+		{
+			case "info":
+				target = Info;
+				break;
+			case "servers":
+				if (keys.Length == 1) return null;
+				keysConsumed++;
+				target = Servers?.GetFromArray(keys[1]);
+				break;
+			case "paths":
+				target = Paths;
+				break;
+			case "webhooks":
+				if (keys.Length == 1) return null;
+				keysConsumed++;
+				target = Webhooks?.GetFromMap(keys[1]);
+				break;
+			case "components":
+				target = Components;
+				break;
+			case "tags":
+				if (keys.Length == 1) return null;
+				keysConsumed++;
+				target = Tags?.GetFromArray(keys[1]);
+				break;
+			case "externalDocs":
+				target = ExternalDocs;
+				break;
+		}
+
+		return target != null
+			? target.Resolve(keys[keysConsumed..])
+			: ExtensionData?.Resolve(keys);
 	}
 }
 

@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 
 namespace OpenApi.Models;
 
-public class RequestBody
+public class RequestBody : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
 	{
@@ -71,6 +71,20 @@ public class RequestBody
 		}
 
 		return obj;
+	}
+
+	public object? Resolve(Span<string> keys)
+	{
+		if (keys.Length == 0) return this;
+
+		if (keys[0] == "server")
+		{
+			if (keys.Length == 1) return null;
+			var target = Content.GetFromMap(keys[1]);
+			return target?.Resolve(keys[2..]);
+		}
+
+		return ExtensionData?.Resolve(keys);
 	}
 }
 

@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 
 namespace OpenApi.Models;
 
-public class OAuthFlow
+public class OAuthFlow : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
 	{
@@ -59,5 +59,12 @@ public class OAuthFlow
 		obj.AddExtensions(flow.ExtensionData);
 
 		return obj;
+	}
+
+	public object? Resolve(Span<string> keys)
+	{
+		if (keys.Length == 0) return this;
+
+		return ExtensionData?.Resolve(keys);
 	}
 }

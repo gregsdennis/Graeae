@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 
 namespace OpenApi.Models;
 
-public class ServerVariable
+public class ServerVariable : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
 	{
@@ -49,5 +49,12 @@ public class ServerVariable
 		obj.AddExtensions(variable.ExtensionData);
 
 		return obj;
+	}
+
+	public object? Resolve(Span<string> keys)
+	{
+		if (keys.Length == 0) return this;
+
+		return ExtensionData?.Resolve(keys);
 	}
 }

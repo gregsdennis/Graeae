@@ -4,7 +4,7 @@ using Json.Pointer;
 
 namespace OpenApi.Models;
 
-public class RuntimeExpression
+public class RuntimeExpression : IEquatable<string>
 {
 	// see https://spec.openapis.org/oas/v3.1.0#runtime-expressions
 
@@ -101,6 +101,11 @@ public class RuntimeExpression
 		}
 
 		return expr;
+	}
+
+	public bool Equals(string? other)
+	{
+		return other == _source;
 	}
 
 	public override string ToString()

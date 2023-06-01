@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 namespace OpenApi.Models;
 
 [JsonConverter(typeof(ResponseJsonConverter))]
-public class Response
+public class Response : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
 	{
@@ -76,6 +76,36 @@ public class Response
 		}
 
 		return obj;
+	}
+
+	public object? Resolve(Span<string> keys)
+	{
+		if (keys.Length == 0) return this;
+
+		int keysConsumed = 1;
+		IRefResolvable? target = null;
+		switch (keys[0])
+		{
+			case "headers":
+				if (keys.Length == 1) return null;
+				keysConsumed++;
+				target = Headers?.GetFromMap(keys[1]);
+				break;
+			case "content":
+				if (keys.Length == 1) return null;
+				keysConsumed++;
+				target = Content?.GetFromMap(keys[1]);
+				break;
+			case "links":
+				if (keys.Length == 1) return null;
+				keysConsumed++;
+				target = Links?.GetFromMap(keys[1]);
+				break;
+		}
+
+		return target != null
+			? target.Resolve(keys[keysConsumed..])
+			: ExtensionData?.Resolve(keys);
 	}
 }
 

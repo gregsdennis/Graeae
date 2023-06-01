@@ -5,7 +5,7 @@ using Json.Schema;
 
 namespace OpenApi.Models;
 
-public class MediaType
+public class MediaType : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
 	{
@@ -48,10 +48,41 @@ public class MediaType
 
 		obj.MaybeSerialize("schema", mediaType.Schema, options);
 		obj.MaybeAdd("example", mediaType.Example.Copy());
-		obj.MaybeAddMap("examples", mediaType.Examples, x => Models.Example.ToNode(x, options));
+		obj.MaybeAddMap("examples", mediaType.Examples, Models.Example.ToNode);
 		obj.MaybeAddMap("encoding", mediaType.Encoding, x => Models.Encoding.ToNode(x, options));
 		obj.AddExtensions(mediaType.ExtensionData);
 
 		return obj;
+	}
+
+	public object? Resolve(Span<string> keys)
+	{
+		if (keys.Length == 0) return this;
+
+		int keysConsumed = 1;
+		IRefResolvable? target = null;
+		switch (keys[0])
+		{
+			case "schema":
+				if (Schema == null) return null;
+				// TODO: consider some other kind of value being buried in a schema
+				throw new NotImplementedException();
+			case "example":
+				return Example?.GetFromNode(keys[1..]);
+			case "examples":
+				if (keys.Length == 1) return null;
+				keysConsumed++;
+				target = Examples?.GetFromMap(keys[1]);
+				break;
+			case "encoding":
+				if (keys.Length == 1) return null;
+				keysConsumed++;
+				target = Encoding?.GetFromMap(keys[1]);
+				break;
+		}
+
+		return target != null
+			? target.Resolve(keys[keysConsumed..])
+			: ExtensionData?.Resolve(keys);
 	}
 }

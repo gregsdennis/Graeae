@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 
 namespace OpenApi.Models;
 
-public class Tag
+public class Tag : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
 	{
@@ -35,7 +35,7 @@ public class Tag
 		return tag;
 	}
 
-	public static JsonNode? ToNode(Tag? tag, JsonSerializerOptions? options)
+	public static JsonNode? ToNode(Tag? tag)
 	{
 		if (tag == null) return null;
 
@@ -49,5 +49,18 @@ public class Tag
 		obj.AddExtensions(tag.ExtensionData);
 
 		return obj;
+	}
+
+	public object? Resolve(Span<string> keys)
+	{
+		if (keys.Length == 0) return this;
+
+		if (keys[0] == "externalDocs")
+		{
+			if (keys.Length == 1) return ExternalDocs;
+			return ExternalDocs?.Resolve(keys[1..]);
+		}
+
+		return ExtensionData?.Resolve(keys);
 	}
 }

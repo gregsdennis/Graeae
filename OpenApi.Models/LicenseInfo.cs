@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 
 namespace OpenApi.Models;
 
-public class LicenseInfo
+public class LicenseInfo : IRefResolvable
 {
 	private static readonly string[] KnownKeys =
 	{
@@ -49,5 +49,12 @@ public class LicenseInfo
 		obj.AddExtensions(license.ExtensionData);
 
 		return obj;
+	}
+
+	public object? Resolve(Span<string> keys)
+	{
+		if (keys.Length == 0) return this;
+
+		return ExtensionData?.Resolve(keys);
 	}
 }

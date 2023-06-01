@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 
 namespace OpenApi.Models;
 
-public class PathCollection : Dictionary<PathTemplate, PathItem>
+public class PathCollection : Dictionary<PathTemplate, PathItem>, IRefResolvable
 {
 	public ExtensionData? ExtensionData { get; set; }
 
@@ -45,5 +45,13 @@ public class PathCollection : Dictionary<PathTemplate, PathItem>
 		obj.AddExtensions(paths.ExtensionData);
 
 		return obj;
+	}
+
+	public object? Resolve(Span<string> keys)
+	{
+		if (keys.Length == 0) return null;
+
+		return this.GetFromMap(keys[0])?.Resolve(keys[1..]) ??
+		       ExtensionData?.Resolve(keys);
 	}
 }
