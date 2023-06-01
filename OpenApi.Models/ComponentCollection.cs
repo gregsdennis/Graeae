@@ -6,7 +6,7 @@ using Json.Schema;
 namespace OpenApi.Models;
 
 [JsonConverter(typeof(ComponentCollectionJsonConverter))]
-public class ComponentCollection : IRefResolvable
+public class ComponentCollection : IRefTargetContainer
 {
 	private static readonly string[] KnownKeys =
 	{
@@ -84,7 +84,7 @@ public class ComponentCollection : IRefResolvable
 	{
 		if (keys.Length == 0) return this;
 
-		IRefResolvable? target = null;
+		IRefTargetContainer? target = null;
 		switch (keys[0])
 		{
 			case "schemas":
@@ -144,6 +144,21 @@ public class ComponentCollection : IRefResolvable
 			Headers?.Values.SelectMany(x => x.FindSchemas()),
 			Callbacks?.Values.SelectMany(x => x.FindSchemas()),
 			PathItems?.Values.SelectMany(x => x.FindSchemas())
+		);
+	}
+
+	public IEnumerable<IComponentRef> FindRefs()
+	{
+		return GeneralHelpers.Collect(
+			Responses?.Values.SelectMany(x => x.FindRefs()),
+			Parameters?.Values.SelectMany(x => x.FindRefs()),
+			Examples?.Values.SelectMany(x => x.FindRefs()),
+			RequestBodies?.Values.SelectMany(x => x.FindRefs()),
+			Headers?.Values.SelectMany(x => x.FindRefs()),
+			SecuritySchemes?.Values.SelectMany(x => x.FindRefs()),
+			Links?.Values.SelectMany(x => x.FindRefs()),
+			Callbacks?.Values.SelectMany(x => x.FindRefs()),
+			PathItems?.Values.SelectMany(x => x.FindRefs())
 		);
 	}
 }

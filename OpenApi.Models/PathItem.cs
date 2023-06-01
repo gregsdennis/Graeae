@@ -6,7 +6,7 @@ using Json.Schema;
 namespace OpenApi.Models;
 
 [JsonConverter(typeof(PathItemJsonConverter))]
-public class PathItem : IRefResolvable
+public class PathItem : IRefTargetContainer
 {
 	private static readonly string[] KnownKeys =
 	{
@@ -117,7 +117,7 @@ public class PathItem : IRefResolvable
 		if (keys.Length == 0) return this;
 
 		int keysConsumed = 1;
-		IRefResolvable? target = null;
+		IRefTargetContainer? target = null;
 		switch (keys[0])
 		{
 			case "get":
@@ -175,9 +175,34 @@ public class PathItem : IRefResolvable
 			Parameters?.SelectMany(x => x.FindSchemas())
 		);
 	}
+
+	public IEnumerable<IComponentRef> FindRefs()
+	{
+		if (this is PathItemRef piRef)
+			yield return piRef;
+
+		var theRest = GeneralHelpers.Collect(
+			Get?.FindRefs(),
+			Put?.FindRefs(),
+			Post?.FindRefs(),
+			Delete?.FindRefs(),
+			Options?.FindRefs(),
+			Head?.FindRefs(),
+			Patch?.FindRefs(),
+			Trace?.FindRefs(),
+			Parameters?.SelectMany(x => x.FindRefs())
+		);
+
+		foreach (var compRef in theRest)
+		{
+			yield return compRef;
+		}
+
+		
+	}
 }
 
-public class PathItemRef : PathItem
+public class PathItemRef : PathItem, IComponentRef
 {
 	public Uri Ref { get; }
 	public new string? Summary { get; set; }
@@ -190,7 +215,7 @@ public class PathItemRef : PathItem
 		Ref = reference ?? throw new ArgumentNullException(nameof(reference));
 	}
 
-	public void Resolve()
+	public void Resolve(OpenApiDocument root)
 	{
 		// resolve the $ref and set all of the props
 		// remember to use base.*

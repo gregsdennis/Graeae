@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 namespace OpenApi.Models;
 
 [JsonConverter(typeof(ExternalDocumentationJsonConverter))]
-public class ExternalDocumentation : IRefResolvable
+public class ExternalDocumentation : IRefTargetContainer
 {
 	private static readonly string[] KnownKeys =
 	{

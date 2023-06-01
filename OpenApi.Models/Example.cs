@@ -2,11 +2,13 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using Json.Pointer;
+using Json.Schema;
 
 namespace OpenApi.Models;
 
 [JsonConverter(typeof(ExampleJsonConverter))]
-public class Example : IRefResolvable
+public class Example : IRefTargetContainer
 {
 	private static readonly string[] KnownKeys =
 	{
@@ -93,9 +95,15 @@ public class Example : IRefResolvable
 
 		return ExtensionData?.Resolve(keys);
 	}
+
+	public IEnumerable<IComponentRef> FindRefs()
+	{
+		if (this is ExampleRef exRef)
+			yield return exRef;
+	}
 }
 
-public class ExampleRef : Example
+public class ExampleRef : Example, IComponentRef
 {
 	public Uri Ref { get; set; }
 	public new string? Summary { get; set; }
@@ -108,10 +116,33 @@ public class ExampleRef : Example
 		Ref = reference ?? throw new ArgumentNullException(nameof(reference));
 	}
 
-	public void Resolve()
+	public ExampleRef(string reference)
+	{
+		Ref = new Uri(reference ?? throw new ArgumentNullException(nameof(reference)), UriKind.RelativeOrAbsolute);
+	}
+
+	public void Resolve(OpenApiDocument root)
 	{
 		// resolve the $ref and set all of the props
 		// remember to use base.*
+
+		var baseUri = ((IBaseDocument)root).BaseUri;
+		var resolvedUri = new Uri(baseUri, Ref);
+
+		if (string.IsNullOrEmpty(resolvedUri.Fragment))
+			throw new NotImplementedException();
+
+		var pointer = JsonPointer.Parse(resolvedUri.Fragment);
+		var target = root.Find<Example>(pointer);
+
+		if (target == null)
+			throw new NotImplementedException();
+
+		base.Summary = target.Summary;
+		base.Description = target.Description;
+		Value = target.Value;
+		ExternalValue = target.ExternalValue;
+		ExtensionData = target.ExtensionData;
 
 		IsResolved = true;
 	}

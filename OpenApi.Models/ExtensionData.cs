@@ -2,7 +2,7 @@
 
 namespace OpenApi.Models;
 
-public class ExtensionData : Dictionary<string, JsonNode?>, IRefResolvable
+public class ExtensionData : Dictionary<string, JsonNode?>, IRefTargetContainer
 {
 	public static ExtensionData? FromNode(JsonObject obj)
 	{

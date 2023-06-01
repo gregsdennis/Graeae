@@ -2,11 +2,12 @@
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Json.Schema;
+using YamlDotNet.Core.Tokens;
 
 namespace OpenApi.Models;
 
 [JsonConverter(typeof(ResponseJsonConverter))]
-public class Response : IRefResolvable
+public class Response : IRefTargetContainer
 {
 	private static readonly string[] KnownKeys =
 	{
@@ -84,7 +85,7 @@ public class Response : IRefResolvable
 		if (keys.Length == 0) return this;
 
 		int keysConsumed = 1;
-		IRefResolvable? target = null;
+		IRefTargetContainer? target = null;
 		switch (keys[0])
 		{
 			case "headers":
@@ -116,9 +117,26 @@ public class Response : IRefResolvable
 			Content?.Values.SelectMany(x => x.FindSchemas())
 		);
 	}
+
+	public IEnumerable<IComponentRef> FindRefs()
+	{
+		if (this is ResponseRef rRef)
+			yield return rRef;
+
+		var theRest = GeneralHelpers.Collect(
+			Headers?.Values.SelectMany(x => x.FindRefs()),
+			Content?.Values.SelectMany(x => x.FindRefs()),
+			Links?.Values.SelectMany(x => x.FindRefs())
+		);
+
+		foreach (var parameter in theRest)
+		{
+			yield return parameter;
+		}
+	}
 }
 
-public class ResponseRef : Response
+public class ResponseRef : Response, IComponentRef
 {
 	public Uri Ref { get; }
 	public string? Summary { get; set; }
@@ -131,7 +149,7 @@ public class ResponseRef : Response
 		Ref = reference ?? throw new ArgumentNullException(nameof(reference));
 	}
 
-	public void Resolve()
+	public void Resolve(OpenApiDocument root)
 	{
 		// resolve the $ref and set all of the props
 		// remember to use base.Description

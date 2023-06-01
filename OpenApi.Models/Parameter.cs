@@ -7,7 +7,7 @@ using Json.Schema;
 namespace OpenApi.Models;
 
 [JsonConverter(typeof(ParameterJsonConverter))]
-public class Parameter : IRefResolvable
+public class Parameter : IRefTargetContainer
 {
 	private static readonly string[] KnownKeys =
 	{
@@ -122,7 +122,7 @@ public class Parameter : IRefResolvable
 		if (keys.Length == 0) return this;
 
 		int keysConsumed = 1;
-		IRefResolvable? target = null;
+		IRefTargetContainer? target = null;
 		switch (keys[0])
 		{
 			case "schema":
@@ -161,9 +161,24 @@ public class Parameter : IRefResolvable
 			yield return schema;
 		}
 	}
+
+	public IEnumerable<IComponentRef> FindRefs()
+	{
+		if (this is ParameterRef pRef)
+			yield return pRef;
+
+		var theRest = GeneralHelpers.Collect(
+			Examples?.Values.SelectMany(x => x.FindRefs())
+		);
+
+		foreach (var reference in theRest)
+		{
+			yield return reference;
+		}
+	}
 }
 
-public class ParameterRef : Parameter
+public class ParameterRef : Parameter, IComponentRef
 {
 	public Uri Ref { get; }
 	public string? Summary { get; set; }
@@ -176,7 +191,7 @@ public class ParameterRef : Parameter
 		Ref = reference ?? throw new ArgumentNullException(nameof(reference));
 	}
 
-	public void Resolve()
+	public void Resolve(OpenApiDocument root)
 	{
 		// resolve the $ref and set all of the props
 		// remember to use base.Description

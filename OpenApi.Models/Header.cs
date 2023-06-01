@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Reflection.PortableExecutable;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Json.More;
@@ -7,7 +8,7 @@ using Json.Schema;
 namespace OpenApi.Models;
 
 [JsonConverter(typeof(HeaderJsonConverter))]
-public class Header : IRefResolvable
+public class Header : IRefTargetContainer
 {
 	private static readonly string[] KnownKeys =
 	{
@@ -114,7 +115,7 @@ public class Header : IRefResolvable
 		if (keys.Length == 0) return this;
 
 		int keysConsumed = 1;
-		IRefResolvable? target = null;
+		IRefTargetContainer? target = null;
 		switch (keys[0])
 		{
 			case "schema":
@@ -153,9 +154,25 @@ public class Header : IRefResolvable
 			yield return schema;
 		}
 	}
+
+	public IEnumerable<IComponentRef> FindRefs()
+	{
+		if (this is HeaderRef hRef)
+			yield return hRef;
+
+		var theRest = GeneralHelpers.Collect(
+			Examples?.Values.SelectMany(x => x.FindRefs()),
+			Content?.Values.SelectMany(x => x.FindRefs())
+		);
+
+		foreach (var reference in theRest)
+		{
+			yield return reference;
+		}
+	}
 }
 
-public class HeaderRef : Header
+public class HeaderRef : Header, IComponentRef
 {
 	public Uri Ref { get;  }
 	public string? Summary { get; set; }
@@ -168,7 +185,7 @@ public class HeaderRef : Header
 		Ref = reference ?? throw new ArgumentNullException(nameof(reference));
 	}
 
-	public void Resolve()
+	public void Resolve(OpenApiDocument root)
 	{
 		// resolve the $ref and set all of the props
 		// remember to use base.Description

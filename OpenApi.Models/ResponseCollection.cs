@@ -7,7 +7,7 @@ using Json.Schema;
 namespace OpenApi.Models;
 
 [JsonConverter(typeof(ResponseCollectionJsonConverter))]
-public class ResponseCollection : Dictionary<HttpStatusCode, Response>, IRefResolvable
+public class ResponseCollection : Dictionary<HttpStatusCode, Response>, IRefTargetContainer
 {
 	public Response? Default { get; set; }
 	public ExtensionData? ExtensionData { get; set; }
@@ -73,6 +73,19 @@ public class ResponseCollection : Dictionary<HttpStatusCode, Response>, IRefReso
 			Default?.FindSchemas(),
 			Values.SelectMany(x => x.FindSchemas())
 		);
+	}
+
+	public IEnumerable<IComponentRef> FindRefs()
+	{
+		if (Default is ResponseRef rRef)
+			yield return rRef;
+
+		var theRest = Values.SelectMany(x => x.FindRefs());
+
+		foreach (var reference in theRest)
+		{
+			yield return reference;
+		}
 	}
 }
 

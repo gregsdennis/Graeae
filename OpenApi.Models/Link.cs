@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 namespace OpenApi.Models;
 
 [JsonConverter(typeof(LinkJsonConverter))]
-public class Link : IRefResolvable
+public class Link : IRefTargetContainer
 {
 	private static readonly string[] KnownKeys =
 	{
@@ -99,9 +99,15 @@ public class Link : IRefResolvable
 
 		return ExtensionData?.Resolve(keys);
 	}
+
+	public IEnumerable<IComponentRef> FindRefs()
+	{
+		if (this is LinkRef lRef)
+			yield return lRef;
+	}
 }
 
-public class LinkRef : Link
+public class LinkRef : Link, IComponentRef
 {
 	public Uri Ref { get; }
 	public string? Summary { get; set; }
@@ -114,7 +120,7 @@ public class LinkRef : Link
 		Ref = reference ?? throw new ArgumentNullException(nameof(reference));
 	}
 
-	public void Resolve()
+	public void Resolve(OpenApiDocument root)
 	{
 		// resolve the $ref and set all of the props
 		// remember to use base.Description

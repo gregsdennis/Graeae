@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 namespace OpenApi.Models;
 
 [JsonConverter(typeof(OAuthFlowJsonConverter))]
-public class OAuthFlow : IRefResolvable
+public class OAuthFlow : IRefTargetContainer
 {
 	private static readonly string[] KnownKeys =
 	{

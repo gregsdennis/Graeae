@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 namespace OpenApi.Models;
 
 [JsonConverter(typeof(LicenseInfoJsonConverter))]
-public class LicenseInfo : IRefResolvable
+public class LicenseInfo : IRefTargetContainer
 {
 	private static readonly string[] KnownKeys =
 	{

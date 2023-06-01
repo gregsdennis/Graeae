@@ -1,6 +1,6 @@
 ﻿namespace OpenApi.Models;
 
-public interface IRefResolvable
+public interface IRefTargetContainer
 {
 	public object? Resolve(Span<string> keys);
 }

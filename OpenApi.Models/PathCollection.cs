@@ -6,7 +6,7 @@ using Json.Schema;
 namespace OpenApi.Models;
 
 [JsonConverter(typeof(PathCollectionJsonConverter))]
-public class PathCollection : Dictionary<PathTemplate, PathItem>, IRefResolvable
+public class PathCollection : Dictionary<PathTemplate, PathItem>, IRefTargetContainer
 {
 	public ExtensionData? ExtensionData { get; set; }
 
@@ -61,6 +61,11 @@ public class PathCollection : Dictionary<PathTemplate, PathItem>, IRefResolvable
 	public IEnumerable<JsonSchema> FindSchemas()
 	{
 		return Values.SelectMany(x => x.FindSchemas());
+	}
+
+	public IEnumerable<IComponentRef> FindRefs()
+	{
+		return Values.SelectMany(x => x.FindRefs());
 	}
 }
 

@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 namespace OpenApi.Models;
 
 [JsonConverter(typeof(TagJsonConverter))]
-public class Tag : IRefResolvable
+public class Tag : IRefTargetContainer
 {
 	private static readonly string[] KnownKeys =
 	{

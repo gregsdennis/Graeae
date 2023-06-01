@@ -7,7 +7,7 @@ using Json.Schema;
 namespace OpenApi.Models;
 
 [JsonConverter(typeof(MediaTypeJsonConverter))]
-public class MediaType : IRefResolvable
+public class MediaType : IRefTargetContainer
 {
 	private static readonly string[] KnownKeys =
 	{
@@ -62,7 +62,7 @@ public class MediaType : IRefResolvable
 		if (keys.Length == 0) return this;
 
 		int keysConsumed = 1;
-		IRefResolvable? target = null;
+		IRefTargetContainer? target = null;
 		switch (keys[0])
 		{
 			case "schema":
@@ -100,6 +100,14 @@ public class MediaType : IRefResolvable
 		{
 			yield return schema;
 		}
+	}
+
+	public IEnumerable<IComponentRef> FindRefs()
+	{
+		return GeneralHelpers.Collect(
+			Examples?.Values.SelectMany(x => x.FindRefs()),
+			Encoding?.Values.SelectMany(x => x.FindRefs())
+		);
 	}
 }
 

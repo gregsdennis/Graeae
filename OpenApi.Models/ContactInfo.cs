@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 namespace OpenApi.Models;
 
 [JsonConverter(typeof(ContactInfoJsonConverter))]
-public class ContactInfo : IRefResolvable
+public class ContactInfo : IRefTargetContainer
 {
 	private static readonly string[] KnownKeys =
 	{

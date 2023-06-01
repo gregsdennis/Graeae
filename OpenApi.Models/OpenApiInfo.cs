@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 namespace OpenApi.Models;
 
 [JsonConverter(typeof(OpenApiInfoJsonConverter))]
-public class OpenApiInfo : IRefResolvable
+public class OpenApiInfo : IRefTargetContainer
 {
 	private static readonly string[] KnownKeys =
 	{
@@ -74,7 +74,7 @@ public class OpenApiInfo : IRefResolvable
 		if (keys.Length == 0) return this;
 
 		int keysConsumed = 1;
-		IRefResolvable? target = null;
+		IRefTargetContainer? target = null;
 		switch (keys[0])
 		{
 			case "contact":

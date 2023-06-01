@@ -6,7 +6,7 @@ using Json.Schema;
 namespace OpenApi.Models;
 
 [JsonConverter(typeof(OperationJsonConverter))]
-public class Operation : IRefResolvable
+public class Operation : IRefTargetContainer
 {
 	private static readonly string[] KnownKeys =
 	{
@@ -93,7 +93,7 @@ public class Operation : IRefResolvable
 		if (keys.Length == 0) return this;
 
 		int keysConsumed = 1;
-		IRefResolvable? target = null;
+		IRefTargetContainer? target = null;
 		switch (keys[0])
 		{
 			case "externalDocs":
@@ -134,6 +134,16 @@ public class Operation : IRefResolvable
 			RequestBody?.FindSchemas(),
 			Responses?.FindSchemas(),
 			Callbacks?.Values.SelectMany(x => x.FindSchemas())
+		);
+	}
+
+	public IEnumerable<IComponentRef> FindRefs()
+	{
+		return GeneralHelpers.Collect(
+			Parameters?.SelectMany(x => x.FindRefs()),
+			RequestBody?.FindRefs(),
+			Responses?.FindRefs(),
+			Callbacks?.Values.SelectMany(x => x.FindRefs())
 		);
 	}
 }

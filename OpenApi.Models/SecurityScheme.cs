@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 namespace OpenApi.Models;
 
 [JsonConverter(typeof(SecuritySchemeJsonConverter))]
-public class SecurityScheme : IRefResolvable
+public class SecurityScheme : IRefTargetContainer
 {
 	private static readonly string[] KnownKeys =
 	{
@@ -107,9 +107,15 @@ public class SecurityScheme : IRefResolvable
 
 		return ExtensionData?.Resolve(keys);
 	}
+
+	public IEnumerable<IComponentRef> FindRefs()
+	{
+		if (this is SecuritySchemeRef ssRef)
+			yield return ssRef;
+	}
 }
 
-public class SecuritySchemeRef : SecurityScheme
+public class SecuritySchemeRef : SecurityScheme, IComponentRef
 {
 	public Uri Ref { get; }
 	public string? Summary { get; set; }
@@ -122,7 +128,7 @@ public class SecuritySchemeRef : SecurityScheme
 		Ref = reference ?? throw new ArgumentNullException(nameof(reference));
 	}
 
-	public void Resolve()
+	public void Resolve(OpenApiDocument root)
 	{
 		// resolve the $ref and set all of the props
 		// remember to use base.Description

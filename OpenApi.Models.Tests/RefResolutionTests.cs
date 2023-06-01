@@ -1,4 +1,6 @@
+using System.Net;
 using System.Text.Json.Nodes;
+using Json.More;
 using Json.Pointer;
 using Json.Schema;
 
@@ -62,5 +64,55 @@ public class RefResolutionTests
 		var validation = start!.Evaluate(instance, options);
 
 		Assert.IsTrue(validation.IsValid);
+	}
+
+	[Test]
+	public void ExampleRefIsResolved()
+	{
+		var document = new OpenApiDocument
+		{
+			Paths = new()
+			{
+				["/v2"] = new()
+				{
+					Get = new()
+					{
+						Responses = new()
+						{
+							[HttpStatusCode.OK] = new()
+							{
+								Content = new()
+								{
+									["application/json"] = new()
+									{
+										Examples = new()
+										{
+											["foo"] = new ExampleRef("#/components/examples/foo")
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			Components = new()
+			{
+				Examples = new()
+				{
+					["foo"] = new()
+					{
+						Value = 42
+					}
+				}
+			}
+		};
+
+		var options = new EvaluationOptions();
+		document.Initialize(options.SchemaRegistry);
+
+		var inlineExample = document.Find<Example>(JsonPointer.Parse("/paths/~1v2/get/responses/200/content/application~1json/examples/foo"));
+
+		Assert.That(inlineExample!.Value!.AsValue().GetNumber(), Is.EqualTo(42));
 	}
 }

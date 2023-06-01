@@ -6,7 +6,7 @@ using Json.Schema;
 namespace OpenApi.Models;
 
 [JsonConverter(typeof(EncodingJsonConverter))]
-public class Encoding : IRefResolvable
+public class Encoding : IRefTargetContainer
 {
 	private static readonly string[] KnownKeys =
 	{
@@ -76,6 +76,13 @@ public class Encoding : IRefResolvable
 	public IEnumerable<JsonSchema> FindSchemas()
 	{
 		return Headers?.Values.SelectMany(x => x.FindSchemas()) ?? Enumerable.Empty<JsonSchema>();
+	}
+
+	public IEnumerable<IComponentRef> FindRefs()
+	{
+		return GeneralHelpers.Collect(
+			Headers?.Values.SelectMany(x => x.FindRefs())
+		);
 	}
 }
 

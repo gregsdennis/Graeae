@@ -6,7 +6,7 @@ using Json.Schema;
 namespace OpenApi.Models;
 
 [JsonConverter(typeof(CallbackJsonConverter))]
-public class Callback : Dictionary<string, PathItem>, IRefResolvable
+public class Callback : Dictionary<string, PathItem>, IRefTargetContainer
 {
 	public ExtensionData? ExtensionData { get; set; }
 
@@ -75,9 +75,22 @@ public class Callback : Dictionary<string, PathItem>, IRefResolvable
 	{
 		return Values.SelectMany(x => x.FindSchemas());
 	}
+
+	public IEnumerable<IComponentRef> FindRefs()
+	{
+		if (this is CallbackRef cRef)
+			yield return cRef;
+
+		var theRest = Values.SelectMany(x => x.FindRefs());
+
+		foreach (var reference in theRest)
+		{
+			yield return reference;
+		}
+	}
 }
 
-public class CallbackRef : Callback
+public class CallbackRef : Callback, IComponentRef
 {
 	public Uri Ref { get; }
 	public string? Summary { get; set; }
@@ -90,10 +103,9 @@ public class CallbackRef : Callback
 		Ref = reference ?? throw new ArgumentNullException(nameof(reference));
 	}
 
-	public void Resolve()
+	public void Resolve(OpenApiDocument root)
 	{
 		// resolve the $ref and set all of the props
-		// remember to use base.Description
 
 		IsResolved = true;
 	}

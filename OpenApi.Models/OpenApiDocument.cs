@@ -101,6 +101,14 @@ public class OpenApiDocument : IBaseDocument
 		schemaRegistry.Register(this);
 
 		// find all JSON Schemas and populate their base URIs (if they don't have $id)
+		RegisterSchemas(schemaRegistry);
+
+		// find and attempt to resolve all reference objects
+		TryResolveRefs();
+	}
+
+	private void RegisterSchemas(SchemaRegistry schemaRegistry)
+	{
 		var allSchemas = GeneralHelpers.Collect(
 			Paths?.FindSchemas(),
 			Webhooks?.Values.SelectMany(x => x.FindSchemas()),
@@ -115,6 +123,20 @@ public class OpenApiDocument : IBaseDocument
 				schemaRegistry.Register(schema);
 
 			schema.BaseUri = baseUri;
+		}
+	}
+
+	private void TryResolveRefs()
+	{
+		var allRefs = GeneralHelpers.Collect(
+			Paths?.FindRefs(),
+			Webhooks?.Values.SelectMany(x => x.FindRefs()),
+			Components?.FindRefs()
+		);
+
+		foreach (var reference in allRefs)
+		{
+			reference.Resolve(this);
 		}
 	}
 
@@ -141,7 +163,7 @@ public class OpenApiDocument : IBaseDocument
 		if (keys.Length == 0) return this;
 
 		int keysConsumed = 1;
-		IRefResolvable? target = null;
+		IRefTargetContainer? target = null;
 		switch (keys[0])
 		{
 			case "info":

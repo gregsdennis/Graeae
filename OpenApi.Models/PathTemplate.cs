@@ -17,6 +17,13 @@ public class PathTemplate : IEquatable<PathTemplate>, IEquatable<string>
 		Segments = segments;
 	}
 
+	public static PathTemplate Parse(string source)
+	{
+		var asPointer = JsonPointer.Parse(source);
+
+		return new PathTemplate(asPointer.Segments.Select(x => x.Value).ToArray());
+	}
+
 	public static bool TryParse(string source, out PathTemplate template)
 	{
 		var asPointer = JsonPointer.Parse(source);
@@ -69,5 +76,10 @@ public class PathTemplate : IEquatable<PathTemplate>, IEquatable<string>
 			}
 		}
 		return result;
+	}
+
+	public static implicit operator PathTemplate(string source)
+	{
+		return Parse(source);
 	}
 }

@@ -6,7 +6,7 @@ using Json.Schema;
 namespace OpenApi.Models;
 
 [JsonConverter(typeof(RequestBodyJsonConverter))]
-public class RequestBody : IRefResolvable
+public class RequestBody : IRefTargetContainer
 {
 	private static readonly string[] KnownKeys =
 	{
@@ -94,9 +94,22 @@ public class RequestBody : IRefResolvable
 	{
 		return Content.Values.SelectMany(x => x.FindSchemas());
 	}
+
+	public IEnumerable<IComponentRef> FindRefs()
+	{
+		if (this is RequestBodyRef rbRef)
+			yield return rbRef;
+
+		var theRest = Content.Values.SelectMany(x => x.FindRefs());
+
+		foreach (var reference in theRest)
+		{
+			yield return reference;
+		}
+	}
 }
 
-public class RequestBodyRef : RequestBody
+public class RequestBodyRef : RequestBody, IComponentRef
 {
 	public Uri Ref { get; }
 	public string? Summary { get; set; }
@@ -109,7 +122,7 @@ public class RequestBodyRef : RequestBody
 		Ref = reference ?? throw new ArgumentNullException(nameof(reference));
 	}
 
-	public void Resolve()
+	public void Resolve(OpenApiDocument root)
 	{
 		// resolve the $ref and set all of the props
 		// remember to use base.*

@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 namespace OpenApi.Models;
 
 [JsonConverter(typeof(ServerVariableJsonConverter))]
-public class ServerVariable : IRefResolvable
+public class ServerVariable : IRefTargetContainer
 {
 	private static readonly string[] KnownKeys =
 	{
