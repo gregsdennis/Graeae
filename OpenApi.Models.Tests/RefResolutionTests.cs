@@ -1,4 +1,6 @@
+using System.Text.Json.Nodes;
 using Json.Pointer;
+using Json.Schema;
 
 namespace OpenApi.Models.Tests;
 
@@ -16,6 +18,7 @@ public class RefResolutionTests
 
 		Assert.That(pathItem!.Get!.OperationId, Is.EqualTo("getVersionDetailsv2"));
 	}
+
 	[Test]
 	public void ResolveExample()
 	{
@@ -27,5 +30,37 @@ public class RefResolutionTests
 		var example = document!.Find<Example>(JsonPointer.Parse("/paths/~1v2/get/responses/203/content/application~1json/examples/foo"));
 
 		Assert.That(example!.Value!["version"]!["updated"]!.GetValue<string>(), Is.EqualTo("2011-01-21T11:33:21Z"));
+	}
+
+	[Test]
+	public void SchemaRefResolvesToAnotherPartOfOpenApiDoc()
+	{
+		var document = new OpenApiDocument
+		{
+			Components = new ComponentCollection
+			{
+				Schemas = new Dictionary<string, JsonSchema>
+				{
+					["start"] = new JsonSchemaBuilder()
+						.Ref("#/components/schemas/target"),
+					["target"] = new JsonSchemaBuilder()
+						.Type(SchemaValueType.Object)
+						.Properties(
+							("foo", new JsonSchemaBuilder().Type(SchemaValueType.String))
+						)
+				}
+			}
+		};
+
+		var options = new EvaluationOptions();
+		document.Initialize(options.SchemaRegistry);
+
+		var start = document.Find<JsonSchema>(JsonPointer.Parse("/components/schemas/start"));
+
+		var instance = new JsonObject { ["foo"] = "a string" };
+
+		var validation = start!.Evaluate(instance, options);
+
+		Assert.IsTrue(validation.IsValid);
 	}
 }

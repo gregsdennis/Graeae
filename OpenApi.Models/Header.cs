@@ -119,6 +119,7 @@ public class Header : IRefResolvable
 		{
 			case "schema":
 				if (Schema == null) return null;
+				if (keys.Length == 1) return Schema;
 				// TODO: consider some other kind of value being buried in a schema
 				throw new NotImplementedException();
 			case "example":
@@ -138,6 +139,19 @@ public class Header : IRefResolvable
 		return target != null
 			? target.Resolve(keys[keysConsumed..])
 			: ExtensionData?.Resolve(keys);
+	}
+
+	public IEnumerable<JsonSchema> FindSchemas()
+	{
+		if (Schema != null)
+			yield return Schema;
+
+		var theRest = GeneralHelpers.Collect(Content?.Values.SelectMany(x => x.FindSchemas()));
+
+		foreach (var schema in theRest)
+		{
+			yield return schema;
+		}
 	}
 }
 

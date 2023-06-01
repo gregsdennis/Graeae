@@ -37,7 +37,14 @@ public class OpenApiDocument : IBaseDocument
 	public ExternalDocumentation? ExternalDocs { get; set; }
 	public ExtensionData? ExtensionData { get; set; }
 
-	Uri IBaseDocument.BaseUri { get; }
+	Uri IBaseDocument.BaseUri { get; } = GenerateBaseUri();
+
+	private static Uri GenerateBaseUri() => new($"https://json-everything.net/{Guid.NewGuid().ToString("N").Substring(0, 10)}");
+
+	JsonSchema? IBaseDocument.FindSubschema(JsonPointer pointer, EvaluationOptions options)
+	{
+		return Find<JsonSchema>(pointer);
+	}
 
 	public static OpenApiDocument FromNode(JsonNode? node, JsonSerializerOptions? options)
 	{
@@ -87,9 +94,28 @@ public class OpenApiDocument : IBaseDocument
 		return obj;
 	}
 
-	JsonSchema? IBaseDocument.FindSubschema(JsonPointer pointer, EvaluationOptions options)
+	public void Initialize(SchemaRegistry? schemaRegistry = null)
 	{
-		return Find<JsonSchema>(pointer);
+		schemaRegistry ??= SchemaRegistry.Global;
+
+		schemaRegistry.Register(this);
+
+		// find all JSON Schemas and populate their base URIs (if they don't have $id)
+		var allSchemas = GeneralHelpers.Collect(
+			Paths?.FindSchemas(),
+			Webhooks?.Values.SelectMany(x => x.FindSchemas()),
+			Components?.FindSchemas()
+		);
+
+		var baseUri = ((IBaseDocument)this).BaseUri;
+		foreach (var schema in allSchemas)
+		{
+			if (schema.BoolValue.HasValue) continue;
+			if (schema.Keywords!.OfType<IdKeyword>().Any())
+				schemaRegistry.Register(schema);
+
+			schema.BaseUri = baseUri;
+		}
 	}
 
 	public T? Find<T>(JsonPointer pointer)

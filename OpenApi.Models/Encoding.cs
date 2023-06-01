@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Nodes;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Json.Schema;
 
 namespace OpenApi.Models;
 
@@ -70,6 +71,11 @@ public class Encoding : IRefResolvable
 		}
 
 		return ExtensionData?.Resolve(keys);
+	}
+
+	public IEnumerable<JsonSchema> FindSchemas()
+	{
+		return Headers?.Values.SelectMany(x => x.FindSchemas()) ?? Enumerable.Empty<JsonSchema>();
 	}
 }
 

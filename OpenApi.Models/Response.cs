@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using Json.Schema;
 
 namespace OpenApi.Models;
 
@@ -106,6 +107,14 @@ public class Response : IRefResolvable
 		return target != null
 			? target.Resolve(keys[keysConsumed..])
 			: ExtensionData?.Resolve(keys);
+	}
+
+	public IEnumerable<JsonSchema> FindSchemas()
+	{
+		return GeneralHelpers.Collect(
+			Headers?.Values.SelectMany(x => x.FindSchemas()),
+			Content?.Values.SelectMany(x => x.FindSchemas())
+		);
 	}
 }
 

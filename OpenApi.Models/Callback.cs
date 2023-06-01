@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using Json.Schema;
 
 namespace OpenApi.Models;
 
@@ -68,6 +69,11 @@ public class Callback : Dictionary<string, PathItem>, IRefResolvable
 
 		return this.GetFromMap(keys[0])?.Resolve(keys[1..]) ??
 		       ExtensionData?.Resolve(keys);
+	}
+
+	public IEnumerable<JsonSchema> FindSchemas()
+	{
+		return Values.SelectMany(x => x.FindSchemas());
 	}
 }
 

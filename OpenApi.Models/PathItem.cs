@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using Json.Schema;
 
 namespace OpenApi.Models;
 
@@ -158,6 +159,21 @@ public class PathItem : IRefResolvable
 		return target != null
 			? target.Resolve(keys[keysConsumed..])
 			: ExtensionData?.Resolve(keys);
+	}
+
+	public IEnumerable<JsonSchema> FindSchemas()
+	{
+		return GeneralHelpers.Collect(
+			Get?.FindSchemas(),
+			Put?.FindSchemas(),
+			Post?.FindSchemas(),
+			Delete?.FindSchemas(),
+			Options?.FindSchemas(),
+			Head?.FindSchemas(),
+			Patch?.FindSchemas(),
+			Trace?.FindSchemas(),
+			Parameters?.SelectMany(x => x.FindSchemas())
+		);
 	}
 }
 

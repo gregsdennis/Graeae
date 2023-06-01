@@ -89,6 +89,7 @@ public class ComponentCollection : IRefResolvable
 		{
 			case "schemas":
 				if (Schemas == null || !Schemas.TryGetValue(keys[1], out var targetSchema)) return null;
+				if (keys.Length == 2) return targetSchema;
 				// TODO: consider some other kind of value being buried in a schema
 				throw new NotImplementedException();
 			case "responses":
@@ -133,6 +134,18 @@ public class ComponentCollection : IRefResolvable
 			? target.Resolve(keys[2..])
 			: ExtensionData?.Resolve(keys);
 	}
+
+	public IEnumerable<JsonSchema> FindSchemas()
+	{
+		return GeneralHelpers.Collect(Schemas?.Values,
+			Responses?.Values.SelectMany(x => x.FindSchemas()),
+			Parameters?.Values.SelectMany(x => x.FindSchemas()),
+			RequestBodies?.Values.SelectMany(x => x.FindSchemas()),
+			Headers?.Values.SelectMany(x => x.FindSchemas()),
+			Callbacks?.Values.SelectMany(x => x.FindSchemas()),
+			PathItems?.Values.SelectMany(x => x.FindSchemas())
+		);
+	}
 }
 
 public class ComponentCollectionJsonConverter : JsonConverter<ComponentCollection>
@@ -150,5 +163,13 @@ public class ComponentCollectionJsonConverter : JsonConverter<ComponentCollectio
 		var json = ComponentCollection.ToNode(value, options);
 
 		JsonSerializer.Serialize(writer, json, options);
+	}
+}
+
+public static class GeneralHelpers
+{
+	public static IEnumerable<T> Collect<T>(params IEnumerable<T>?[] collections)
+	{
+		return collections.Where(x => x != null).SelectMany(x => x!);
 	}
 }

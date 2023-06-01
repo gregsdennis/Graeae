@@ -2,6 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using Json.Schema;
 
 namespace OpenApi.Models;
 
@@ -64,6 +65,14 @@ public class ResponseCollection : Dictionary<HttpStatusCode, Response>, IRefReso
 		var first = keys[0];
 		return this.FirstOrDefault(x => ((int)x.Key).ToString() == first).Value?.Resolve(keys[1..]) ??
 		       ExtensionData?.Resolve(keys);
+	}
+
+	public IEnumerable<JsonSchema> FindSchemas()
+	{
+		return GeneralHelpers.Collect(
+			Default?.FindSchemas(),
+			Values.SelectMany(x => x.FindSchemas())
+		);
 	}
 }
 
