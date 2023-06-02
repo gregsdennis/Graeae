@@ -6,7 +6,7 @@ using Json.Schema;
 namespace OpenApi.Models;
 
 [JsonConverter(typeof(CallbackJsonConverter))]
-public class Callback : Dictionary<string, PathItem>, IRefTargetContainer
+public class Callback : Dictionary<CallbackKeyExpression, PathItem>, IRefTargetContainer
 {
 	public ExtensionData? ExtensionData { get; set; }
 
@@ -37,8 +37,7 @@ public class Callback : Dictionary<string, PathItem>, IRefTargetContainer
 			foreach (var (key, value) in obj)
 			{
 				if (key.StartsWith("x-")) continue;
-				//callback.Add(RuntimeExpression.Parse(key), PathItem.FromNode(value, options));
-				callback.Add(key, PathItem.FromNode(value, options));
+				callback.Add(CallbackKeyExpression.Parse(key), PathItem.FromNode(value, options));
 			}
 
 			// Validating extra keys is done in the loop.
@@ -55,7 +54,7 @@ public class Callback : Dictionary<string, PathItem>, IRefTargetContainer
 
 		foreach (var (key, value) in callback)
 		{
-			obj.Add(key, PathItem.ToNode(value, options));
+			obj.Add(key.ToString(), PathItem.ToNode(value, options));
 		}
 
 		obj.AddExtensions(callback.ExtensionData);
