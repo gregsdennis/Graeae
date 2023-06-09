@@ -19,14 +19,18 @@ public class LicenseInfo : IRefTargetContainer
 	public Uri? Url { get; set; }
 	public ExtensionData? ExtensionData { get; set; }
 
+	public LicenseInfo(string name)
+	{
+		Name = name;
+	}
+
 	public static LicenseInfo FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
 
-		var info = new LicenseInfo
+		var info = new LicenseInfo(obj.ExpectString("name", "license info"))
 		{
-			Name = obj.ExpectString("name", "license info"),
 			Identifier = obj.MaybeString("identifier", "license info"),
 			Url = obj.MaybeUri("url", "license info"),
 			ExtensionData = ExtensionData.FromNode(obj)

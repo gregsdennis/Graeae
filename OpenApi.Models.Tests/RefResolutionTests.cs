@@ -37,7 +37,7 @@ public class RefResolutionTests
 	[Test]
 	public void SchemaRefResolvesToAnotherPartOfOpenApiDoc()
 	{
-		var document = new OpenApiDocument("3.1.0", new OpenApiInfo())
+		var document = new OpenApiDocument("3.1.0", new OpenApiInfo("title", "v1"))
 		{
 			Components = new ComponentCollection
 			{
@@ -69,7 +69,7 @@ public class RefResolutionTests
 	[Test]
 	public void ExampleRefIsResolved()
 	{
-		var document = new OpenApiDocument("3.1.0", new OpenApiInfo())
+		var document = new OpenApiDocument("3.1.0", new OpenApiInfo("title", "v1"))
 		{
 			Paths = new()
 			{
@@ -79,7 +79,7 @@ public class RefResolutionTests
 					{
 						Responses = new()
 						{
-							[HttpStatusCode.OK] = new()
+							[HttpStatusCode.OK] = new("description")
 							{
 								Content = new()
 								{

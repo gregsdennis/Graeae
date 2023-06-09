@@ -15,23 +15,30 @@ public class OAuthFlow : IRefTargetContainer
 		"scopes"
 	};
 
-	public Uri AuthorizationUrl { get; set; }
-	public Uri TokenUrl { get; set; }
+	public Uri AuthorizationUrl { get; }
+	public Uri TokenUrl { get; }
 	public Uri? RefreshUrl { get; set; }
-	public Dictionary<string, string> Scopes { get; set; }
+	public Dictionary<string, string> Scopes { get; }
 	public ExtensionData? ExtensionData { get; set; }
+
+	public OAuthFlow(Uri authorizationUrl, Uri tokenUrl, Dictionary<string, string> scopes)
+	{
+		AuthorizationUrl = authorizationUrl;
+		TokenUrl = tokenUrl;
+		Scopes = scopes;
+	}
 
 	public static OAuthFlow FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
 
-		var flow = new OAuthFlow
+		var flow = new OAuthFlow(
+			obj.ExpectUri("authorizationUrl", "oauth flow"),
+			obj.ExpectUri("tokenUrl", "oauth flow"),
+			obj.ExpectMap("scopes", "oauth flow", x => x is JsonValue v && v.TryGetValue(out string? s) ? s : throw new JsonException("scopes must be strings")))
 		{
-			AuthorizationUrl = obj.ExpectUri("authorizationUrl", "oauth flow"),
-			TokenUrl = obj.ExpectUri("tokenUrl", "oauth flow"),
 			RefreshUrl = obj.MaybeUri("refreshUrl", "oauth flow"),
-			Scopes = obj.ExpectMap("scopes", "oauth flow", x => x is JsonValue v && v.TryGetValue(out string? s) ? s : throw new JsonException("scopes must be strings")),
 			ExtensionData = ExtensionData.FromNode(obj)
 		};
 

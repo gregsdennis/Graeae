@@ -17,11 +17,17 @@ public class Response : IRefTargetContainer
 		"links"
 	};
 
-	public string Description { get; set; } = null!;
+	public string Description { get; }
 	public Dictionary<string, Header>? Headers { get; set; }
 	public Dictionary<string, MediaType>? Content { get; set; }
 	public Dictionary<string, Link>? Links { get; set; }
 	public ExtensionData? ExtensionData { get; set; }
+
+	public Response(string description)
+	{
+		Description = description;
+	}
+	private protected Response(){}
 
 	public static Response FromNode(JsonNode? node, JsonSerializerOptions? options)
 	{
@@ -42,12 +48,12 @@ public class Response : IRefTargetContainer
 		}
 		else
 		{
-			var response = new Response
+			var response = new Response(obj.ExpectString("description", "response"))
 			{
-				Description = obj.ExpectString("description", "response"),
 				Headers = obj.MaybeMap("headers", x => Header.FromNode(x, options)),
 				Content = obj.MaybeMap("content", x => MediaType.FromNode(x, options)),
-				Links = obj.MaybeMap("links", x => Link.FromNode(x, options))
+				Links = obj.MaybeMap("links", x => Link.FromNode(x, options)),
+				ExtensionData = ExtensionData.FromNode(obj)
 			};
 
 			obj.ValidateNoExtraKeys(KnownKeys, response.ExtensionData?.Keys);

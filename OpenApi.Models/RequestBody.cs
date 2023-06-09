@@ -16,9 +16,15 @@ public class RequestBody : IRefTargetContainer
 	};
 
 	public string? Description { get; set; }
-	public Dictionary<string, MediaType> Content { get; set; }
+	public Dictionary<string, MediaType> Content { get; }
 	public bool? Required { get; set; }
 	public ExtensionData? ExtensionData { get; set; }
+
+	public RequestBody(Dictionary<string, MediaType> content)
+	{
+		Content = content;
+	}
+	private protected RequestBody(){}
 
 	public static RequestBody FromNode(JsonNode? node, JsonSerializerOptions? options)
 	{
@@ -39,10 +45,9 @@ public class RequestBody : IRefTargetContainer
 		}
 		else
 		{
-			var link = new RequestBody
+			var link = new RequestBody(obj.ExpectMap("content", "request body", x => MediaType.FromNode(x, options)))
 			{
 				Description = obj.MaybeString("description", "request body"),
-				Content = obj.ExpectMap("content", "request body", x => MediaType.FromNode(x, options)),
 				Required = obj.MaybeBool("required", "request body"),
 				ExtensionData = ExtensionData.FromNode(obj)
 			};

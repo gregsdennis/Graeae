@@ -26,8 +26,8 @@ public class Parameter : IRefTargetContainer
 		"content"
 	};
 
-	public string Name { get; set; }
-	public ParameterLocation In { get; set; }
+	public string Name { get; }
+	public ParameterLocation In { get; }
 	public string? Description { get; set; }
 	public bool? Required { get; set; }
 	public bool? Deprecated { get; set; }
@@ -40,6 +40,13 @@ public class Parameter : IRefTargetContainer
 	public Dictionary<string, Example>? Examples { get; set; }
 	public Dictionary<string, MediaType>? Content { get; set; }
 	public ExtensionData? ExtensionData { get; set; }
+
+	public Parameter(string name, ParameterLocation @in)
+	{
+		Name = name;
+		In = @in;
+	}
+	private protected Parameter(){}
 
 	public static Parameter FromNode(JsonNode? node, JsonSerializerOptions? options)
 	{
@@ -60,10 +67,10 @@ public class Parameter : IRefTargetContainer
 		}
 		else
 		{
-			var response = new Parameter
+			var response = new Parameter(
+				obj.ExpectString("name", "parameter"),
+				obj.ExpectEnum<ParameterLocation>("in", "parameter"))
 			{
-				Name = obj.ExpectString("name", "parameter"),
-				In = obj.ExpectEnum<ParameterLocation>("in", "parameter"),
 				Description = obj.MaybeString("description", "parameter"),
 				Required = obj.MaybeBool("required", "parameter"),
 				Deprecated = obj.MaybeBool("deprecated", "parameter"),

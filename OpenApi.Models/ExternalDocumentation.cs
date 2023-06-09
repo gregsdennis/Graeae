@@ -14,18 +14,22 @@ public class ExternalDocumentation : IRefTargetContainer
 	};
 
 	public string? Description { get; set; }
-	public Uri Url { get; set; }
+	public Uri Url { get; }
 	public ExtensionData? ExtensionData { get; set; }
+
+	public ExternalDocumentation(Uri url)
+	{
+		Url = url;
+	}
 
 	public static ExternalDocumentation FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
 
-		var docs = new ExternalDocumentation
+		var docs = new ExternalDocumentation(obj.ExpectUri("url", "external documentation"))
 		{
 			Description = obj.MaybeString("description", "external documentation"),
-			Url = obj.ExpectUri("url", "external documentation"),
 			ExtensionData = ExtensionData.FromNode(obj)
 		};
 

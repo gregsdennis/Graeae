@@ -14,19 +14,23 @@ public class Tag : IRefTargetContainer
 		"externalDocs"
 	};
 
-	public string Name { get; set; }
+	public string Name { get; }
 	public string? Description { get; set; }
 	public ExternalDocumentation? ExternalDocs { get; set; }
 	public ExtensionData? ExtensionData { get; set; }
+
+	public Tag(string name)
+	{
+		Name = name;
+	}
 
 	public static Tag FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
 
-		var tag = new Tag
+		var tag = new Tag(obj.ExpectString("name", "tag"))
 		{
-			Name = obj.ExpectString("name", "tag"),
 			Description = obj.MaybeString("description", "tag"),
 			ExternalDocs = obj.Maybe("externalDocs", ExternalDocumentation.FromNode),
 			ExtensionData = ExtensionData.FromNode(obj)

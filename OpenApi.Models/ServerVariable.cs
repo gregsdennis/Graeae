@@ -15,19 +15,23 @@ public class ServerVariable : IRefTargetContainer
 	};
 
 	public IEnumerable<string>? Enum { get; set; }
-	public string Default { get; set; }
+	public string Default { get; }
 	public string? Description { get; set; }
 	public ExtensionData? ExtensionData { get; set; }
+
+	public ServerVariable(string @default)
+	{
+		Default = @default;
+	}
 
 	public static ServerVariable FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
 
-		var vars = new ServerVariable
+		var vars = new ServerVariable(obj.ExpectString("default", "server variable"))
 		{
 			Enum = obj.MaybeArray("enum", x => x is JsonValue v && v.TryGetValue(out string? s) ? s : throw new JsonException("`enum` values must be strings")),
-			Default = obj.ExpectString("default", "server variable"),
 			Description = obj.MaybeString("description", "server variable"),
 			ExtensionData = ExtensionData.FromNode(obj)
 		};

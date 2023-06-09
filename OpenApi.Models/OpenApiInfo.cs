@@ -18,29 +18,35 @@ public class OpenApiInfo : IRefTargetContainer
 		"version"
 	};
 
-	public string Title { get; set; }
+	public string Title { get; }
 	public string? Summary { get; set; }
 	public string? Description { get; set; }
 	public string? TermsOfService { get; set; }
 	public ContactInfo? Contact { get; set; }
 	public LicenseInfo? License { get; set; }
-	public string Version { get; set; }
+	public string Version { get; }
 	public ExtensionData? ExtensionData { get; set; }
+
+	public OpenApiInfo(string title, string version)
+	{
+		Title = title;
+		Version = version;
+	}
 
 	public static OpenApiInfo FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
 
-		var info = new OpenApiInfo
+		var info = new OpenApiInfo(
+			obj.ExpectString("title", "open api info"),
+			obj.ExpectString("version", "open api info"))
 		{
-			Title = obj.ExpectString("title", "open api info"),
 			Summary = obj.MaybeString("summary", "open api info"),
 			Description = obj.MaybeString("description", "open api info"),
 			TermsOfService = obj.MaybeString("termsOfService", "open api info"),
 			Contact = obj.Maybe("contact", ContactInfo.FromNode),
 			License = obj.Maybe("license", LicenseInfo.FromNode),
-			Version = obj.ExpectString("version", "open api info"),
 			ExtensionData = ExtensionData.FromNode(obj)
 		};
 

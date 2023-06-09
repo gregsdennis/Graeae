@@ -14,21 +14,25 @@ public class Server : IRefTargetContainer
 		"variables"
 	};
 
-	public static Server Default { get; } = new() { Url = "/" };
+	public static Server Default { get; } = new("/");
 
-	public string Url { get; set; } // may include variables
+	public string Url { get; } // may include variables
 	public string? Description { get; set; }
 	public Dictionary<string, ServerVariable>? Variables { get; set; }
 	public ExtensionData? ExtensionData { get; set; }
+
+	public Server(string url)
+	{
+		Url = url;
+	}
 
 	public static Server FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
 
-		var server = new Server
+		var server = new Server(obj.ExpectString("url", "server"))
 		{
-			Url = obj.ExpectString("url", "server"),
 			Description = obj.MaybeString("description", "server"),
 			Variables = obj.MaybeMap("variables", ServerVariable.FromNode),
 			ExtensionData = ExtensionData.FromNode(obj)

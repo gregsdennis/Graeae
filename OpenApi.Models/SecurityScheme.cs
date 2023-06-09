@@ -19,7 +19,7 @@ public class SecurityScheme : IRefTargetContainer
 		"openIdConnectUrl",
 	};
 
-	public SecuritySchemeType Type { get; set; }
+	public SecuritySchemeType Type { get; }
 	public string? Description { get; set; }
 	public string? Name { get; set; }
 	public SecuritySchemeLocation? In { get; set; }
@@ -28,6 +28,12 @@ public class SecurityScheme : IRefTargetContainer
 	public OAuthFlowCollection? Flows { get; set; }
 	public Uri? OpenIdConnectUrl { get; set; }
 	public ExtensionData? ExtensionData { get; set; }
+
+	public SecurityScheme(SecuritySchemeType type)
+	{
+		Type = type;
+	}
+	private protected SecurityScheme(){}
 
 	public static SecurityScheme FromNode(JsonNode? node)
 	{
@@ -48,9 +54,8 @@ public class SecurityScheme : IRefTargetContainer
 		}
 		else
 		{
-			var scheme = new SecurityScheme
+			var scheme = new SecurityScheme(obj.ExpectEnum<SecuritySchemeType>("type", "securityScheme"))
 			{
-				Type = obj.ExpectEnum<SecuritySchemeType>("type", "securityScheme"),
 				Description = obj.MaybeString("description", "response"),
 				Name = obj.MaybeString("name", "securityScheme"),
 				In = obj.MaybeEnum<SecuritySchemeLocation>("in", "securityScheme"),
