@@ -3,6 +3,8 @@ using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Json.Pointer;
 using Json.Schema;
+using OpenApi.Models.Draft4;
+using Vocabularies = Json.Schema.OpenApi.Vocabularies;
 
 namespace OpenApi.Models;
 
@@ -25,8 +27,8 @@ public class OpenApiDocument : IBaseDocument
 
 	private readonly Dictionary<JsonPointer, object> _lookup = new();
 
-	public string OpenApi { get; set; }
-	public OpenApiInfo Info { get; set; }
+	public string OpenApi { get; }
+	public OpenApiInfo Info { get; }
 	public Uri? JsonSchemaDialect { get; set; }
 	public IEnumerable<Server>? Servers { get; set; }
 	public PathCollection? Paths { get; set; }
@@ -39,7 +41,35 @@ public class OpenApiDocument : IBaseDocument
 
 	Uri IBaseDocument.BaseUri { get; } = GenerateBaseUri();
 
-	private static Uri GenerateBaseUri() => new($"https://json-everything.net/{Guid.NewGuid().ToString("N").Substring(0, 10)}");
+	// TODO: Change this base URI to something appropriate for this library.
+	private static Uri GenerateBaseUri() => new($"https://json-everything.net/{Guid.NewGuid().ToString("N")[..10]}");
+
+	static OpenApiDocument()
+	{
+		Json.Schema.Formats.Register(Formats.Double);
+		Json.Schema.Formats.Register(Formats.Float);
+		Json.Schema.Formats.Register(Formats.Int32);
+		Json.Schema.Formats.Register(Formats.Int64);
+		Json.Schema.Formats.Register(Formats.Password);
+
+		VocabularyRegistry.Global.Register(Vocabularies.OpenApi);
+	}
+
+	public OpenApiDocument(string openApi, OpenApiInfo info)
+	{
+		OpenApi = openApi;
+		Info = info;
+	}
+
+	public static void EnableLegacySupport()
+	{
+		SchemaKeywordRegistry.Register<Draft4ExclusiveMaximumKeyword>();
+		SchemaKeywordRegistry.Register<Draft4ExclusiveMinimumKeyword>();
+		SchemaKeywordRegistry.Register<Draft4IdKeyword>();
+		SchemaKeywordRegistry.Register<NullableKeyword>();
+
+		SchemaRegistry.Global.Register(Draft4Support.Draft4MetaSchema);
+	}
 
 	JsonSchema? IBaseDocument.FindSubschema(JsonPointer pointer, EvaluationOptions options)
 	{
@@ -51,10 +81,10 @@ public class OpenApiDocument : IBaseDocument
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
 
-		var document = new OpenApiDocument
+		var document = new OpenApiDocument(
+			obj.ExpectString("openapi", "open api document"),
+			obj.Expect("info", "open api document", OpenApiInfo.FromNode))
 		{
-			OpenApi = obj.ExpectString("openapi", "open api document"),
-			Info = obj.Expect("info", "open api document", OpenApiInfo.FromNode),
 			JsonSchemaDialect = obj.MaybeUri("jsonSchemaDialect", "open api document"),
 			Servers = obj.MaybeArray("servers", Server.FromNode),
 			Paths = obj.Maybe("paths", x => PathCollection.FromNode(x, options)),
