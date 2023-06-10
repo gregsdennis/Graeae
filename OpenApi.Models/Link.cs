@@ -25,7 +25,7 @@ public class Link : IRefTargetContainer
 	public Server? Server { get; set; }
 	public ExtensionData? ExtensionData { get; set; }
 
-	public static Link FromNode(JsonNode? node, JsonSerializerOptions? options)
+	public static Link FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -44,16 +44,8 @@ public class Link : IRefTargetContainer
 		}
 		else
 		{
-			var link = new Link
-			{
-				OperationRef = obj.MaybeUri("operationRef", "link"),
-				OperationId = obj.MaybeString("operationId", "link"),
-				Parameters = obj.MaybeMap("parameters", x => RuntimeExpression.FromNode(x, options)),
-				RequestBody = obj.Maybe("requestBody", x => RuntimeExpression.FromNode(x, options)),
-				Description = obj.MaybeString("description", "link"),
-				Server = obj.Maybe("server", Server.FromNode),
-				ExtensionData = ExtensionData.FromNode(obj)
-			};
+			var link = new Link();
+			link.Import(obj);
 
 			obj.ValidateNoExtraKeys(KnownKeys, link.ExtensionData?.Keys);
 
@@ -61,7 +53,18 @@ public class Link : IRefTargetContainer
 		}
 	}
 
-	public static JsonNode? ToNode(Link? link, JsonSerializerOptions? options)
+	private protected void Import(JsonObject obj)
+	{
+		OperationRef = obj.MaybeUri("operationRef", "link");
+		OperationId = obj.MaybeString("operationId", "link");
+		Parameters = obj.MaybeMap("parameters", RuntimeExpression.FromNode);
+		RequestBody = obj.Maybe("requestBody", RuntimeExpression.FromNode);
+		Description = obj.MaybeString("description", "link");
+		Server = obj.Maybe("server", Server.FromNode);
+		ExtensionData = ExtensionData.FromNode(obj);
+	}
+
+	public static JsonNode? ToNode(Link? link)
 	{
 		if (link == null) return null;
 
@@ -122,10 +125,26 @@ public class LinkRef : Link, IComponentRef
 
 	public void Resolve(OpenApiDocument root)
 	{
-		// resolve the $ref and set all of the props
-		// remember to use base.Description
+		bool import(JsonNode? node)
+		{
+			if (node is not JsonObject obj) return false;
 
-		IsResolved = true;
+			Import(obj);
+			return true;
+		}
+
+		void copy(Link other)
+		{
+			OperationRef = other.OperationRef;
+			OperationId = other.OperationId;
+			Parameters = other.Parameters;
+			RequestBody = other.RequestBody;
+			base.Description = other.Description;
+			Server = other.Server;
+			ExtensionData = other.ExtensionData;
+		}
+
+		IsResolved = RefHelper.Resolve<Link>(root, Ref, import, copy);
 	}
 }
 
@@ -136,12 +155,12 @@ public class LinkJsonConverter : JsonConverter<Link>
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");
 
-		return Link.FromNode(obj, options);
+		return Link.FromNode(obj);
 	}
 
 	public override void Write(Utf8JsonWriter writer, Link value, JsonSerializerOptions options)
 	{
-		var json = Link.ToNode(value, options);
+		var json = Link.ToNode(value);
 
 		JsonSerializer.Serialize(writer, json, options);
 	}

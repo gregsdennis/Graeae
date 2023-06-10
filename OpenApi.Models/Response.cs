@@ -17,7 +17,7 @@ public class Response : IRefTargetContainer
 		"links"
 	};
 
-	public string Description { get; }
+	public string Description { get; private protected set; }
 	public Dictionary<string, Header>? Headers { get; set; }
 	public Dictionary<string, MediaType>? Content { get; set; }
 	public Dictionary<string, Link>? Links { get; set; }
@@ -29,7 +29,7 @@ public class Response : IRefTargetContainer
 	}
 	private protected Response(){}
 
-	public static Response FromNode(JsonNode? node, JsonSerializerOptions? options)
+	public static Response FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -48,18 +48,21 @@ public class Response : IRefTargetContainer
 		}
 		else
 		{
-			var response = new Response(obj.ExpectString("description", "response"))
-			{
-				Headers = obj.MaybeMap("headers", x => Header.FromNode(x, options)),
-				Content = obj.MaybeMap("content", x => MediaType.FromNode(x, options)),
-				Links = obj.MaybeMap("links", x => Link.FromNode(x, options)),
-				ExtensionData = ExtensionData.FromNode(obj)
-			};
+			var response = new Response(obj.ExpectString("description", "response"));
+			response.Import(obj);
 
 			obj.ValidateNoExtraKeys(KnownKeys, response.ExtensionData?.Keys);
 
 			return response;
 		}
+	}
+
+	private protected void Import(JsonObject obj)
+	{
+		Headers = obj.MaybeMap("headers", Header.FromNode);
+		Content = obj.MaybeMap("content", MediaType.FromNode);
+		Links = obj.MaybeMap("links", Link.FromNode);
+		ExtensionData = ExtensionData.FromNode(obj);
 	}
 
 	public static JsonNode? ToNode(Response? response, JsonSerializerOptions? options)
@@ -79,7 +82,7 @@ public class Response : IRefTargetContainer
 			obj.MaybeAdd("description", response.Description);
 			obj.MaybeAddMap("headers", response.Headers, x => Header.ToNode(x, options));
 			obj.MaybeAddMap("content", response.Content, x => MediaType.ToNode(x, options));
-			obj.MaybeAddMap("links", response.Links, x => Link.ToNode(x, options));
+			obj.MaybeAddMap("links", response.Links, x => Link.ToNode(x));
 			obj.AddExtensions(response.ExtensionData);
 		}
 
@@ -157,10 +160,25 @@ public class ResponseRef : Response, IComponentRef
 
 	public void Resolve(OpenApiDocument root)
 	{
-		// resolve the $ref and set all of the props
-		// remember to use base.Description
+		bool import(JsonNode? node)
+		{
+			if (node is not JsonObject obj) return false;
 
-		IsResolved = true;
+			base.Description = obj.ExpectString("description", "response");
+			Import(obj);
+			return true;
+		}
+
+		void copy(Response other)
+		{
+			base.Description = other.Description;
+			Headers = other.Headers;
+			Content = other.Content;
+			Links = other.Links;
+			ExtensionData = other.ExtensionData;
+		}
+
+		IsResolved = RefHelper.Resolve<Response>(root, Ref, import, copy);
 	}
 }
 
@@ -171,7 +189,7 @@ public class ResponseJsonConverter : JsonConverter<Response>
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");
 
-		return Response.FromNode(obj, options);
+		return Response.FromNode(obj);
 	}
 
 	public override void Write(Utf8JsonWriter writer, Response value, JsonSerializerOptions options)

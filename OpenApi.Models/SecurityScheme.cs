@@ -19,7 +19,7 @@ public class SecurityScheme : IRefTargetContainer
 		"openIdConnectUrl",
 	};
 
-	public SecuritySchemeType Type { get; }
+	public SecuritySchemeType Type { get; private protected set; }
 	public string? Description { get; set; }
 	public string? Name { get; set; }
 	public SecuritySchemeLocation? In { get; set; }
@@ -54,22 +54,25 @@ public class SecurityScheme : IRefTargetContainer
 		}
 		else
 		{
-			var scheme = new SecurityScheme(obj.ExpectEnum<SecuritySchemeType>("type", "securityScheme"))
-			{
-				Description = obj.MaybeString("description", "response"),
-				Name = obj.MaybeString("name", "securityScheme"),
-				In = obj.MaybeEnum<SecuritySchemeLocation>("in", "securityScheme"),
-				Scheme = obj.MaybeString("scheme", "securityScheme"),
-				BearerFormat = obj.MaybeString("bearerFormat", "securityScheme"),
-				Flows = obj.TryGetPropertyValue("flows", out var v) ? OAuthFlowCollection.FromNode(v) : null,
-				OpenIdConnectUrl = obj.MaybeUri("openIdConnectUrl", "securityScheme"),
-				ExtensionData = ExtensionData.FromNode(obj)
-			};
+			var scheme = new SecurityScheme(obj.ExpectEnum<SecuritySchemeType>("type", "securityScheme"));
+			scheme.Import(obj);
 
 			obj.ValidateNoExtraKeys(KnownKeys, scheme.ExtensionData?.Keys);
 
 			return scheme;
 		}
+	}
+
+	private protected void Import(JsonObject obj)
+	{
+		Description = obj.MaybeString("description", "response");
+		Name = obj.MaybeString("name", "securityScheme");
+		In = obj.MaybeEnum<SecuritySchemeLocation>("in", "securityScheme");
+		Scheme = obj.MaybeString("scheme", "securityScheme");
+		BearerFormat = obj.MaybeString("bearerFormat", "securityScheme");
+		Flows = obj.TryGetPropertyValue("flows", out var v) ? OAuthFlowCollection.FromNode(v) : null;
+		OpenIdConnectUrl = obj.MaybeUri("openIdConnectUrl", "securityScheme");
+		ExtensionData = ExtensionData.FromNode(obj);
 	}
 
 	public static JsonNode? ToNode(SecurityScheme? scheme)
@@ -135,10 +138,29 @@ public class SecuritySchemeRef : SecurityScheme, IComponentRef
 
 	public void Resolve(OpenApiDocument root)
 	{
-		// resolve the $ref and set all of the props
-		// remember to use base.Description
+		bool import(JsonNode? node)
+		{
+			if (node is not JsonObject obj) return false;
 
-		IsResolved = true;
+			Type = obj.ExpectEnum<SecuritySchemeType>("type", "securityScheme");
+			Import(obj);
+			return true;
+		}
+
+		void copy(SecurityScheme other)
+		{
+			Type = other.Type;
+			base.Description = other.Description;
+			Name = other.Name;
+			In = other.In;
+			Scheme = other.Scheme;
+			BearerFormat = other.BearerFormat;
+			Flows = other.Flows;
+			OpenIdConnectUrl = other.OpenIdConnectUrl;
+			ExtensionData = other.ExtensionData;
+		}
+
+		IsResolved = RefHelper.Resolve<SecurityScheme>(root, Ref, import, copy);
 	}
 }
 

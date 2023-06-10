@@ -6,7 +6,7 @@ namespace OpenApi.Models;
 
 public static class SerializationExtensions
 {
-	public static T? MaybeDeserialize<T>(this JsonObject obj, string propertyName, JsonSerializerOptions? options)
+	public static T? MaybeDeserialize<T>(this JsonObject obj, string propertyName, JsonSerializerOptions? options = null)
 		where T : class
 	{
 		if (!obj.TryGetPropertyValue(propertyName, out var value)) return null;

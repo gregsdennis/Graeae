@@ -12,14 +12,14 @@ public class ResponseCollection : Dictionary<HttpStatusCode, Response>, IRefTarg
 	public Response? Default { get; set; }
 	public ExtensionData? ExtensionData { get; set; }
 
-	public static ResponseCollection FromNode(JsonNode? node, JsonSerializerOptions? options)
+	public static ResponseCollection FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
 
 		var collection = new ResponseCollection
 		{
-			Default = obj.Maybe("default", x=> Response.FromNode(x, options)),
+			Default = obj.Maybe("default", Response.FromNode),
 			ExtensionData = ExtensionData.FromNode(obj)
 		};
 
@@ -32,7 +32,7 @@ public class ResponseCollection : Dictionary<HttpStatusCode, Response>, IRefTarg
 			if (Enum.GetName(typeof(HttpStatusCode), code) == null)
 				throw new JsonException($"`{key}` is not a known status code");
 
-			collection.Add((HttpStatusCode)code, Response.FromNode(value, options));
+			collection.Add((HttpStatusCode)code, Response.FromNode(value));
 		}
 
 		// Validating extra keys is done in the loop.
@@ -96,7 +96,7 @@ public class ResponseCollectionJsonConverter : JsonConverter<ResponseCollection>
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");
 
-		return ResponseCollection.FromNode(obj, options);
+		return ResponseCollection.FromNode(obj);
 	}
 
 	public override void Write(Utf8JsonWriter writer, ResponseCollection value, JsonSerializerOptions options)

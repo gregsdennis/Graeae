@@ -16,7 +16,7 @@ public class RequestBody : IRefTargetContainer
 	};
 
 	public string? Description { get; set; }
-	public Dictionary<string, MediaType> Content { get; }
+	public Dictionary<string, MediaType> Content { get; private protected set; }
 	public bool? Required { get; set; }
 	public ExtensionData? ExtensionData { get; set; }
 
@@ -26,14 +26,14 @@ public class RequestBody : IRefTargetContainer
 	}
 	private protected RequestBody(){}
 
-	public static RequestBody FromNode(JsonNode? node, JsonSerializerOptions? options)
+	public static RequestBody FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
 
 		if (obj.ContainsKey("$ref"))
 		{
-			var link = new RequestBodyRef(obj.ExpectUri("$ref", "reference"))
+			var body = new RequestBodyRef(obj.ExpectUri("$ref", "reference"))
 			{
 				Description = obj.MaybeString("description", "reference"),
 				Summary = obj.MaybeString("summary", "reference")
@@ -41,21 +41,24 @@ public class RequestBody : IRefTargetContainer
 
 			obj.ValidateReferenceKeys();
 
-			return link;
+			return body;
 		}
 		else
 		{
-			var link = new RequestBody(obj.ExpectMap("content", "request body", x => MediaType.FromNode(x, options)))
-			{
-				Description = obj.MaybeString("description", "request body"),
-				Required = obj.MaybeBool("required", "request body"),
-				ExtensionData = ExtensionData.FromNode(obj)
-			};
+			var body = new RequestBody(obj.ExpectMap("content", "request body", MediaType.FromNode));
+			body.Import(obj);
 
-			obj.ValidateNoExtraKeys(KnownKeys, link.ExtensionData?.Keys);
+			obj.ValidateNoExtraKeys(KnownKeys, body.ExtensionData?.Keys);
 
-			return link;
+			return body;
 		}
+	}
+
+	private protected void Import(JsonObject obj)
+	{
+		Description = obj.MaybeString("description", "request body");
+		Required = obj.MaybeBool("required", "request body");
+		ExtensionData = ExtensionData.FromNode(obj);
 	}
 
 	public static JsonNode? ToNode(RequestBody? body, JsonSerializerOptions? options)
@@ -129,10 +132,24 @@ public class RequestBodyRef : RequestBody, IComponentRef
 
 	public void Resolve(OpenApiDocument root)
 	{
-		// resolve the $ref and set all of the props
-		// remember to use base.*
+		bool import(JsonNode? node)
+		{
+			if (node is not JsonObject obj) return false;
 
-		IsResolved = true;
+			Content = obj.ExpectMap("content", "request body", MediaType.FromNode);
+			Import(obj);
+			return true;
+		}
+
+		void copy(RequestBody other)
+		{
+			Content = other.Content;
+			base.Description = other.Description;
+			Required = other.Required;
+			ExtensionData = other.ExtensionData;
+		}
+
+		IsResolved = RefHelper.Resolve<RequestBody>(root, Ref, import, copy);
 	}
 }
 
@@ -143,7 +160,7 @@ public class RequestBodyJsonConverter : JsonConverter<RequestBody>
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");
 
-		return RequestBody.FromNode(obj, options);
+		return RequestBody.FromNode(obj);
 	}
 
 	public override void Write(Utf8JsonWriter writer, RequestBody value, JsonSerializerOptions options)

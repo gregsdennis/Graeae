@@ -10,7 +10,7 @@ public class Callback : Dictionary<CallbackKeyExpression, PathItem>, IRefTargetC
 {
 	public ExtensionData? ExtensionData { get; set; }
 
-	public static Callback FromNode(JsonNode? node, JsonSerializerOptions? options)
+	public static Callback FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -29,20 +29,22 @@ public class Callback : Dictionary<CallbackKeyExpression, PathItem>, IRefTargetC
 		}
 		else
 		{
-			var callback = new Callback
-			{
-				ExtensionData = ExtensionData.FromNode(obj)
-			};
+			var callback = new Callback();
 
-			foreach (var (key, value) in obj)
-			{
-				if (key.StartsWith("x-")) continue;
-				callback.Add(CallbackKeyExpression.Parse(key), PathItem.FromNode(value, options));
-			}
-
-			// Validating extra keys is done in the loop.
+			callback.Import(obj);
 
 			return callback;
+		}
+	}
+
+	private protected void Import(JsonObject obj)
+	{
+		ExtensionData = ExtensionData.FromNode(obj);
+
+		foreach (var (key, value) in obj)
+		{
+			if (key.StartsWith("x-")) continue;
+			Add(CallbackKeyExpression.Parse(key), PathItem.FromNode(value));
 		}
 	}
 
@@ -104,9 +106,24 @@ public class CallbackRef : Callback, IComponentRef
 
 	public void Resolve(OpenApiDocument root)
 	{
-		// resolve the $ref and set all of the props
+		bool import(JsonNode? node)
+		{
+			if (node is not JsonObject obj) return false;
 
-		IsResolved = true;
+			Import(obj);
+			return true;
+		}
+
+		void copy(Callback other)
+		{
+			ExtensionData = other.ExtensionData;
+			foreach (var (key, value) in other)
+			{
+				this[key] = value;
+			}
+		}
+
+		IsResolved = RefHelper.Resolve<Callback>(root, Ref, import, copy);
 	}
 }
 
@@ -117,7 +134,7 @@ public class CallbackJsonConverter : JsonConverter<Callback>
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");
 
-		return Callback.FromNode(obj, options);
+		return Callback.FromNode(obj);
 	}
 
 	public override void Write(Utf8JsonWriter writer, Callback value, JsonSerializerOptions options)

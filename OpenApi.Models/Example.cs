@@ -2,8 +2,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
-using Json.Pointer;
-using Json.Schema;
 
 namespace OpenApi.Models;
 
@@ -43,19 +41,22 @@ public class Example : IRefTargetContainer
 		}
 		else
 		{
-			var example = new Example
-			{
-				Summary = obj.MaybeString("summary", "example"),
-				Description = obj.MaybeString("description", "example"),
-				Value = obj.TryGetPropertyValue("value", out var v) ? v ?? JsonNull.SignalNode : null,
-				ExternalValue = obj.MaybeString("externalValue", "example"),
-				ExtensionData = ExtensionData.FromNode(obj)
-			};
+			var example = new Example();
+			example.Import(obj);
 
 			obj.ValidateNoExtraKeys(KnownKeys, example.ExtensionData?.Keys);
 
 			return example;
 		}
+	}
+
+	private protected void Import(JsonObject obj)
+	{
+		Summary = obj.MaybeString("summary", "example");
+		Description = obj.MaybeString("description", "example");
+		Value = obj.TryGetPropertyValue("value", out var v) ? v ?? JsonNull.SignalNode : null;
+		ExternalValue = obj.MaybeString("externalValue", "example");
+		ExtensionData = ExtensionData.FromNode(obj);
 	}
 
 	public static JsonNode? ToNode(Example? example)
@@ -123,28 +124,24 @@ public class ExampleRef : Example, IComponentRef
 
 	public void Resolve(OpenApiDocument root)
 	{
-		// resolve the $ref and set all of the props
-		// remember to use base.*
+		bool import(JsonNode? node)
+		{
+			if (node is not JsonObject obj) return false;
 
-		var baseUri = ((IBaseDocument)root).BaseUri;
-		var resolvedUri = new Uri(baseUri, Ref);
+			Import(obj);
+			return true;
+		}
 
-		if (string.IsNullOrEmpty(resolvedUri.Fragment))
-			throw new NotImplementedException();
+		void copy(Example other)
+		{
+			base.Summary = other.Summary;
+			base.Description = other.Description;
+			Value = other.Value;
+			ExternalValue = other.ExternalValue;
+			ExtensionData = other.ExtensionData;
+		}
 
-		var pointer = JsonPointer.Parse(resolvedUri.Fragment);
-		var target = root.Find<Example>(pointer);
-
-		if (target == null)
-			throw new NotImplementedException();
-
-		base.Summary = target.Summary;
-		base.Description = target.Description;
-		Value = target.Value;
-		ExternalValue = target.ExternalValue;
-		ExtensionData = target.ExtensionData;
-
-		IsResolved = true;
+		IsResolved = RefHelper.Resolve<Example>(root, Ref, import, copy);
 	}
 }
 

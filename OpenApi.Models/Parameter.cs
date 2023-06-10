@@ -26,8 +26,8 @@ public class Parameter : IRefTargetContainer
 		"content"
 	};
 
-	public string Name { get; }
-	public ParameterLocation In { get; }
+	public string Name { get; private protected set; }
+	public ParameterLocation In { get; private protected set; }
 	public string? Description { get; set; }
 	public bool? Required { get; set; }
 	public bool? Deprecated { get; set; }
@@ -48,7 +48,7 @@ public class Parameter : IRefTargetContainer
 	}
 	private protected Parameter(){}
 
-	public static Parameter FromNode(JsonNode? node, JsonSerializerOptions? options)
+	public static Parameter FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -69,26 +69,29 @@ public class Parameter : IRefTargetContainer
 		{
 			var response = new Parameter(
 				obj.ExpectString("name", "parameter"),
-				obj.ExpectEnum<ParameterLocation>("in", "parameter"))
-			{
-				Description = obj.MaybeString("description", "parameter"),
-				Required = obj.MaybeBool("required", "parameter"),
-				Deprecated = obj.MaybeBool("deprecated", "parameter"),
-				AllowEmptyValue = obj.MaybeBool("allowEmptyValue", "parameter"),
-				Style = obj.MaybeEnum<ParameterStyle>("style", "parameter"),
-				Explode = obj.MaybeBool("explode", "parameter"),
-				AllowReserved = obj.MaybeBool("allowReserved", "parameter"),
-				Schema = obj.MaybeDeserialize<JsonSchema>("schema", options),
-				Example = obj.TryGetPropertyValue("example", out var v) ? v ?? JsonNull.SignalNode : null,
-				Examples = obj.MaybeMap("examples", Models.Example.FromNode),
-				Content = obj.MaybeMap("content", x => MediaType.FromNode(x, options)),
-				ExtensionData = ExtensionData.FromNode(obj)
-			};
+				obj.ExpectEnum<ParameterLocation>("in", "parameter"));
+			response.Import(obj);
 
 			obj.ValidateNoExtraKeys(KnownKeys, response.ExtensionData?.Keys);
 
 			return response;
 		}
+	}
+
+	private protected void Import(JsonObject obj)
+	{
+		Description = obj.MaybeString("description", "parameter");
+		Required = obj.MaybeBool("required", "parameter");
+		Deprecated = obj.MaybeBool("deprecated", "parameter");
+		AllowEmptyValue = obj.MaybeBool("allowEmptyValue", "parameter");
+		Style = obj.MaybeEnum<ParameterStyle>("style", "parameter");
+		Explode = obj.MaybeBool("explode", "parameter");
+		AllowReserved = obj.MaybeBool("allowReserved", "parameter");
+		Schema = obj.MaybeDeserialize<JsonSchema>("schema");
+		Example = obj.TryGetPropertyValue("example", out var v) ? v ?? JsonNull.SignalNode : null;
+		Examples = obj.MaybeMap("examples", Models.Example.FromNode);
+		Content = obj.MaybeMap("content", MediaType.FromNode);
+		ExtensionData = ExtensionData.FromNode(obj);
 	}
 
 	public static JsonNode? ToNode(Parameter? parameter, JsonSerializerOptions? options)
@@ -200,10 +203,36 @@ public class ParameterRef : Parameter, IComponentRef
 
 	public void Resolve(OpenApiDocument root)
 	{
-		// resolve the $ref and set all of the props
-		// remember to use base.Description
+		bool import(JsonNode? node)
+		{
+			if (node is not JsonObject obj) return false;
 
-		IsResolved = true;
+			Name = obj.ExpectString("name", "parameter");
+			In = obj.ExpectEnum<ParameterLocation>("in", "parameter");
+
+			Import(obj);
+			return true;
+		}
+
+		void copy(Parameter other)
+		{
+			Name = other.Name;
+			In = other.In;
+			base.Description = other.Description;
+			Required = other.Required;
+			Deprecated = other.Deprecated;
+			AllowEmptyValue = other.AllowEmptyValue;
+			Style = other.Style;
+			Explode = other.Explode;
+			AllowReserved = other.AllowReserved;
+			Schema = other.Schema;
+			Example = other.Example;
+			Examples = other.Examples;
+			Content = other.Content;
+			ExtensionData = other.ExtensionData;
+		}
+
+		IsResolved = RefHelper.Resolve<Parameter>(root, Ref, import, copy);
 	}
 }
 
@@ -214,7 +243,7 @@ public class ParameterJsonConverter : JsonConverter<Parameter>
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");
 
-		return Parameter.FromNode(obj, options);
+		return Parameter.FromNode(obj);
 	}
 
 	public override void Write(Utf8JsonWriter writer, Parameter value, JsonSerializerOptions options)

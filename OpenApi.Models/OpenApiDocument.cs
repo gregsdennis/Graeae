@@ -76,7 +76,7 @@ public class OpenApiDocument : IBaseDocument
 		return Find<JsonSchema>(pointer);
 	}
 
-	public static OpenApiDocument FromNode(JsonNode? node, JsonSerializerOptions? options)
+	public static OpenApiDocument FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -87,9 +87,9 @@ public class OpenApiDocument : IBaseDocument
 		{
 			JsonSchemaDialect = obj.MaybeUri("jsonSchemaDialect", "open api document"),
 			Servers = obj.MaybeArray("servers", Server.FromNode),
-			Paths = obj.Maybe("paths", x => PathCollection.FromNode(x, options)),
-			Webhooks = obj.MaybeMap("webhooks", x => PathItem.FromNode(x, options)),
-			Components = obj.Maybe("components", x => ComponentCollection.FromNode(x, options)),
+			Paths = obj.Maybe("paths", PathCollection.FromNode),
+			Webhooks = obj.MaybeMap("webhooks", PathItem.FromNode),
+			Components = obj.Maybe("components", ComponentCollection.FromNode),
 			Security = obj.MaybeArray("security", SecurityRequirement.FromNode),
 			Tags = obj.MaybeArray("tags", Tag.FromNode),
 			ExternalDocs = obj.Maybe("externalDocs", ExternalDocumentation.FromNode),
@@ -238,7 +238,7 @@ public class OpenApiDocumentJsonConverter : JsonConverter<OpenApiDocument>
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");
 
-		return OpenApiDocument.FromNode(obj, options);
+		return OpenApiDocument.FromNode(obj);
 	}
 
 	public override void Write(Utf8JsonWriter writer, OpenApiDocument value, JsonSerializerOptions options)

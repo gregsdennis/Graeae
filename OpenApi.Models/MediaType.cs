@@ -23,17 +23,17 @@ public class MediaType : IRefTargetContainer
 	public Dictionary<string, Encoding>? Encoding { get; set; }
 	public ExtensionData? ExtensionData { get; set; }
 
-	public static MediaType FromNode(JsonNode? node, JsonSerializerOptions? options)
+	public static MediaType FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
 
 		var mediaType = new MediaType
 		{
-			Schema = obj.MaybeDeserialize<JsonSchema>("schema", options),
+			Schema = obj.MaybeDeserialize<JsonSchema>("schema"),
 			Example = obj.TryGetPropertyValue("example", out var v) ? v ?? JsonNull.SignalNode : null,
 			Examples = obj.MaybeMap("examples", Models.Example.FromNode),
-			Encoding = obj.MaybeMap("encoding", x => Models.Encoding.FromNode(x, options)),
+			Encoding = obj.MaybeMap("encoding", Models.Encoding.FromNode),
 			ExtensionData = ExtensionData.FromNode(obj)
 		};
 
@@ -118,7 +118,7 @@ public class MediaTypeJsonConverter : JsonConverter<MediaType>
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");
 
-		return MediaType.FromNode(obj, options);
+		return MediaType.FromNode(obj);
 	}
 
 	public override void Write(Utf8JsonWriter writer, MediaType value, JsonSerializerOptions options)

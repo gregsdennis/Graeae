@@ -10,7 +10,7 @@ public class PathCollection : Dictionary<PathTemplate, PathItem>, IRefTargetCont
 {
 	public ExtensionData? ExtensionData { get; set; }
 
-	public static PathCollection FromNode(JsonNode? node, JsonSerializerOptions? options)
+	public static PathCollection FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -26,7 +26,7 @@ public class PathCollection : Dictionary<PathTemplate, PathItem>, IRefTargetCont
 			if (!PathTemplate.TryParse(key, out var template))
 				throw new JsonException($"`{key}` is not a valid path template");
 
-			collection.Add(template, PathItem.FromNode(value, options));
+			collection.Add(template, PathItem.FromNode(value));
 		}
 
 		// Validating extra keys is done in the loop.
@@ -76,7 +76,7 @@ public class PathCollectionJsonConverter : JsonConverter<PathCollection>
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");
 
-		return PathCollection.FromNode(obj, options);
+		return PathCollection.FromNode(obj);
 	}
 
 	public override void Write(Utf8JsonWriter writer, PathCollection value, JsonSerializerOptions options)

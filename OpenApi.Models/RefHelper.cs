@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Nodes;
 using Json.Pointer;
+using Json.Schema;
 
 namespace OpenApi.Models;
 
@@ -32,4 +33,46 @@ public static class RefHelper
 	{
 		return JsonPointer.Create(segments.ToArray().Select(x => (PointerSegment)x));
 	}
+
+	public static bool Resolve<T>(OpenApiDocument root, Uri targetUri, Func<JsonNode?, bool> import, Action<T> copy)
+		where T : class
+	{
+		var baseUri = ((IBaseDocument)root).BaseUri;
+		var newUri = new Uri(baseUri, targetUri);
+		var fragment = newUri.Fragment;
+
+		var newBaseUri = new Uri(newUri.GetLeftPart(UriPartial.Query));
+
+		if (newBaseUri == baseUri)
+		{
+			var target = root.Find<T>(JsonPointer.Parse(fragment));
+			if (target == null) return false;
+
+			copy(target);
+			return true;
+		}
+
+		JsonNode? targetContent;
+		var targetBase = Fetch(newBaseUri) ??
+		                 throw new RefResolutionException($"Cannot resolve base schema from `{newUri}`");
+
+		if (JsonPointer.TryParse(fragment, out var pointerFragment))
+			pointerFragment!.TryEvaluate(targetBase, out targetContent);
+		else
+		{
+			throw new RefResolutionException("Anchor fragments are currently unsupported.");
+
+			//var anchorFragment = fragment.Substring(1);
+			//if (!AnchorKeyword.AnchorPattern.IsMatch(anchorFragment))
+			//	throw new RefResolutionException($"Unrecognized fragment type `{newUri}`");
+
+			//if (targetBase is JsonSchema targetBaseSchema &&
+			//    targetBaseSchema.Anchors.TryGetValue(anchorFragment, out var anchorDefinition))
+			//	targetContent = anchorDefinition.Schema;
+		}
+
+		return import(targetContent);
+	}
+
+	public static Func<Uri, JsonNode?> Fetch { get; set; }
 }
