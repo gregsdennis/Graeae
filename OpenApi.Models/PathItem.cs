@@ -43,27 +43,25 @@ public class PathItem : IRefTargetContainer
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
 
+		PathItem item;
 		if (obj.ContainsKey("$ref"))
 		{
-			var item = new PathItemRef(obj.ExpectUri("$ref", "reference"))
+			item = new PathItemRef(obj.ExpectUri("$ref", "reference"))
 			{
 				Description = obj.MaybeString("description", "reference"),
 				Summary = obj.MaybeString("summary", "reference")
 			};
 
 			obj.ValidateReferenceKeys();
-
-			return item;
 		}
 		else
 		{
-			var item = new PathItem();
+			item = new PathItem();
 			item.Import(obj);
 
 			obj.ValidateNoExtraKeys(KnownKeys, item.ExtensionData?.Keys);
-
-			return item;
 		}
+		return item;
 	}
 
 	private protected void Import(JsonObject obj)

@@ -24,34 +24,34 @@ public class RequestBody : IRefTargetContainer
 	{
 		Content = content;
 	}
+#pragma warning disable CS8618
 	private protected RequestBody(){}
+#pragma warning restore CS8618
 
 	public static RequestBody FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
 
+		RequestBody body;
 		if (obj.ContainsKey("$ref"))
 		{
-			var body = new RequestBodyRef(obj.ExpectUri("$ref", "reference"))
+			body = new RequestBodyRef(obj.ExpectUri("$ref", "reference"))
 			{
 				Description = obj.MaybeString("description", "reference"),
 				Summary = obj.MaybeString("summary", "reference")
 			};
 
 			obj.ValidateReferenceKeys();
-
-			return body;
 		}
 		else
 		{
-			var body = new RequestBody(obj.ExpectMap("content", "request body", MediaType.FromNode));
+			body = new RequestBody(obj.ExpectMap("content", "request body", MediaType.FromNode));
 			body.Import(obj);
 
 			obj.ValidateNoExtraKeys(KnownKeys, body.ExtensionData?.Keys);
-
-			return body;
 		}
+		return body;
 	}
 
 	private protected void Import(JsonObject obj)

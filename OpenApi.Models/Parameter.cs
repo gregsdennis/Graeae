@@ -46,36 +46,36 @@ public class Parameter : IRefTargetContainer
 		Name = name;
 		In = @in;
 	}
+#pragma warning disable CS8618
 	private protected Parameter(){}
+#pragma warning restore CS8618
 
 	public static Parameter FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
 
+		Parameter response;
 		if (obj.ContainsKey("$ref"))
 		{
-			var response = new ParameterRef(obj.ExpectUri("$ref", "reference"))
+			response = new ParameterRef(obj.ExpectUri("$ref", "reference"))
 			{
 				Description = obj.MaybeString("description", "reference"),
 				Summary = obj.MaybeString("summary", "reference")
 			};
 
 			obj.ValidateReferenceKeys();
-
-			return response;
 		}
 		else
 		{
-			var response = new Parameter(
+			response = new Parameter(
 				obj.ExpectString("name", "parameter"),
 				obj.ExpectEnum<ParameterLocation>("in", "parameter"));
 			response.Import(obj);
 
 			obj.ValidateNoExtraKeys(KnownKeys, response.ExtensionData?.Keys);
-
-			return response;
 		}
+		return response;
 	}
 
 	private protected void Import(JsonObject obj)

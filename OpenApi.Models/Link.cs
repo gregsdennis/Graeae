@@ -30,27 +30,25 @@ public class Link : IRefTargetContainer
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
 
+		Link link;
 		if (obj.ContainsKey("$ref"))
 		{
-			var link = new LinkRef(obj.ExpectUri("$ref", "reference"))
+			link = new LinkRef(obj.ExpectUri("$ref", "reference"))
 			{
 				Description = obj.MaybeString("description", "reference"),
 				Summary = obj.MaybeString("summary", "reference")
 			};
 
 			obj.ValidateReferenceKeys();
-
-			return link;
 		}
 		else
 		{
-			var link = new Link();
+			link = new Link();
 			link.Import(obj);
 
 			obj.ValidateNoExtraKeys(KnownKeys, link.ExtensionData?.Keys);
-
-			return link;
 		}
+		return link;
 	}
 
 	private protected void Import(JsonObject obj)

@@ -13,7 +13,7 @@ internal class Draft4ExclusiveMinimumKeyword : IJsonSchemaKeyword, IEquatable<Dr
 {
 	public const string Name = "exclusiveMinimum";
 
-	private readonly ExclusiveMinimumKeyword _numberSupport;
+	private readonly ExclusiveMinimumKeyword? _numberSupport;
 
 	/// <summary>
 	/// The ID.
@@ -70,7 +70,7 @@ internal class Draft4ExclusiveMinimumKeyword : IJsonSchemaKeyword, IEquatable<Dr
 		}
 		else
 		{
-			_numberSupport.Evaluate(context);
+			_numberSupport!.Evaluate(context);
 		}
 	}
 
@@ -117,6 +117,6 @@ internal class Draft4ExclusiveMinimumKeywordJsonConverter : JsonConverter<Draft4
 		if (value.BoolValue.HasValue)
 			writer.WriteBoolean(Draft4ExclusiveMinimumKeyword.Name, value.BoolValue.Value);
 		else
-			writer.WriteNumber(Draft4ExclusiveMinimumKeyword.Name, value.NumberValue.Value);
+			writer.WriteNumber(Draft4ExclusiveMinimumKeyword.Name, value.NumberValue!.Value);
 	}
 }

@@ -2,7 +2,6 @@
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Json.Schema;
-using YamlDotNet.Core.Tokens;
 
 namespace OpenApi.Models;
 
@@ -27,34 +26,34 @@ public class Response : IRefTargetContainer
 	{
 		Description = description;
 	}
+#pragma warning disable CS8618
 	private protected Response(){}
+#pragma warning restore CS8618
 
 	public static Response FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
 
+		Response response;
 		if (obj.ContainsKey("$ref"))
 		{
-			var response = new ResponseRef(obj.ExpectUri("$ref", "reference"))
+			response = new ResponseRef(obj.ExpectUri("$ref", "reference"))
 			{
 				Description = obj.MaybeString("description", "reference"),
 				Summary = obj.MaybeString("summary", "reference")
 			};
 
 			obj.ValidateReferenceKeys();
-
-			return response;
 		}
 		else
 		{
-			var response = new Response(obj.ExpectString("description", "response"));
+			response = new Response(obj.ExpectString("description", "response"));
 			response.Import(obj);
 
 			obj.ValidateNoExtraKeys(KnownKeys, response.ExtensionData?.Keys);
-
-			return response;
 		}
+		return response;
 	}
 
 	private protected void Import(JsonObject obj)

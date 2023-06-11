@@ -27,27 +27,26 @@ public class Example : IRefTargetContainer
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
 
+		Example example;
 		if (obj.ContainsKey("$ref"))
 		{
-			var example = new ExampleRef(obj.ExpectUri("$ref", "reference"))
+			example = new ExampleRef(obj.ExpectUri("$ref", "reference"))
 			{
 				Description = obj.MaybeString("description", "reference"),
 				Summary = obj.MaybeString("summary", "reference")
 			};
 
 			obj.ValidateReferenceKeys();
-
-			return example;
 		}
 		else
 		{
-			var example = new Example();
+			example = new Example();
 			example.Import(obj);
 
 			obj.ValidateNoExtraKeys(KnownKeys, example.ExtensionData?.Keys);
-
-			return example;
 		}
+		
+		return example;
 	}
 
 	private protected void Import(JsonObject obj)

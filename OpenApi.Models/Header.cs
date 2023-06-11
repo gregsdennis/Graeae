@@ -1,10 +1,8 @@
-﻿using System.Reflection.PortableExecutable;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Json.More;
 using Json.Schema;
-using YamlDotNet.Core.Tokens;
 
 namespace OpenApi.Models;
 
@@ -44,27 +42,26 @@ public class Header : IRefTargetContainer
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
 
+		Header response;
 		if (obj.ContainsKey("$ref"))
 		{
-			var response = new HeaderRef(obj.ExpectUri("$ref", "reference"))
+			response = new HeaderRef(obj.ExpectUri("$ref", "reference"))
 			{
 				Description = obj.MaybeString("description", "reference"),
 				Summary = obj.MaybeString("summary", "reference")
 			};
 
 			obj.ValidateReferenceKeys();
-
-			return response;
 		}
 		else
 		{
-			var response = new Header();
+			response = new Header();
 			response.Import(obj);
 
 			obj.ValidateNoExtraKeys(KnownKeys, response.ExtensionData?.Keys);
-
-			return response;
 		}
+
+		return response;
 	}
 
 	private protected void Import(JsonObject obj)

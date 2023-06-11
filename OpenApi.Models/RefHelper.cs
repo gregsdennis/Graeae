@@ -74,5 +74,6 @@ public static class RefHelper
 		return import(targetContent);
 	}
 
+	// TODO: Initialize this
 	public static Func<Uri, JsonNode?> Fetch { get; set; }
 }

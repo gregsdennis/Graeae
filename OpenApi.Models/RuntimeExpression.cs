@@ -33,6 +33,10 @@ public class RuntimeExpression : IEquatable<string>
 	public string? Name { get; set; }
 	public JsonPointer? JsonPointer { get; set; }
 
+#pragma warning disable CS8618
+	private RuntimeExpression(){}
+#pragma warning restore CS8618
+
 	public static RuntimeExpression FromNode(JsonNode? node)
 	{
 		if (node is not JsonValue value || !value.TryGetValue(out string? source))

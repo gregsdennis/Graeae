@@ -40,27 +40,25 @@ public class SecurityScheme : IRefTargetContainer
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
 
+		SecurityScheme scheme;
 		if (obj.ContainsKey("$ref"))
 		{
-			var scheme = new SecuritySchemeRef(obj.ExpectUri("$ref", "reference"))
+			scheme = new SecuritySchemeRef(obj.ExpectUri("$ref", "reference"))
 			{
 				Description = obj.MaybeString("description", "reference"),
 				Summary = obj.MaybeString("summary", "reference")
 			};
 
 			obj.ValidateReferenceKeys();
-
-			return scheme;
 		}
 		else
 		{
-			var scheme = new SecurityScheme(obj.ExpectEnum<SecuritySchemeType>("type", "securityScheme"));
+			scheme = new SecurityScheme(obj.ExpectEnum<SecuritySchemeType>("type", "securityScheme"));
 			scheme.Import(obj);
 
 			obj.ValidateNoExtraKeys(KnownKeys, scheme.ExtensionData?.Keys);
-
-			return scheme;
 		}
+		return scheme;
 	}
 
 	private protected void Import(JsonObject obj)

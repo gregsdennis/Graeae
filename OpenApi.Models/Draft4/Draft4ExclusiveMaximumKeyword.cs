@@ -13,7 +13,7 @@ internal class Draft4ExclusiveMaximumKeyword : IJsonSchemaKeyword, IEquatable<Dr
 {
 	public const string Name = "exclusiveMaximum";
 
-	private readonly ExclusiveMaximumKeyword _numberSupport;
+	private readonly ExclusiveMaximumKeyword? _numberSupport;
 
 	/// <summary>
 	/// The ID.
@@ -70,7 +70,7 @@ internal class Draft4ExclusiveMaximumKeyword : IJsonSchemaKeyword, IEquatable<Dr
 		}
 		else
 		{
-			_numberSupport.Evaluate(context);
+			_numberSupport!.Evaluate(context);
 		}
 	}
 
@@ -120,7 +120,7 @@ internal class Draft4ExclusiveMaximumKeywordJsonConverter : JsonConverter<Draft4
 		}
 		else
 		{
-			writer.WriteNumber(Draft4ExclusiveMaximumKeyword.Name, value.NumberValue.Value);
+			writer.WriteNumber(Draft4ExclusiveMaximumKeyword.Name, value.NumberValue!.Value);
 		}
 	}
 }

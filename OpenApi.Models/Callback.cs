@@ -15,26 +15,23 @@ public class Callback : Dictionary<CallbackKeyExpression, PathItem>, IRefTargetC
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
 
+		Callback callback;
 		if (obj.ContainsKey("$ref"))
 		{
-			var callback = new CallbackRef(obj.ExpectUri("$ref", "reference"))
+			callback = new CallbackRef(obj.ExpectUri("$ref", "reference"))
 			{
 				Description = obj.MaybeString("description", "reference"),
 				Summary = obj.MaybeString("summary", "reference")
 			};
 
 			obj.ValidateReferenceKeys();
-
-			return callback;
 		}
 		else
 		{
-			var callback = new Callback();
-
+			callback = new Callback();
 			callback.Import(obj);
-
-			return callback;
 		}
+		return callback;
 	}
 
 	private protected void Import(JsonObject obj)
