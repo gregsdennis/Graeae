@@ -7,7 +7,7 @@ namespace OpenApi.Models.Draft4;
 [SchemaKeyword(Name)]
 [SchemaSpecVersion(Draft4Support.Draft4Version)]
 [JsonConverter(typeof(NullableKeywordJsonConverter))]
-internal class NullableKeyword : IJsonSchemaKeyword, IEquatable<NullableKeyword>
+public class NullableKeyword : IJsonSchemaKeyword, IEquatable<NullableKeyword>
 {
 	public const string Name = "nullable";
 

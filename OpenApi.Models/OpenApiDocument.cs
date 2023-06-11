@@ -3,7 +3,6 @@ using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Json.Pointer;
 using Json.Schema;
-using OpenApi.Models.Draft4;
 using Vocabularies = Json.Schema.OpenApi.Vocabularies;
 
 namespace OpenApi.Models;
@@ -11,6 +10,14 @@ namespace OpenApi.Models;
 [JsonConverter(typeof(OpenApiDocumentJsonConverter))]
 public class OpenApiDocument : IBaseDocument
 {
+	private static readonly string[] SupportedVersions =
+	{
+		"3.0.0",
+		"3.0.1",
+		"3.0.2",
+		"3.0.3",
+		"3.1.0"
+	};
 	private static readonly string[] KnownKeys =
 	{
 		"openapi",
@@ -61,16 +68,6 @@ public class OpenApiDocument : IBaseDocument
 		Info = info;
 	}
 
-	public static void EnableLegacySupport()
-	{
-		SchemaKeywordRegistry.Register<Draft4ExclusiveMaximumKeyword>();
-		SchemaKeywordRegistry.Register<Draft4ExclusiveMinimumKeyword>();
-		SchemaKeywordRegistry.Register<Draft4IdKeyword>();
-		SchemaKeywordRegistry.Register<NullableKeyword>();
-
-		SchemaRegistry.Global.Register(Draft4Support.Draft4MetaSchema);
-	}
-
 	JsonSchema? IBaseDocument.FindSubschema(JsonPointer pointer, EvaluationOptions options)
 	{
 		return Find<JsonSchema>(pointer);
@@ -81,8 +78,12 @@ public class OpenApiDocument : IBaseDocument
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
 
+		var openapi = obj.ExpectString("openapi", "open api document");
+		if (!SupportedVersions.Contains(openapi))
+			throw new JsonException($"Version '{openapi}' is not supported.");
+
 		var document = new OpenApiDocument(
-			obj.ExpectString("openapi", "open api document"),
+			openapi,
 			obj.Expect("info", "open api document", OpenApiInfo.FromNode))
 		{
 			JsonSchemaDialect = obj.MaybeUri("jsonSchemaDialect", "open api document"),

@@ -52,6 +52,10 @@ public class PathItem : IRefTargetContainer
 				Summary = obj.MaybeString("summary", "reference")
 			};
 
+			// PathItem is different from the other $ref-able objects in that the $ref is
+			// integrated and the $ref'd values can be overridden.
+			item.Import(obj);
+
 			obj.ValidateReferenceKeys();
 		}
 		else
@@ -228,18 +232,20 @@ public class PathItemRef : PathItem, IComponentRef
 
 		void copy(PathItem other)
 		{
+			// PathItem is different from the other $ref-able objects in that the $ref is
+			// integrated and the $ref'd values can be overridden.
 			base.Summary = other.Summary;
 			base.Description = other.Description;
-			Get = other.Get;
-			Put = other.Put;
-			Post = other.Post;
-			Delete = other.Delete;
-			Options = other.Options;
-			Head = other.Head;
-			Patch = other.Patch;
-			Trace = other.Trace;
-			Servers = other.Servers;
-			Parameters = other.Parameters;
+			Get ??= other.Get;
+			Put ??= other.Put;
+			Post ??= other.Post;
+			Delete ??= other.Delete;
+			Options ??= other.Options;
+			Head ??= other.Head;
+			Patch ??= other.Patch;
+			Trace ??= other.Trace;
+			Servers ??= other.Servers;
+			Parameters ??= other.Parameters;
 			ExtensionData = other.ExtensionData;
 		}
 

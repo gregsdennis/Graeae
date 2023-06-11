@@ -25,11 +25,13 @@ public class RuntimeExpression : IEquatable<string>
 	// tchar = "!" / "#" / "$" / "%" / "&" / "'" / "*" / "+" / "-" / "." /
 	//         "^" / "_" / "`" / "|" / "~" / DIGIT / ALPHA
 
+	private static string TokenSymbols = "!#$&'*+-.^_`|~";
+
 	private string _source;
 
 	public RuntimeExpressionType ExpressionType { get; set; }
 	public RuntimeExpressionSourceType? SourceType { get; set; }
-	public char? Token { get; set; }
+	public string? Token { get; set; }
 	public string? Name { get; set; }
 	public JsonPointer? JsonPointer { get; set; }
 
@@ -78,7 +80,12 @@ public class RuntimeExpression : IEquatable<string>
 			case "header":
 				expr.SourceType = RuntimeExpressionSourceType.Header;
 				source.Expect(ref i, ".");
-				expr.Token = source[i];
+				var j = i;
+				while (j < source.Length && (char.IsLetterOrDigit(source[j]) || TokenSymbols.Contains(source[j])))
+				{
+					j++;
+				}
+				expr.Token = source[i..j];
 				break;
 			case "query":
 				expr.SourceType = RuntimeExpressionSourceType.Query;

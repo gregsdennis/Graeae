@@ -9,7 +9,7 @@ namespace OpenApi.Models.Draft4;
 [SchemaSpecVersion(Draft4Support.Draft4Version)]
 [SchemaSpecVersion(SpecVersion.Draft202012)]
 [JsonConverter(typeof(Draft4ExclusiveMinimumKeywordJsonConverter))]
-internal class Draft4ExclusiveMinimumKeyword : IJsonSchemaKeyword, IEquatable<Draft4ExclusiveMinimumKeyword>
+public class Draft4ExclusiveMinimumKeyword : IJsonSchemaKeyword, IEquatable<Draft4ExclusiveMinimumKeyword>
 {
 	public const string Name = "exclusiveMinimum";
 

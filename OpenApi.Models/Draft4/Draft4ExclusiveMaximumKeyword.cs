@@ -9,7 +9,7 @@ namespace OpenApi.Models.Draft4;
 [SchemaSpecVersion(Draft4Support.Draft4Version)]
 [SchemaSpecVersion(SpecVersion.Draft202012)]
 [JsonConverter(typeof(Draft4ExclusiveMaximumKeywordJsonConverter))]
-internal class Draft4ExclusiveMaximumKeyword : IJsonSchemaKeyword, IEquatable<Draft4ExclusiveMaximumKeyword>
+public class Draft4ExclusiveMaximumKeyword : IJsonSchemaKeyword, IEquatable<Draft4ExclusiveMaximumKeyword>
 {
 	public const string Name = "exclusiveMaximum";
 

@@ -8,7 +8,7 @@ namespace OpenApi.Models.Draft4;
 [SchemaSpecVersion(Draft4Support.Draft4Version)]
 [SchemaSpecVersion(SpecVersion.Draft202012)]
 [JsonConverter(typeof(Draft4TypeKeywordConverter))]
-internal class Draft4TypeKeyword : IJsonSchemaKeyword, IEquatable<Draft4TypeKeyword>
+public class Draft4TypeKeyword : IJsonSchemaKeyword, IEquatable<Draft4TypeKeyword>
 {
 	public const string Name = "type";
 

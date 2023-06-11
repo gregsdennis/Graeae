@@ -3,7 +3,7 @@ using Json.Schema;
 
 namespace OpenApi.Models.Draft4;
 
-internal static class Draft4Support
+public static class Draft4Support
 {
 	// This is kind of a hack since SpecVersion is an enum.
 	// Maybe it should be defined as string constants.
@@ -11,10 +11,12 @@ internal static class Draft4Support
 	public const SpecVersion Draft4Version = (SpecVersion)(1 << 10);
 	public const SchemaValueType FileDataType = (SchemaValueType)(1 << 10);
 
+	public const string Draft4MetaSchemaUri = "http://json-schema.org/draft-04/schema#";
+
 	public static readonly JsonSchema Draft4MetaSchema =
 		new JsonSchemaBuilder()
-			.OasId("http://json-schema.org/draft-04/schema#")
-			.Schema("http://json-schema.org/draft-04/schema#")
+			.OasId(Draft4MetaSchemaUri)
+			.Schema(Draft4MetaSchemaUri)
 			.Description("Core schema meta-schema")
 			.Definitions(
 				("schemaArray", new JsonSchemaBuilder()
@@ -143,4 +145,22 @@ internal static class Draft4Support
 				("exclusiveMinimum", new [] { "minimum" })
 			)
 			.Default(new JsonObject());
+
+	static Draft4Support()
+	{
+		Draft4MetaSchema.BaseUri = new Uri(Draft4MetaSchemaUri);
+		// This is a hack to set the schema.DeclaredVersion property.
+		// This allows draft 4 to be used as a meta-schema.
+		Draft4MetaSchema.Evaluate(new JsonObject(), new EvaluationOptions { EvaluateAs = Draft4Version });
+	}
+
+	public static void Enable()
+	{
+		SchemaKeywordRegistry.Register<Draft4ExclusiveMaximumKeyword>();
+		SchemaKeywordRegistry.Register<Draft4ExclusiveMinimumKeyword>();
+		SchemaKeywordRegistry.Register<Draft4IdKeyword>();
+		SchemaKeywordRegistry.Register<NullableKeyword>();
+
+		SchemaRegistry.Global.Register(Draft4MetaSchema);
+	}
 }

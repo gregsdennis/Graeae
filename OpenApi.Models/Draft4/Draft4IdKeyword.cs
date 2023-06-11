@@ -8,7 +8,7 @@ namespace OpenApi.Models.Draft4;
 [SchemaPriority(int.MinValue + 1)]
 [SchemaSpecVersion(Draft4Support.Draft4Version)]
 [JsonConverter(typeof(Draft4IdKeywordJsonConverter))]
-internal class Draft4IdKeyword : IIdKeyword, IEquatable<Draft4IdKeyword>
+public class Draft4IdKeyword : IIdKeyword, IEquatable<Draft4IdKeyword>
 {
 	public const string Name = "id";
 
