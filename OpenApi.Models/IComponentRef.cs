@@ -6,5 +6,5 @@ public interface IComponentRef
 	string? Summary { get; }
 	string? Description { get; }
 
-	void Resolve(OpenApiDocument root);
+	Task Resolve(OpenApiDocument root);
 }

@@ -67,7 +67,7 @@ public class ServerVariable : IRefTargetContainer
 
 public class ServerVariableJsonConverter : JsonConverter<ServerVariable>
 {
-	public override ServerVariable? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	public override ServerVariable Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");

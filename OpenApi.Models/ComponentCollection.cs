@@ -165,7 +165,7 @@ public class ComponentCollection : IRefTargetContainer
 
 public class ComponentCollectionJsonConverter : JsonConverter<ComponentCollection>
 {
-	public override ComponentCollection? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	public override ComponentCollection Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");

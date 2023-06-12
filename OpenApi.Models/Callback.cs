@@ -101,7 +101,7 @@ public class CallbackRef : Callback, IComponentRef
 		Ref = reference ?? throw new ArgumentNullException(nameof(reference));
 	}
 
-	public void Resolve(OpenApiDocument root)
+	public async Task Resolve(OpenApiDocument root)
 	{
 		bool import(JsonNode? node)
 		{
@@ -120,13 +120,13 @@ public class CallbackRef : Callback, IComponentRef
 			}
 		}
 
-		IsResolved = RefHelper.Resolve<Callback>(root, Ref, import, copy);
+		IsResolved = await RefHelper.Resolve<Callback>(root, Ref, import, copy);
 	}
 }
 
 public class CallbackJsonConverter : JsonConverter<Callback>
 {
-	public override Callback? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	public override Callback Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");

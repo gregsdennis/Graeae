@@ -121,7 +121,7 @@ public class LinkRef : Link, IComponentRef
 		Ref = reference ?? throw new ArgumentNullException(nameof(reference));
 	}
 
-	public void Resolve(OpenApiDocument root)
+	public async Task Resolve(OpenApiDocument root)
 	{
 		bool import(JsonNode? node)
 		{
@@ -142,13 +142,13 @@ public class LinkRef : Link, IComponentRef
 			ExtensionData = other.ExtensionData;
 		}
 
-		IsResolved = RefHelper.Resolve<Link>(root, Ref, import, copy);
+		IsResolved = await RefHelper.Resolve<Link>(root, Ref, import, copy);
 	}
 }
 
 public class LinkJsonConverter : JsonConverter<Link>
 {
-	public override Link? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	public override Link Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");

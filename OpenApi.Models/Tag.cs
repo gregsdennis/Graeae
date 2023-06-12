@@ -73,7 +73,7 @@ public class Tag : IRefTargetContainer
 
 public class TagJsonConverter : JsonConverter<Tag>
 {
-	public override Tag? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	public override Tag Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");

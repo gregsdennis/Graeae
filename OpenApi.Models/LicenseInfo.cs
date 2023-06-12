@@ -67,7 +67,7 @@ public class LicenseInfo : IRefTargetContainer
 
 public class LicenseInfoJsonConverter : JsonConverter<LicenseInfo>
 {
-	public override LicenseInfo? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	public override LicenseInfo Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");

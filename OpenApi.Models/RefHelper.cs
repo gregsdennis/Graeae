@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Nodes;
 using Json.Pointer;
 using Json.Schema;
+using Yaml2JsonNode;
 
 namespace OpenApi.Models;
 
@@ -24,9 +25,13 @@ public static class RefHelper
 
 	public static object? GetFromNode(this JsonNode? node, Span<string> keys)
 	{
+#pragma warning disable CS8604
+		// not sure what the compiler's complaining about.
+		// TryEvaluate() takes a nullable node.
 		return keys.ToPointer().TryEvaluate(node, out var target)
 			? target
 			: null;
+#pragma warning restore CS8604
 	}
 
 	public static JsonPointer ToPointer(this Span<string> segments)
@@ -34,7 +39,7 @@ public static class RefHelper
 		return JsonPointer.Create(segments.ToArray().Select(x => (PointerSegment)x));
 	}
 
-	public static bool Resolve<T>(OpenApiDocument root, Uri targetUri, Func<JsonNode?, bool> import, Action<T> copy)
+	public static async Task<bool> Resolve<T>(OpenApiDocument root, Uri targetUri, Func<JsonNode?, bool> import, Action<T> copy)
 		where T : class
 	{
 		var baseUri = ((IBaseDocument)root).BaseUri;
@@ -52,28 +57,30 @@ public static class RefHelper
 			return true;
 		}
 
-		JsonNode? targetContent;
-		var targetBase = Fetch(newBaseUri) ??
+		if (Fetch == null)
+			throw new RefResolutionException("Automatic fetching of referenced documents has been disabled.");
+
+		var targetBase = await Fetch(newBaseUri) ??
 		                 throw new RefResolutionException($"Cannot resolve base schema from `{newUri}`");
 
-		if (JsonPointer.TryParse(fragment, out var pointerFragment))
-			pointerFragment!.TryEvaluate(targetBase, out targetContent);
-		else
-		{
-			throw new RefResolutionException("Anchor fragments are currently unsupported.");
-
-			//var anchorFragment = fragment.Substring(1);
-			//if (!AnchorKeyword.AnchorPattern.IsMatch(anchorFragment))
-			//	throw new RefResolutionException($"Unrecognized fragment type `{newUri}`");
-
-			//if (targetBase is JsonSchema targetBaseSchema &&
-			//    targetBaseSchema.Anchors.TryGetValue(anchorFragment, out var anchorDefinition))
-			//	targetContent = anchorDefinition.Schema;
-		}
+		if (!JsonPointer.TryParse(fragment, out var pointerFragment))
+			throw new RefResolutionException("URI fragments for $ref must be JSON Pointers.");
+			
+		pointerFragment!.TryEvaluate(targetBase, out var targetContent);
 
 		return import(targetContent);
 	}
 
-	// TODO: Initialize this
-	public static Func<Uri, JsonNode?> Fetch { get; set; }
+	public static Func<Uri, Task<JsonNode?>>? Fetch { get; set; } = BasicFetch;
+
+	// This is really inefficient, but it gets the job done.
+	public static async Task<JsonNode?> BasicFetch(Uri uri)
+	{
+		using var client = new HttpClient();
+		var content = await client.GetStringAsync(uri);
+		var yaml = YamlSerializer.Parse(content);
+		var json = yaml.ToJsonNode();
+
+		return json;
+	}
 }

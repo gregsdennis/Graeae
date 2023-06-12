@@ -71,7 +71,7 @@ public class PathCollection : Dictionary<PathTemplate, PathItem>, IRefTargetCont
 
 public class PathCollectionJsonConverter : JsonConverter<PathCollection>
 {
-	public override PathCollection? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	public override PathCollection Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");

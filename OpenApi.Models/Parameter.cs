@@ -201,7 +201,7 @@ public class ParameterRef : Parameter, IComponentRef
 		Ref = reference ?? throw new ArgumentNullException(nameof(reference));
 	}
 
-	public void Resolve(OpenApiDocument root)
+	public async Task Resolve(OpenApiDocument root)
 	{
 		bool import(JsonNode? node)
 		{
@@ -232,13 +232,13 @@ public class ParameterRef : Parameter, IComponentRef
 			ExtensionData = other.ExtensionData;
 		}
 
-		IsResolved = RefHelper.Resolve<Parameter>(root, Ref, import, copy);
+		IsResolved = await RefHelper.Resolve<Parameter>(root, Ref, import, copy);
 	}
 }
 
 public class ParameterJsonConverter : JsonConverter<Parameter>
 {
-	public override Parameter? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	public override Parameter Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");

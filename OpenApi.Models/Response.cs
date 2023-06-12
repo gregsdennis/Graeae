@@ -157,7 +157,7 @@ public class ResponseRef : Response, IComponentRef
 		Ref = reference ?? throw new ArgumentNullException(nameof(reference));
 	}
 
-	public void Resolve(OpenApiDocument root)
+	public async Task Resolve(OpenApiDocument root)
 	{
 		bool import(JsonNode? node)
 		{
@@ -177,13 +177,13 @@ public class ResponseRef : Response, IComponentRef
 			ExtensionData = other.ExtensionData;
 		}
 
-		IsResolved = RefHelper.Resolve<Response>(root, Ref, import, copy);
+		IsResolved = await RefHelper.Resolve<Response>(root, Ref, import, copy);
 	}
 }
 
 public class ResponseJsonConverter : JsonConverter<Response>
 {
-	public override Response? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	public override Response Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");

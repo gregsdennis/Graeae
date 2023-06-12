@@ -61,7 +61,7 @@ public class ContactInfo : IRefTargetContainer
 
 public class ContactInfoJsonConverter : JsonConverter<ContactInfo>
 {
-	public override ContactInfo? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	public override ContactInfo Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");

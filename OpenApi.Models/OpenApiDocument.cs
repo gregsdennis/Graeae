@@ -125,7 +125,7 @@ public class OpenApiDocument : IBaseDocument
 		return obj;
 	}
 
-	public void Initialize(SchemaRegistry? schemaRegistry = null)
+	public async Task Initialize(SchemaRegistry? schemaRegistry = null)
 	{
 		schemaRegistry ??= SchemaRegistry.Global;
 
@@ -135,7 +135,7 @@ public class OpenApiDocument : IBaseDocument
 		RegisterSchemas(schemaRegistry);
 
 		// find and attempt to resolve all reference objects
-		TryResolveRefs();
+		await TryResolveRefs();
 	}
 
 	private void RegisterSchemas(SchemaRegistry schemaRegistry)
@@ -157,7 +157,7 @@ public class OpenApiDocument : IBaseDocument
 		}
 	}
 
-	private void TryResolveRefs()
+	private async Task TryResolveRefs()
 	{
 		var allRefs = GeneralHelpers.Collect(
 			Paths?.FindRefs(),
@@ -165,10 +165,7 @@ public class OpenApiDocument : IBaseDocument
 			Components?.FindRefs()
 		);
 
-		foreach (var reference in allRefs)
-		{
-			reference.Resolve(this);
-		}
+		await Task.WhenAll(allRefs.Select(x => x.Resolve(this)));
 	}
 
 	public T? Find<T>(JsonPointer pointer)
@@ -234,7 +231,7 @@ public class OpenApiDocument : IBaseDocument
 
 public class OpenApiDocumentJsonConverter : JsonConverter<OpenApiDocument>
 {
-	public override OpenApiDocument? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	public override OpenApiDocument Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");

@@ -1,0 +1,9 @@
+{
+  "foo": {
+    "example": {
+      "value": {
+        "type": "string"
+      }
+    }
+  }
+}

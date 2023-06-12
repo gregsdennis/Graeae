@@ -150,7 +150,7 @@ public class Operation : IRefTargetContainer
 
 public class OperationJsonConverter : JsonConverter<Operation>
 {
-	public override Operation? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	public override Operation Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");

@@ -220,7 +220,7 @@ public class PathItemRef : PathItem, IComponentRef
 		Ref = reference ?? throw new ArgumentNullException(nameof(reference));
 	}
 
-	public void Resolve(OpenApiDocument root)
+	public async Task Resolve(OpenApiDocument root)
 	{
 		bool import(JsonNode? node)
 		{
@@ -249,13 +249,13 @@ public class PathItemRef : PathItem, IComponentRef
 			ExtensionData = other.ExtensionData;
 		}
 
-		IsResolved = RefHelper.Resolve<PathItem>(root, Ref, import, copy);
+		IsResolved = await RefHelper.Resolve<PathItem>(root, Ref, import, copy);
 	}
 }
 
 public class PathItemJsonConverter : JsonConverter<PathItem>
 {
-	public override PathItem? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	public override PathItem Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");

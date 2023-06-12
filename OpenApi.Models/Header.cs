@@ -186,7 +186,7 @@ public class HeaderRef : Header, IComponentRef
 		Ref = reference ?? throw new ArgumentNullException(nameof(reference));
 	}
 
-	public void Resolve(OpenApiDocument root)
+	public async Task Resolve(OpenApiDocument root)
 	{
 		bool import(JsonNode? node)
 		{
@@ -212,13 +212,13 @@ public class HeaderRef : Header, IComponentRef
 			ExtensionData = other.ExtensionData;
 		}
 
-		IsResolved = RefHelper.Resolve<Header>(root, Ref, import, copy);
+		IsResolved = await RefHelper.Resolve<Header>(root, Ref, import, copy);
 	}
 }
 
 public class HeaderJsonConverter : JsonConverter<Header>
 {
-	public override Header? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	public override Header Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");

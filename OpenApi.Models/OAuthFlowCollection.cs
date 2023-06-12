@@ -85,7 +85,7 @@ public class OAuthFlowCollection : IRefTargetContainer
 
 public class OAuthFlowCollectionJsonConverter : JsonConverter<OAuthFlowCollection>
 {
-	public override OAuthFlowCollection? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	public override OAuthFlowCollection Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");
