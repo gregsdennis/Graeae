@@ -10,8 +10,8 @@ public enum SecuritySchemeLocation
 	Unspecified,
 	[Description("query")]
 	Query,
-	[Description("query")]
+	[Description("header")]
 	Header,
-	[Description("query")]
+	[Description("cookie")]
 	Cookie
 }

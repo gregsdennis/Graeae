@@ -1,11 +1,12 @@
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using Json.More;
 using Yaml2JsonNode;
 using YamlDotNet.RepresentationModel;
 
 namespace OpenApi.Models.Tests;
 
-public class OpenApiDotNetRepoExamples
+public class SpecificationExamples
 {
 	[TestCase("api-with-examples.yaml")]
 	[TestCase("callback-example.yaml")]
@@ -15,6 +16,7 @@ public class OpenApiDotNetRepoExamples
 	[TestCase("petstore-expanded.yaml")]
 	[TestCase("uspto.yaml")]
 	[TestCase("webhook-example.yaml")]
+	[TestCase("postman.yaml")]
 	public void RoundTripYaml(string fileName)
 	{
 		var fullFileName = GetFile(fileName);
@@ -44,6 +46,7 @@ public class OpenApiDotNetRepoExamples
 	[TestCase("petstore-expanded.yaml")]
 	[TestCase("uspto.yaml")]
 	[TestCase("webhook-example.yaml")]
+	[TestCase("postman.yaml")]
 	public void RoundTripJson(string fileName)
 	{
 		var fullFileName = GetFile(fileName);
@@ -57,6 +60,7 @@ public class OpenApiDotNetRepoExamples
 			yamlStream.Load(reader);
 			var yaml = yamlStream.Documents.First();
 			var json = yaml.ToJsonNode();
+			Console.WriteLine(json);
 			var document = json.Deserialize<OpenApiDocument>();
 
 			var returnToJson = JsonSerializer.SerializeToNode(document, new JsonSerializerOptions
@@ -65,10 +69,7 @@ public class OpenApiDotNetRepoExamples
 			})!;
 
 			Console.WriteLine(returnToJson);
-
-			var returnToYaml = returnToJson.ToYamlNode();
-
-			Console.WriteLine(YamlSerializer.Serialize(returnToYaml));
+			Assert.That(() => json.IsEquivalentTo(returnToJson));
 		}
 		catch (Exception e)
 		{

@@ -66,8 +66,8 @@ public class OpenApiInfo : IRefTargetContainer
 		};
 
 		obj.MaybeAdd("summary", info.Summary);
-		obj.MaybeAdd("description", info.Summary);
-		obj.MaybeAdd("termsOfService", info.Summary);
+		obj.MaybeAdd("description", info.Description);
+		obj.MaybeAdd("termsOfService", info.TermsOfService);
 		obj.MaybeAdd("contact", ContactInfo.ToNode(info.Contact));
 		obj.MaybeAdd("license", LicenseInfo.ToNode(info.License));
 		obj.AddExtensions(info.ExtensionData);

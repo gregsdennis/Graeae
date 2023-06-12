@@ -44,7 +44,7 @@ public class ContactInfo : IRefTargetContainer
 		var obj = new JsonObject();
 
 		obj.MaybeAdd("name", contact.Name);
-		obj.MaybeAdd("url", contact.Url?.ToString());
+		obj.MaybeAdd("url", contact.Url?.OriginalString);
 		obj.MaybeAdd("email", contact.Email);
 		obj.AddExtensions(contact.ExtensionData);
 

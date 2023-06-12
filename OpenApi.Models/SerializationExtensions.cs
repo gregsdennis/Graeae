@@ -218,7 +218,7 @@ public static class SerializationExtensions
 	{
 		if (value == null) return;
 
-		obj.Add(propertyName, JsonSerializer.Serialize(value));
+		obj.Add(propertyName, JsonSerializer.SerializeToNode(value)!.GetValue<string>());
 	}
 
 	public static void MaybeSerialize<T>(this JsonObject obj, string propertyName, T? value, JsonSerializerOptions? options)
@@ -226,6 +226,6 @@ public static class SerializationExtensions
 	{
 		if (value == null) return;
 
-		obj.Add(propertyName, JsonSerializer.SerializeToNode(obj, options));
+		obj.Add(propertyName, JsonSerializer.SerializeToNode(value, options));
 	}
 }

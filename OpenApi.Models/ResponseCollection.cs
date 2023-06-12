@@ -46,12 +46,12 @@ public class ResponseCollection : Dictionary<HttpStatusCode, Response>, IRefTarg
 
 		var obj = new JsonObject();
 
-		obj.MaybeAdd("default", Response.ToNode(responses.Default, options));
-
 		foreach (var (key, value) in responses)
 		{
 			obj.Add(((int)key).ToString(), Response.ToNode(value, options));
 		}
+
+		obj.MaybeAdd("default", Response.ToNode(responses.Default, options));
 
 		obj.AddExtensions(responses.ExtensionData);
 
