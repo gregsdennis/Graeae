@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using Json.Schema;
 
-namespace OpenApi.Models.Draft4;
+namespace OpenApi.Models.SchemaDraft4;
 
 [SchemaKeyword(Name)]
 [SchemaSpecVersion(Draft4Support.Draft4Version)]

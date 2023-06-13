@@ -1,6 +1,6 @@
 ﻿using Json.Schema;
 
-namespace OpenApi.Models.Draft4;
+namespace OpenApi.Models.SchemaDraft4;
 
 public static class JsonSchemaKeywordExtensions
 {

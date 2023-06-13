@@ -1,4 +1,4 @@
-using OpenApi.Models.Draft4;
+using OpenApi.Models.SchemaDraft4;
 
 namespace OpenApi.Models.Tests;
 

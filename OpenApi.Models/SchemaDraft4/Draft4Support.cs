@@ -1,13 +1,13 @@
 ﻿using System.Text.Json.Nodes;
 using Json.Schema;
 
-namespace OpenApi.Models.Draft4;
+namespace OpenApi.Models.SchemaDraft4;
 
 public static class Draft4Support
 {
 	// This is kind of a hack since SpecVersion is an enum.
 	// Maybe it should be defined as string constants.
-	// This assumes that JsonSchema.Net supports custom spec versions (not yet published).
+	// This assumes that JsonSchema.Net supports custom spec versions (hidden feature).
 	public const SpecVersion Draft4Version = (SpecVersion)(1 << 10);
 	public const SchemaValueType FileDataType = (SchemaValueType)(1 << 10);
 
@@ -150,7 +150,8 @@ public static class Draft4Support
 	{
 		Draft4MetaSchema.BaseUri = new Uri(Draft4MetaSchemaUri);
 		// This is a hack to set the schema.DeclaredVersion property.
-		// This allows draft 4 to be used as a meta-schema.
+		// It allows draft 4 to be used as a meta-schema.
+		// It's a bit of a hidden feature of JsonSchema.Net.
 		Draft4MetaSchema.Evaluate(new JsonObject(), new EvaluationOptions { EvaluateAs = Draft4Version });
 	}
 

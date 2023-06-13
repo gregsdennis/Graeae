@@ -3,6 +3,7 @@ using System.Text.Json.Nodes;
 using Json.More;
 using Json.Pointer;
 using Json.Schema;
+using Yaml2JsonNode;
 
 namespace OpenApi.Models.Tests;
 
@@ -174,7 +175,7 @@ public class RefResolutionTests
 		}
 		finally
 		{
-			RefHelper.Fetch = RefHelper.BasicFetch;
+			RefHelper.Fetch = RefHelper.FetchJson;
 		}
 	}
 }

@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Nodes;
 using Json.Pointer;
 using Json.Schema;
-using Yaml2JsonNode;
 
 namespace OpenApi.Models;
 
@@ -25,13 +24,9 @@ public static class RefHelper
 
 	public static object? GetFromNode(this JsonNode? node, Span<string> keys)
 	{
-#pragma warning disable CS8604
-		// not sure what the compiler's complaining about.
-		// TryEvaluate() takes a nullable node.
 		return keys.ToPointer().TryEvaluate(node, out var target)
 			? target
 			: null;
-#pragma warning restore CS8604
 	}
 
 	public static JsonPointer ToPointer(this Span<string> segments)
@@ -71,15 +66,14 @@ public static class RefHelper
 		return import(targetContent);
 	}
 
-	public static Func<Uri, Task<JsonNode?>>? Fetch { get; set; } = BasicFetch;
+	public static Func<Uri, Task<JsonNode?>>? Fetch { get; set; } = FetchJson;
 
-	// This is really inefficient, but it gets the job done.
-	public static async Task<JsonNode?> BasicFetch(Uri uri)
+	// This is inefficient, but it gets the job done.
+	public static async Task<JsonNode?> FetchJson(Uri uri)
 	{
 		using var client = new HttpClient();
 		var content = await client.GetStringAsync(uri);
-		var yaml = YamlSerializer.Parse(content);
-		var json = yaml.ToJsonNode();
+		var json = JsonNode.Parse(content);
 
 		return json;
 	}
