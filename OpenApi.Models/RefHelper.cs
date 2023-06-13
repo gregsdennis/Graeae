@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Nodes;
 using Json.Pointer;
 using Json.Schema;
+using Yaml2JsonNode;
 
 namespace OpenApi.Models;
 
@@ -73,7 +74,8 @@ public static class RefHelper
 	{
 		using var client = new HttpClient();
 		var content = await client.GetStringAsync(uri);
-		var json = JsonNode.Parse(content);
+		var yaml = YamlSerializer.Parse(content);
+		var json = yaml.First().ToJsonNode();
 
 		return json;
 	}
