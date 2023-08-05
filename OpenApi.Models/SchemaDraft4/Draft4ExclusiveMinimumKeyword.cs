@@ -45,9 +45,7 @@ public class Draft4ExclusiveMinimumKeyword : IJsonSchemaKeyword
 			var minimumConstraint = localConstraints.SingleOrDefault(x => x.Keyword == MinimumKeyword.Name);
 			if (minimumConstraint == null) return KeywordConstraint.Skip;
 
-			var localSchema = schemaConstraint.GetLocalSchema(context.Options);
-
-			var value = localSchema.GetMinimum()!.Value;
+			var value = schemaConstraint.LocalSchema.GetMinimum()!.Value;
 			return new KeywordConstraint(Name, (e, c) => Evaluator(e, c, value))
 			{
 				SiblingDependencies = new[] { minimumConstraint }

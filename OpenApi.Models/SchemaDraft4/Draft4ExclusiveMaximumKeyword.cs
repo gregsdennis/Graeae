@@ -46,9 +46,7 @@ public class Draft4ExclusiveMaximumKeyword : IJsonSchemaKeyword
 			var maximumConstraint = localConstraints.SingleOrDefault(x => x.Keyword == MaximumKeyword.Name);
 			if (maximumConstraint == null) return KeywordConstraint.Skip;
 
-			var localSchema = schemaConstraint.GetLocalSchema(context.Options);
-
-			var value = localSchema.GetMaximum()!.Value;
+			var value = schemaConstraint.LocalSchema.GetMaximum()!.Value;
 			return new KeywordConstraint(Name, (e, c) => Evaluator(e, c, value))
 			{
 				SiblingDependencies = new[] { maximumConstraint }
