@@ -172,7 +172,7 @@ public class PathItem : IRefTargetContainer
 			: ExtensionData?.Resolve(keys);
 	}
 
-	public IEnumerable<JsonSchema> FindSchemas()
+	internal IEnumerable<JsonSchema> FindSchemas()
 	{
 		return GeneralHelpers.Collect(
 			Get?.FindSchemas(),
@@ -187,7 +187,7 @@ public class PathItem : IRefTargetContainer
 		);
 	}
 
-	public IEnumerable<IComponentRef> FindRefs()
+	internal IEnumerable<IComponentRef> FindRefs()
 	{
 		if (this is PathItemRef piRef)
 			yield return piRef;
@@ -218,10 +218,24 @@ public class PathItem : IRefTargetContainer
 /// </summary>
 public class PathItemRef : PathItem, IComponentRef
 {
+	/// <summary>
+	/// The URI for the reference.
+	/// </summary>
 	public Uri Ref { get; }
-	public new string? Summary { get; set; }
-	public new string? Description { get; set; }
 
+	/// <summary>
+	/// Gets the summary.
+	/// </summary>
+	public string? Summary { get; set; }
+
+	/// <summary>
+	/// Gets the description.
+	/// </summary>
+	public string? Description { get; set; }
+
+	/// <summary>
+	/// Gets whether the reference has been resolved.
+	/// </summary>
 	public bool IsResolved { get; private set; }
 
 	public PathItemRef(Uri reference)
@@ -229,7 +243,7 @@ public class PathItemRef : PathItem, IComponentRef
 		Ref = reference ?? throw new ArgumentNullException(nameof(reference));
 	}
 
-	public async Task Resolve(OpenApiDocument root)
+	async Task IComponentRef.Resolve(OpenApiDocument root)
 	{
 		bool import(JsonNode? node)
 		{

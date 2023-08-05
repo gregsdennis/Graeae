@@ -95,7 +95,7 @@ public class MediaType : IRefTargetContainer
 			: ExtensionData?.Resolve(keys);
 	}
 
-	public IEnumerable<JsonSchema> FindSchemas()
+	internal IEnumerable<JsonSchema> FindSchemas()
 	{
 		if (Schema != null)
 			yield return Schema;
@@ -108,7 +108,7 @@ public class MediaType : IRefTargetContainer
 		}
 	}
 
-	public IEnumerable<IComponentRef> FindRefs()
+	internal IEnumerable<IComponentRef> FindRefs()
 	{
 		return GeneralHelpers.Collect(
 			Examples?.Values.SelectMany(x => x.FindRefs()),

@@ -133,7 +133,7 @@ public class Operation : IRefTargetContainer
 			: ExtensionData?.Resolve(keys);
 	}
 
-	public IEnumerable<JsonSchema> FindSchemas()
+	internal IEnumerable<JsonSchema> FindSchemas()
 	{
 		return GeneralHelpers.Collect(
 			Parameters?.SelectMany(x => x.FindSchemas()),
@@ -143,7 +143,7 @@ public class Operation : IRefTargetContainer
 		);
 	}
 
-	public IEnumerable<IComponentRef> FindRefs()
+	internal IEnumerable<IComponentRef> FindRefs()
 	{
 		return GeneralHelpers.Collect(
 			Parameters?.SelectMany(x => x.FindRefs()),

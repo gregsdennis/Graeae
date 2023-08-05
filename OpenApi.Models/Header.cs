@@ -149,7 +149,7 @@ public class Header : IRefTargetContainer
 			: ExtensionData?.Resolve(keys);
 	}
 
-	public IEnumerable<JsonSchema> FindSchemas()
+	internal IEnumerable<JsonSchema> FindSchemas()
 	{
 		if (Schema != null)
 			yield return Schema;
@@ -162,7 +162,7 @@ public class Header : IRefTargetContainer
 		}
 	}
 
-	public IEnumerable<IComponentRef> FindRefs()
+	internal IEnumerable<IComponentRef> FindRefs()
 	{
 		if (this is HeaderRef hRef)
 			yield return hRef;
@@ -184,10 +184,24 @@ public class Header : IRefTargetContainer
 /// </summary>
 public class HeaderRef : Header, IComponentRef
 {
-	public Uri Ref { get;  }
-	public string? Summary { get; set; }
-	public new string? Description { get; set; }
+	/// <summary>
+	/// The URI for the reference.
+	/// </summary>
+	public Uri Ref { get; }
 
+	/// <summary>
+	/// Gets the summary.
+	/// </summary>
+	public string? Summary { get; set; }
+
+	/// <summary>
+	/// Gets the description.
+	/// </summary>
+	public string? Description { get; set; }
+
+	/// <summary>
+	/// Gets whether the reference has been resolved.
+	/// </summary>
 	public bool IsResolved { get; private set; }
 
 	public HeaderRef(Uri reference)
@@ -195,7 +209,7 @@ public class HeaderRef : Header, IComponentRef
 		Ref = reference ?? throw new ArgumentNullException(nameof(reference));
 	}
 
-	public async Task Resolve(OpenApiDocument root)
+	async Task IComponentRef.Resolve(OpenApiDocument root)
 	{
 		bool import(JsonNode? node)
 		{

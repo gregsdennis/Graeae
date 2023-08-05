@@ -79,12 +79,12 @@ public class Encoding : IRefTargetContainer
 		return ExtensionData?.Resolve(keys);
 	}
 
-	public IEnumerable<JsonSchema> FindSchemas()
+	internal IEnumerable<JsonSchema> FindSchemas()
 	{
 		return Headers?.Values.SelectMany(x => x.FindSchemas()) ?? Enumerable.Empty<JsonSchema>();
 	}
 
-	public IEnumerable<IComponentRef> FindRefs()
+	internal IEnumerable<IComponentRef> FindRefs()
 	{
 		return GeneralHelpers.Collect(
 			Headers?.Values.SelectMany(x => x.FindRefs())

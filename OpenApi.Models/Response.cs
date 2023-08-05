@@ -124,7 +124,7 @@ public class Response : IRefTargetContainer
 			: ExtensionData?.Resolve(keys);
 	}
 
-	public IEnumerable<JsonSchema> FindSchemas()
+	internal IEnumerable<JsonSchema> FindSchemas()
 	{
 		return GeneralHelpers.Collect(
 			Headers?.Values.SelectMany(x => x.FindSchemas()),
@@ -132,7 +132,7 @@ public class Response : IRefTargetContainer
 		);
 	}
 
-	public IEnumerable<IComponentRef> FindRefs()
+	internal IEnumerable<IComponentRef> FindRefs()
 	{
 		if (this is ResponseRef rRef)
 			yield return rRef;
@@ -155,10 +155,24 @@ public class Response : IRefTargetContainer
 /// </summary>
 public class ResponseRef : Response, IComponentRef
 {
+	/// <summary>
+	/// The URI for the reference.
+	/// </summary>
 	public Uri Ref { get; }
-	public string? Summary { get; set; }
-	public new string? Description { get; set; }
 
+	/// <summary>
+	/// Gets the summary.
+	/// </summary>
+	public string? Summary { get; set; }
+
+	/// <summary>
+	/// Gets the description.
+	/// </summary>
+	public string? Description { get; set; }
+
+	/// <summary>
+	/// Gets whether the reference has been resolved.
+	/// </summary>
 	public bool IsResolved { get; private set; }
 
 	public ResponseRef(Uri reference)
@@ -166,7 +180,7 @@ public class ResponseRef : Response, IComponentRef
 		Ref = reference ?? throw new ArgumentNullException(nameof(reference));
 	}
 
-	public async Task Resolve(OpenApiDocument root)
+	async Task IComponentRef.Resolve(OpenApiDocument root)
 	{
 		bool import(JsonNode? node)
 		{

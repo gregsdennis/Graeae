@@ -64,12 +64,12 @@ public class PathCollection : Dictionary<PathTemplate, PathItem>, IRefTargetCont
 		       ExtensionData?.Resolve(keys);
 	}
 
-	public IEnumerable<JsonSchema> FindSchemas()
+	internal IEnumerable<JsonSchema> FindSchemas()
 	{
 		return Values.SelectMany(x => x.FindSchemas());
 	}
 
-	public IEnumerable<IComponentRef> FindRefs()
+	internal IEnumerable<IComponentRef> FindRefs()
 	{
 		return Values.SelectMany(x => x.FindRefs());
 	}

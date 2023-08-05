@@ -73,7 +73,7 @@ public class ResponseCollection : Dictionary<HttpStatusCode, Response>, IRefTarg
 		       ExtensionData?.Resolve(keys);
 	}
 
-	public IEnumerable<JsonSchema> FindSchemas()
+	internal IEnumerable<JsonSchema> FindSchemas()
 	{
 		return GeneralHelpers.Collect(
 			Default?.FindSchemas(),
@@ -81,7 +81,7 @@ public class ResponseCollection : Dictionary<HttpStatusCode, Response>, IRefTarg
 		);
 	}
 
-	public IEnumerable<IComponentRef> FindRefs()
+	internal IEnumerable<IComponentRef> FindRefs()
 	{
 		if (Default is ResponseRef rRef)
 			yield return rRef;

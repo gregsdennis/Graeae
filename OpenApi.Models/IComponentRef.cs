@@ -3,7 +3,7 @@
 /// <summary>
 /// Indicates that the item is a reference to another object rather than being the object itself.
 /// </summary>
-public interface IComponentRef
+internal interface IComponentRef
 {
 	/// <summary>
 	/// The URI for the reference.
@@ -17,6 +17,10 @@ public interface IComponentRef
 	/// Gets the description.
 	/// </summary>
 	string? Description { get; }
+	/// <summary>
+	/// Gets whether the reference has been resolved.
+	/// </summary>
+	bool IsResolved { get; }
 
 	/// <summary>
 	/// Resolves the reference.
