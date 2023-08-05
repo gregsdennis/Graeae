@@ -5,6 +5,9 @@ using Json.Schema;
 
 namespace OpenApi.Models.SchemaDraft4;
 
+/// <summary>
+/// Overrides the <see cref="ExclusiveMaximumKeyword"/> to support draft 4 boolean values.
+/// </summary>
 [SchemaKeyword(Name)]
 [SchemaSpecVersion(Draft4Support.Draft4Version)]
 [SchemaSpecVersion(SpecVersion.Draft202012)]
@@ -12,15 +15,21 @@ namespace OpenApi.Models.SchemaDraft4;
 [JsonConverter(typeof(Draft4ExclusiveMaximumKeywordJsonConverter))]
 public class Draft4ExclusiveMaximumKeyword : IJsonSchemaKeyword
 {
+	/// <summary>
+	/// The name of the keyword.
+	/// </summary>
 	public const string Name = "exclusiveMaximum";
 
 	private readonly ExclusiveMaximumKeyword? _numberSupport;
 
 	/// <summary>
-	/// The ID.
+	/// The boolean value, if it's a boolean.
 	/// </summary>
 	public bool? BoolValue { get; }
 
+	/// <summary>
+	/// The number value, if it's a number.
+	/// </summary>
 	public decimal? NumberValue => _numberSupport?.Value;
 
 	/// <summary>
@@ -32,11 +41,23 @@ public class Draft4ExclusiveMaximumKeyword : IJsonSchemaKeyword
 		BoolValue = value;
 	}
 
+	/// <summary>
+	/// Creates a new <see cref="IdKeyword"/>.
+	/// </summary>
+	/// <param name="value">The minimum value.</param>
 	public Draft4ExclusiveMaximumKeyword(decimal value)
 	{
 		_numberSupport = new ExclusiveMaximumKeyword(value);
 	}
 
+	/// <summary>Builds a constraint object for a keyword.</summary>
+	/// <param name="schemaConstraint">The <see cref="T:Json.Schema.SchemaConstraint" /> for the schema object that houses this keyword.</param>
+	/// <param name="localConstraints">
+	/// The set of other <see cref="T:Json.Schema.KeywordConstraint" />s that have been processed prior to this one.
+	/// Will contain the constraints for keyword dependencies.
+	/// </param>
+	/// <param name="context">The <see cref="T:Json.Schema.EvaluationContext" />.</param>
+	/// <returns>A constraint object.</returns>
 	public KeywordConstraint GetConstraint(SchemaConstraint schemaConstraint, IReadOnlyList<KeywordConstraint> localConstraints, EvaluationContext context)
 	{
 		if (BoolValue.HasValue)

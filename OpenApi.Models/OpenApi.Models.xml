@@ -1,0 +1,125 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>OpenApi.Models</name>
+    </assembly>
+    <members>
+        <member name="T:OpenApi.Models.SchemaDraft4.Draft4ExclusiveMaximumKeyword">
+            <summary>
+            Overrides the <see cref="T:Json.Schema.ExclusiveMaximumKeyword"/> to support draft 4 boolean values.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.SchemaDraft4.Draft4ExclusiveMaximumKeyword.Name">
+            <summary>
+            The name of the keyword.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.SchemaDraft4.Draft4ExclusiveMaximumKeyword.BoolValue">
+            <summary>
+            The boolean value, if it's a boolean.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.SchemaDraft4.Draft4ExclusiveMaximumKeyword.NumberValue">
+            <summary>
+            The number value, if it's a number.
+            </summary>
+        </member>
+        <member name="M:OpenApi.Models.SchemaDraft4.Draft4ExclusiveMaximumKeyword.#ctor(System.Boolean)">
+            <summary>
+            Creates a new <see cref="T:Json.Schema.IdKeyword"/>.
+            </summary>
+            <param name="value">Whether the `minimum` value should be considered exclusive.</param>
+        </member>
+        <member name="M:OpenApi.Models.SchemaDraft4.Draft4ExclusiveMaximumKeyword.#ctor(System.Decimal)">
+            <summary>
+            Creates a new <see cref="T:Json.Schema.IdKeyword"/>.
+            </summary>
+            <param name="value">The minimum value.</param>
+        </member>
+        <member name="M:OpenApi.Models.SchemaDraft4.Draft4ExclusiveMaximumKeyword.GetConstraint(Json.Schema.SchemaConstraint,System.Collections.Generic.IReadOnlyList{Json.Schema.KeywordConstraint},Json.Schema.EvaluationContext)">
+            <summary>Builds a constraint object for a keyword.</summary>
+            <param name="schemaConstraint">The <see cref="T:Json.Schema.SchemaConstraint" /> for the schema object that houses this keyword.</param>
+            <param name="localConstraints">
+            The set of other <see cref="T:Json.Schema.KeywordConstraint" />s that have been processed prior to this one.
+            Will contain the constraints for keyword dependencies.
+            </param>
+            <param name="context">The <see cref="T:Json.Schema.EvaluationContext" />.</param>
+            <returns>A constraint object.</returns>
+        </member>
+        <member name="T:OpenApi.Models.SchemaDraft4.Draft4ExclusiveMinimumKeyword">
+            <summary>
+            Overrides the <see cref="T:Json.Schema.ExclusiveMinimumKeyword"/> to support draft 4 boolean values.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.SchemaDraft4.Draft4ExclusiveMinimumKeyword.Name">
+            <summary>
+            The name of the keyword.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.SchemaDraft4.Draft4ExclusiveMinimumKeyword.BoolValue">
+            <summary>
+            The boolean value, if it's a boolean.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.SchemaDraft4.Draft4ExclusiveMinimumKeyword.NumberValue">
+            <summary>
+            The number value, if it's a number.
+            </summary>
+        </member>
+        <member name="M:OpenApi.Models.SchemaDraft4.Draft4ExclusiveMinimumKeyword.#ctor(System.Boolean)">
+            <summary>
+            Creates a new <see cref="T:Json.Schema.IdKeyword"/>.
+            </summary>
+            <param name="value">Whether the `minimum` value should be considered exclusive.</param>
+        </member>
+        <member name="M:OpenApi.Models.SchemaDraft4.Draft4ExclusiveMinimumKeyword.#ctor(System.Decimal)">
+            <summary>
+            Creates a new <see cref="T:Json.Schema.IdKeyword"/>.
+            </summary>
+            <param name="value">The minimum value.</param>
+        </member>
+        <member name="M:OpenApi.Models.SchemaDraft4.Draft4ExclusiveMinimumKeyword.GetConstraint(Json.Schema.SchemaConstraint,System.Collections.Generic.IReadOnlyList{Json.Schema.KeywordConstraint},Json.Schema.EvaluationContext)">
+            <summary>Builds a constraint object for a keyword.</summary>
+            <param name="schemaConstraint">The <see cref="T:Json.Schema.SchemaConstraint" /> for the schema object that houses this keyword.</param>
+            <param name="localConstraints">
+            The set of other <see cref="T:Json.Schema.KeywordConstraint" />s that have been processed prior to this one.
+            Will contain the constraints for keyword dependencies.
+            </param>
+            <param name="context">The <see cref="T:Json.Schema.EvaluationContext" />.</param>
+            <returns>A constraint object.</returns>
+        </member>
+        <member name="P:OpenApi.Models.SchemaDraft4.Draft4IdKeyword.Id">
+            <summary>
+            The ID.
+            </summary>
+        </member>
+        <member name="M:OpenApi.Models.SchemaDraft4.Draft4IdKeyword.#ctor(System.Uri)">
+            <summary>
+            Creates a new <see cref="T:Json.Schema.IdKeyword"/>.
+            </summary>
+            <param name="id">The ID.</param>
+        </member>
+        <member name="P:OpenApi.Models.SchemaDraft4.Draft4TypeKeyword.Type">
+            <summary>
+            The ID.
+            </summary>
+        </member>
+        <member name="M:OpenApi.Models.SchemaDraft4.Draft4TypeKeyword.#ctor(Json.Schema.SchemaValueType)">
+            <summary>
+            Creates a new <see cref="T:Json.Schema.IdKeyword"/>.
+            </summary>
+            <param name="type">The instance type that is allowed.</param>
+        </member>
+        <member name="P:OpenApi.Models.SchemaDraft4.NullableKeyword.Value">
+            <summary>
+            The ID.
+            </summary>
+        </member>
+        <member name="M:OpenApi.Models.SchemaDraft4.NullableKeyword.#ctor(System.Boolean)">
+            <summary>
+            Creates a new <see cref="T:Json.Schema.IdKeyword"/>.
+            </summary>
+            <param name="value">Whether the `minimum` value should be considered exclusive.</param>
+        </member>
+    </members>
+</doc>
