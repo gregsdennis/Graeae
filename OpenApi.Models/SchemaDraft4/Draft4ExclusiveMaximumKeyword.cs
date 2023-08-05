@@ -8,8 +8,9 @@ namespace OpenApi.Models.SchemaDraft4;
 [SchemaKeyword(Name)]
 [SchemaSpecVersion(Draft4Support.Draft4Version)]
 [SchemaSpecVersion(SpecVersion.Draft202012)]
+[DependsOnAnnotationsFrom(typeof(MinimumKeyword))]
 [JsonConverter(typeof(Draft4ExclusiveMaximumKeywordJsonConverter))]
-public class Draft4ExclusiveMaximumKeyword : IJsonSchemaKeyword, IEquatable<Draft4ExclusiveMaximumKeyword>
+public class Draft4ExclusiveMaximumKeyword : IJsonSchemaKeyword
 {
 	public const string Name = "exclusiveMaximum";
 
@@ -36,67 +37,40 @@ public class Draft4ExclusiveMaximumKeyword : IJsonSchemaKeyword, IEquatable<Draf
 		_numberSupport = new ExclusiveMaximumKeyword(value);
 	}
 
-	public void Evaluate(EvaluationContext context)
+	public KeywordConstraint GetConstraint(SchemaConstraint schemaConstraint, IReadOnlyList<KeywordConstraint> localConstraints, EvaluationContext context)
 	{
-		// TODO: do we need to validate that the right version of the keyword is being used?
 		if (BoolValue.HasValue)
 		{
-			context.EnterKeyword(Name);
-			if (!BoolValue.Value)
+			if (!BoolValue.Value) return KeywordConstraint.Skip;
+
+			var maximumConstraint = localConstraints.SingleOrDefault(x => x.Keyword == MaximumKeyword.Name);
+			if (maximumConstraint == null) return KeywordConstraint.Skip;
+
+			var localSchema = schemaConstraint.GetLocalSchema(context.Options);
+
+			var value = localSchema.GetMaximum()!.Value;
+			return new KeywordConstraint(Name, (e, c) => Evaluator(e, c, value))
 			{
-				context.NotApplicable(() => "exclusiveMinimum is false; minimum validation is sufficient");
-				return;
-			}
-
-			var limit = context.LocalSchema.GetMinimum();
-			if (!limit.HasValue)
-			{
-				context.NotApplicable(() => "minimum not present");
-				return;
-			}
-
-			var schemaValueType = context.LocalInstance.GetSchemaValueType();
-			if (schemaValueType is not (SchemaValueType.Number or SchemaValueType.Integer))
-			{
-				context.WrongValueKind(schemaValueType);
-				return;
-			}
-
-			var number = context.LocalInstance!.AsValue().GetNumber();
-
-			if (limit == number)
-				context.LocalResult.Fail(Name, ErrorMessages.ExclusiveMaximum, ("received", number), ("limit", BoolValue));
-			context.ExitKeyword(Name, context.LocalResult.IsValid);
+				SiblingDependencies = new[] { maximumConstraint }
+			};
 		}
-		else
+
+		return _numberSupport!.GetConstraint(schemaConstraint, localConstraints, context);
+	}
+
+	private void Evaluator(KeywordEvaluation evaluation, EvaluationContext context, decimal limit)
+	{
+		var schemaValueType = evaluation.LocalInstance.GetSchemaValueType();
+		if (schemaValueType is not (SchemaValueType.Number or SchemaValueType.Integer))
 		{
-			_numberSupport!.Evaluate(context);
+			evaluation.MarkAsSkipped();
+			return;
 		}
-	}
 
-	/// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
-	/// <param name="other">An object to compare with this object.</param>
-	/// <returns>true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.</returns>
-	public bool Equals(Draft4ExclusiveMaximumKeyword? other)
-	{
-		if (ReferenceEquals(null, other)) return false;
-		if (ReferenceEquals(this, other)) return true;
-		return Equals(BoolValue, other.BoolValue);
-	}
+		var number = evaluation.LocalInstance!.AsValue().GetNumber();
 
-	/// <summary>Determines whether the specified object is equal to the current object.</summary>
-	/// <param name="obj">The object to compare with the current object.</param>
-	/// <returns>true if the specified object  is equal to the current object; otherwise, false.</returns>
-	public override bool Equals(object? obj)
-	{
-		return Equals(obj as Draft4ExclusiveMaximumKeyword);
-	}
-
-	/// <summary>Serves as the default hash function.</summary>
-	/// <returns>A hash code for the current object.</returns>
-	public override int GetHashCode()
-	{
-		return BoolValue.GetHashCode();
+		if (number >= limit)
+			evaluation.Results.Fail(Name, ErrorMessages.GetExclusiveMaximum(context.Options.Culture), ("received", number), ("limit", BoolValue));
 	}
 }
 

@@ -8,7 +8,7 @@ namespace OpenApi.Models.SchemaDraft4;
 [SchemaSpecVersion(Draft4Support.Draft4Version)]
 [SchemaSpecVersion(SpecVersion.Draft202012)]
 [JsonConverter(typeof(Draft4TypeKeywordConverter))]
-public class Draft4TypeKeyword : IJsonSchemaKeyword, IEquatable<Draft4TypeKeyword>
+public class Draft4TypeKeyword : IJsonSchemaKeyword
 {
 	public const string Name = "type";
 
@@ -30,41 +30,11 @@ public class Draft4TypeKeyword : IJsonSchemaKeyword, IEquatable<Draft4TypeKeywor
 		_draft4Support = new TypeKeyword(type | SchemaValueType.Null);
 	}
 
-	public void Evaluate(EvaluationContext context)
+	public KeywordConstraint GetConstraint(SchemaConstraint schemaConstraint, IReadOnlyList<KeywordConstraint> localConstraints, EvaluationContext context)
 	{
-		if (context.Options.EvaluateAs == Draft4Support.Draft4Version)
-		{
-			_draft4Support.Evaluate(context);
-		}
-		else
-		{
-			_basicSupport.Evaluate(context);
-		}
-	}
-
-	/// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
-	/// <param name="other">An object to compare with this object.</param>
-	/// <returns>true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.</returns>
-	public bool Equals(Draft4TypeKeyword? other)
-	{
-		if (ReferenceEquals(null, other)) return false;
-		if (ReferenceEquals(this, other)) return true;
-		return Equals(Type, other.Type);
-	}
-
-	/// <summary>Determines whether the specified object is equal to the current object.</summary>
-	/// <param name="obj">The object to compare with the current object.</param>
-	/// <returns>true if the specified object  is equal to the current object; otherwise, false.</returns>
-	public override bool Equals(object? obj)
-	{
-		return Equals(obj as Draft4TypeKeyword);
-	}
-
-	/// <summary>Serves as the default hash function.</summary>
-	/// <returns>A hash code for the current object.</returns>
-	public override int GetHashCode()
-	{
-		return Type.GetHashCode();
+		return context.Options.EvaluateAs == Draft4Support.Draft4Version
+			? _draft4Support.GetConstraint(schemaConstraint, localConstraints, context)
+			: _basicSupport.GetConstraint(schemaConstraint, localConstraints, context);
 	}
 }
 

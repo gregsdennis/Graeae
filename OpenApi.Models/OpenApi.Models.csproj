@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="JsonSchema.Net" Version="4.1.7" />
-    <PackageReference Include="JsonSchema.Net.OpenApi" Version="1.1.0" />
-    <PackageReference Include="Yaml2JsonNode" Version="1.2.0" />
+    <PackageReference Include="JsonSchema.Net" Version="5.1.1" />
+    <PackageReference Include="JsonSchema.Net.OpenApi" Version="2.0.0" />
+    <PackageReference Include="Yaml2JsonNode" Version="1.2.4" />
   </ItemGroup>
 
 </Project>

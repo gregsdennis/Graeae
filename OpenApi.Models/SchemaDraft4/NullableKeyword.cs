@@ -7,7 +7,7 @@ namespace OpenApi.Models.SchemaDraft4;
 [SchemaKeyword(Name)]
 [SchemaSpecVersion(Draft4Support.Draft4Version)]
 [JsonConverter(typeof(NullableKeywordJsonConverter))]
-public class NullableKeyword : IJsonSchemaKeyword, IEquatable<NullableKeyword>
+public class NullableKeyword : IJsonSchemaKeyword
 {
 	public const string Name = "nullable";
 
@@ -25,40 +25,17 @@ public class NullableKeyword : IJsonSchemaKeyword, IEquatable<NullableKeyword>
 		Value = value;
 	}
 
-	public void Evaluate(EvaluationContext context)
+	public KeywordConstraint GetConstraint(SchemaConstraint schemaConstraint, IReadOnlyList<KeywordConstraint> localConstraints, EvaluationContext context)
 	{
-		context.EnterKeyword(Name);
-		var schemaValueType = context.LocalInstance.GetSchemaValueType();
-		if (schemaValueType == SchemaValueType.Null && !Value)
-		{
-			context.LocalResult.Fail(Name, "nulls are not allowed"); // TODO: localize error message
-		}
-		context.ExitKeyword(Name, context.LocalResult.IsValid);
+		return new KeywordConstraint(Name, Evaluator);
 	}
 
-	/// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
-	/// <param name="other">An object to compare with this object.</param>
-	/// <returns>true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.</returns>
-	public bool Equals(NullableKeyword? other)
+	private void Evaluator(KeywordEvaluation evaluation, EvaluationContext context)
 	{
-		if (ReferenceEquals(null, other)) return false;
-		if (ReferenceEquals(this, other)) return true;
-		return Equals(Value, other.Value);
-	}
+		var schemaValueType = evaluation.LocalInstance.GetSchemaValueType();
+		if (schemaValueType == SchemaValueType.Null && !Value) 
+			evaluation.Results.Fail(Name, "nulls are not allowed"); // TODO: localize error message
 
-	/// <summary>Determines whether the specified object is equal to the current object.</summary>
-	/// <param name="obj">The object to compare with the current object.</param>
-	/// <returns>true if the specified object  is equal to the current object; otherwise, false.</returns>
-	public override bool Equals(object? obj)
-	{
-		return Equals(obj as NullableKeyword);
-	}
-
-	/// <summary>Serves as the default hash function.</summary>
-	/// <returns>A hash code for the current object.</returns>
-	public override int GetHashCode()
-	{
-		return Value.GetHashCode();
 	}
 }
 
