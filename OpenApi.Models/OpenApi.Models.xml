@@ -133,12 +133,12 @@
         </member>
         <member name="P:OpenApi.Models.IComponentRef.Summary">
             <summary>
-            Gets the summary.
+            Gets or sets the summary.
             </summary>
         </member>
         <member name="P:OpenApi.Models.IComponentRef.Description">
             <summary>
-            Gets the description.
+            Gets or sets the description.
             </summary>
         </member>
         <member name="M:OpenApi.Models.IComponentRef.Resolve(OpenApi.Models.OpenApiDocument)">

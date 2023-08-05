@@ -16,13 +16,23 @@ public class ExternalDocumentation : IRefTargetContainer
 		"url"
 	};
 
+	/// <summary>
+	/// Gets or sets the description.
+	/// </summary>
 	public string? Description { get; set; }
+	/// <summary>
+	/// Gets the URL for the target documentation.
+	/// </summary>
 	public Uri Url { get; }
 	/// <summary>
 	/// Gets or set extension data.
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
+	/// <summary>
+	/// Creates a new <see cref="ExternalDocumentation"/>
+	/// </summary>
+	/// <param name="url">The URL for the target documentation.</param>
 	public ExternalDocumentation(Uri url)
 	{
 		Url = url;

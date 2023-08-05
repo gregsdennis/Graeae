@@ -17,8 +17,17 @@ public class ContactInfo : IRefTargetContainer
 		"email"
 	};
 
+	/// <summary>
+	/// Gets or sets the contact name.
+	/// </summary>
 	public string? Name { get; set; }
+	/// <summary>
+	/// Gets or sets the contact URL.
+	/// </summary>
 	public Uri? Url { get; set; }
+	/// <summary>
+	/// Gets or sets the contact email.
+	/// </summary>
 	public string? Email { get; set; }
 	/// <summary>
 	/// Gets or set extension data.

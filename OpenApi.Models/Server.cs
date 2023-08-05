@@ -20,6 +20,9 @@ public class Server : IRefTargetContainer
 	public static Server Default { get; } = new("/");
 
 	public string Url { get; } // may include variables
+	/// <summary>
+	/// Gets or sets the description.
+	/// </summary>
 	public string? Description { get; set; }
 	public Dictionary<string, ServerVariable>? Variables { get; set; }
 	/// <summary>

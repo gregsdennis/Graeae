@@ -25,15 +25,45 @@ public class ComponentCollection : IRefTargetContainer
 		"pathItems"
 	};
 
+	/// <summary>
+	/// Gets or sets the schema components.
+	/// </summary>
 	public Dictionary<string, JsonSchema>? Schemas { get; set; }
+	/// <summary>
+	/// Gets or sets the response components.
+	/// </summary>
 	public Dictionary<string, Response>? Responses { get; set; }
+	/// <summary>
+	/// Gets or sets the parameter components.
+	/// </summary>
 	public Dictionary<string, Parameter>? Parameters { get; set; }
+	/// <summary>
+	/// Gets or sets the example components.
+	/// </summary>
 	public Dictionary<string, Example>? Examples { get; set; }
+	/// <summary>
+	/// Gets or sets the request body components.
+	/// </summary>
 	public Dictionary<string, RequestBody>? RequestBodies { get; set; }
+	/// <summary>
+	/// Gets or sets the header components.
+	/// </summary>
 	public Dictionary<string, Header>? Headers { get; set; }
+	/// <summary>
+	/// Gets or sets the security scheme components.
+	/// </summary>
 	public Dictionary<string, SecurityScheme>? SecuritySchemes { get; set; }
+	/// <summary>
+	/// Gets or sets the link components.
+	/// </summary>
 	public Dictionary<string, Link>? Links { get; set; }
+	/// <summary>
+	/// Gets or sets the callback components.
+	/// </summary>
 	public Dictionary<string, Callback>? Callbacks { get; set; }
+	/// <summary>
+	/// Gets or sets the path item components.
+	/// </summary>
 	public Dictionary<string, PathItem>? PathItems { get; set; }
 	/// <summary>
 	/// Gets or set extension data.

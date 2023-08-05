@@ -18,9 +18,21 @@ public class OAuthFlowCollection : IRefTargetContainer
 		"authorizationCode"
 	};
 
+	/// <summary>
+	/// Gets or sets the implicit flow.
+	/// </summary>
 	public OAuthFlow? Implicit { get; set; }
+	/// <summary>
+	/// Gets or sets the password flow.
+	/// </summary>
 	public OAuthFlow? Password { get; set; }
+	/// <summary>
+	/// Gets or sets the client-credentials flow.
+	/// </summary>
 	public OAuthFlow? ClientCredentials { get; set; }
+	/// <summary>
+	/// Gets or sets the authorization-code flow.
+	/// </summary>
 	public OAuthFlow? AuthorizationCode { get; set; }
 	/// <summary>
 	/// Gets or set extension data.

@@ -10,11 +10,11 @@ internal interface IComponentRef
 	/// </summary>
 	Uri Ref { get; }
 	/// <summary>
-	/// Gets the summary.
+	/// Gets or sets the summary.
 	/// </summary>
 	string? Summary { get; }
 	/// <summary>
-	/// Gets the description.
+	/// Gets or sets the description.
 	/// </summary>
 	string? Description { get; }
 	/// <summary>

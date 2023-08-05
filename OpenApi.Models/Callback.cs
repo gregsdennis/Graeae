@@ -105,12 +105,12 @@ public class CallbackRef : Callback, IComponentRef
 	public Uri Ref { get; }
 
 	/// <summary>
-	/// Gets the summary.
+	/// Gets or sets the summary.
 	/// </summary>
 	public string? Summary { get; set; }
 
 	/// <summary>
-	/// Gets the description.
+	/// Gets or sets the description.
 	/// </summary>
 	public string? Description { get; set; }
 
@@ -119,9 +119,22 @@ public class CallbackRef : Callback, IComponentRef
 	/// </summary>
 	public bool IsResolved { get; private set; }
 
+	/// <summary>
+	/// Creates a new <see cref="CallbackRef"/>
+	/// </summary>
+	/// <param name="reference">The reference URI</param>
 	public CallbackRef(Uri reference)
 	{
 		Ref = reference ?? throw new ArgumentNullException(nameof(reference));
+	}
+
+	/// <summary>
+	/// Creates a new <see cref="CallbackRef"/>
+	/// </summary>
+	/// <param name="reference">The reference URI</param>
+	public CallbackRef(string reference)
+	{
+		Ref = new Uri(reference ?? throw new ArgumentNullException(nameof(reference)), UriKind.RelativeOrAbsolute);
 	}
 
 	async Task IComponentRef.Resolve(OpenApiDocument root)

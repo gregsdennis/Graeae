@@ -37,15 +37,45 @@ public class OpenApiDocument : IBaseDocument
 
 	private readonly Dictionary<JsonPointer, object> _lookup = new();
 
+	/// <summary>
+	/// Gets the OpenAPI document version.
+	/// </summary>
 	public string OpenApi { get; }
+	/// <summary>
+	/// Gets the API information.
+	/// </summary>
 	public OpenApiInfo Info { get; }
+	/// <summary>
+	/// Gets or sets the default JSON Schema dialect.
+	/// </summary>
 	public Uri? JsonSchemaDialect { get; set; }
+	/// <summary>
+	/// Gets or sets the server collection.
+	/// </summary>
 	public IEnumerable<Server>? Servers { get; set; }
+	/// <summary>
+	/// Gets or sets the paths collection.
+	/// </summary>
 	public PathCollection? Paths { get; set; }
+	/// <summary>
+	/// Gets or sets the webhooks collection.
+	/// </summary>
 	public Dictionary<string, PathItem>? Webhooks { get; set; }
+	/// <summary>
+	/// Gets or sets the components collection.
+	/// </summary>
 	public ComponentCollection? Components { get; set; }
+	/// <summary>
+	/// Gets or sets the security requirements collection.
+	/// </summary>
 	public IEnumerable<SecurityRequirement>? Security { get; set; }
+	/// <summary>
+	/// Gets or sets the tags.
+	/// </summary>
 	public IEnumerable<Tag>? Tags { get; set; }
+	/// <summary>
+	/// Gets or sets external documentation.
+	/// </summary>
 	public ExternalDocumentation? ExternalDocs { get; set; }
 	/// <summary>
 	/// Gets or set extension data.
@@ -68,6 +98,11 @@ public class OpenApiDocument : IBaseDocument
 		VocabularyRegistry.Global.Register(Vocabularies.OpenApi);
 	}
 
+	/// <summary>
+	/// Creates a new <see cref="OpenApiDocument"/>
+	/// </summary>
+	/// <param name="openApi">The OpenAPI version</param>
+	/// <param name="info">The API information</param>
 	public OpenApiDocument(string openApi, OpenApiInfo info)
 	{
 		OpenApi = openApi;
@@ -131,6 +166,11 @@ public class OpenApiDocument : IBaseDocument
 		return obj;
 	}
 
+	/// <summary>
+	/// Initializes the document model.
+	/// </summary>
+	/// <param name="schemaRegistry"></param>
+	/// <returns></returns>
 	public async Task Initialize(SchemaRegistry? schemaRegistry = null)
 	{
 		schemaRegistry ??= SchemaRegistry.Global;
@@ -174,6 +214,12 @@ public class OpenApiDocument : IBaseDocument
 		await Task.WhenAll(allRefs.Select(x => x.Resolve(this)));
 	}
 
+	/// <summary>
+	/// Finds and retrieves an object within the document at a specified location.
+	/// </summary>
+	/// <typeparam name="T">The type of object</typeparam>
+	/// <param name="pointer">The expected location</param>
+	/// <returns>The object, if an object of that type exists at that location; otherwise null.</returns>
 	public T? Find<T>(JsonPointer pointer)
 		where T : class
 	{

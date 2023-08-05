@@ -20,11 +20,29 @@ public class Link : IRefTargetContainer
 		"server"
 	};
 
+	/// <summary>
+	/// Gets or sets a relative or absolute URI reference to an OAS operation.
+	/// </summary>
 	public Uri? OperationRef { get; set; }
+	/// <summary>
+	/// Gets or sets the name of the operation.
+	/// </summary>
 	public string? OperationId { get; set; }
-	public Dictionary<string, RuntimeExpression>? Parameters { get; set; } // can be JsonNode?
-	public RuntimeExpression? RequestBody { get; set; } // can be JsonNode?
+	/// <summary>
+	/// Gets or sets the parameter collection.
+	/// </summary>
+	public Dictionary<string, RuntimeExpression>? Parameters { get; set; } // might also be JsonNode
+	/// <summary>
+	/// Gets or sets the request body for the target operation.
+	/// </summary>
+	public RuntimeExpression? RequestBody { get; set; } // might also be JsonNode
+	/// <summary>
+	/// Gets or sets the description.
+	/// </summary>
 	public string? Description { get; set; }
+	/// <summary>
+	/// Gets or sets the server for the target operation.
+	/// </summary>
 	public Server? Server { get; set; }
 	/// <summary>
 	/// Gets or set extension data.
@@ -125,23 +143,36 @@ public class LinkRef : Link, IComponentRef
 	public Uri Ref { get; }
 
 	/// <summary>
-	/// Gets the summary.
+	/// Gets or sets the summary.
 	/// </summary>
 	public string? Summary { get; set; }
 
 	/// <summary>
-	/// Gets the description.
+	/// Gets or sets the description.
 	/// </summary>
-	public string? Description { get; set; }
+	public new string? Description { get; set; }
 
 	/// <summary>
 	/// Gets whether the reference has been resolved.
 	/// </summary>
 	public bool IsResolved { get; private set; }
 
+	/// <summary>
+	/// Creates a new <see cref="LinkRef"/>
+	/// </summary>
+	/// <param name="reference">The reference URI</param>
 	public LinkRef(Uri reference)
 	{
 		Ref = reference ?? throw new ArgumentNullException(nameof(reference));
+	}
+
+	/// <summary>
+	/// Creates a new <see cref="LinkRef"/>
+	/// </summary>
+	/// <param name="reference">The reference URI</param>
+	public LinkRef(string reference)
+	{
+		Ref = new Uri(reference ?? throw new ArgumentNullException(nameof(reference)), UriKind.RelativeOrAbsolute);
 	}
 
 	async Task IComponentRef.Resolve(OpenApiDocument root)

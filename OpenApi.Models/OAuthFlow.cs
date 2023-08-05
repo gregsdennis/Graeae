@@ -18,15 +18,33 @@ public class OAuthFlow : IRefTargetContainer
 		"scopes"
 	};
 
+	/// <summary>
+	/// Gets the authorization URL.
+	/// </summary>
 	public Uri AuthorizationUrl { get; }
+	/// <summary>
+	/// Gets the token URL.
+	/// </summary>
 	public Uri TokenUrl { get; }
+	/// <summary>
+	/// Gets or sets the refresh token URL.
+	/// </summary>
 	public Uri? RefreshUrl { get; set; }
+	/// <summary>
+	/// Gets the scopes.
+	/// </summary>
 	public Dictionary<string, string> Scopes { get; }
 	/// <summary>
 	/// Gets or set extension data.
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
+	/// <summary>
+	/// Creates a new <see cref="OAuthFlow"/>
+	/// </summary>
+	/// <param name="authorizationUrl">The authorization URL</param>
+	/// <param name="tokenUrl">The token URL</param>
+	/// <param name="scopes">The scopes</param>
 	public OAuthFlow(Uri authorizationUrl, Uri tokenUrl, Dictionary<string, string> scopes)
 	{
 		AuthorizationUrl = authorizationUrl;

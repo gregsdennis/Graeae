@@ -27,16 +27,49 @@ public class Header : IRefTargetContainer
 		"content"
 	};
 
+	/// <summary>
+	/// Gets or sets the description.
+	/// </summary>
 	public string? Description { get; set; }
+	/// <summary>
+	/// Gets or sets whether the header is required.
+	/// </summary>
 	public bool? Required { get; set; }
+	/// <summary>
+	/// Gets or sets whether the header is deprecated.
+	/// </summary>
 	public bool? Deprecated { get; set; }
+	/// <summary>
+	/// Gets or sets whether the header can be present with an empty value.
+	/// </summary>
 	public bool? AllowEmptyValue { get; set; }
+	/// <summary>
+	/// Gets or sets how the header value will be serialized.
+	/// </summary>
 	public ParameterStyle? Style { get; set; }
+	/// <summary>
+	/// Gets or sets whether this will be exploded into multiple parameters.
+	/// </summary>
 	public bool? Explode { get; set; }
+	/// <summary>
+	/// Gets or sets whether the parameter value SHOULD allow reserved characters.
+	/// </summary>
 	public bool? AllowReserved { get; set; }
+	/// <summary>
+	/// Gets or sets a schema for the content.
+	/// </summary>
 	public JsonSchema? Schema { get; set; }
-	public JsonNode? Example { get; set; } // use JsonNull
+	/// <summary>
+	/// Gets or sets an example.
+	/// </summary>
+	public JsonNode? Example { get; set; }
+	/// <summary>
+	/// Gets or sets a collection of examples.
+	/// </summary>
 	public Dictionary<string, Example>? Examples { get; set; }
+	/// <summary>
+	/// Gets or sets a collection of content.
+	/// </summary>
 	public Dictionary<string, MediaType>? Content { get; set; }
 	/// <summary>
 	/// Gets or set extension data.
@@ -190,23 +223,36 @@ public class HeaderRef : Header, IComponentRef
 	public Uri Ref { get; }
 
 	/// <summary>
-	/// Gets the summary.
+	/// Gets or sets the summary.
 	/// </summary>
 	public string? Summary { get; set; }
 
 	/// <summary>
-	/// Gets the description.
+	/// Gets or sets the description.
 	/// </summary>
-	public string? Description { get; set; }
+	public new string? Description { get; set; }
 
 	/// <summary>
 	/// Gets whether the reference has been resolved.
 	/// </summary>
 	public bool IsResolved { get; private set; }
 
+	/// <summary>
+	/// Creates a new <see cref="HeaderRef"/>
+	/// </summary>
+	/// <param name="reference">The reference URI</param>
 	public HeaderRef(Uri reference)
 	{
 		Ref = reference ?? throw new ArgumentNullException(nameof(reference));
+	}
+
+	/// <summary>
+	/// Creates a new <see cref="HeaderRef"/>
+	/// </summary>
+	/// <param name="reference">The reference URI</param>
+	public HeaderRef(string reference)
+	{
+		Ref = new Uri(reference ?? throw new ArgumentNullException(nameof(reference)), UriKind.RelativeOrAbsolute);
 	}
 
 	async Task IComponentRef.Resolve(OpenApiDocument root)

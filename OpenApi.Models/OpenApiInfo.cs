@@ -22,7 +22,13 @@ public class OpenApiInfo : IRefTargetContainer
 	};
 
 	public string Title { get; }
+	/// <summary>
+	/// Gets or sets the summary.
+	/// </summary>
 	public string? Summary { get; set; }
+	/// <summary>
+	/// Gets or sets the description.
+	/// </summary>
 	public string? Description { get; set; }
 	public string? TermsOfService { get; set; }
 	public ContactInfo? Contact { get; set; }

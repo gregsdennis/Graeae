@@ -20,10 +20,25 @@ public class Encoding : IRefTargetContainer
 		"allowReserved"
 	};
 
+	/// <summary>
+	/// Gets or sets the encoding content type.
+	/// </summary>
 	public string? ContentType { get; set; }
+	/// <summary>
+	/// Gets or sets headers.
+	/// </summary>
 	public Dictionary<string, Header>? Headers { get; set; }
+	/// <summary>
+	/// Gets or sets the encoding parameter style.
+	/// </summary>
 	public ParameterStyle? Style { get; set; }
+	/// <summary>
+	/// Gets or sets whether this will be exploded into multiple parameters.
+	/// </summary>
 	public bool? Explode { get; set; }
+	/// <summary>
+	/// Gets or sets whether the parameter value SHOULD allow reserved characters.
+	/// </summary>
 	public bool? AllowReserved { get; set; }
 	/// <summary>
 	/// Gets or set extension data.

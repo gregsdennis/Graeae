@@ -17,14 +17,27 @@ public class LicenseInfo : IRefTargetContainer
 		"url"
 	};
 
-	public string Name { get; set; }
+	/// <summary>
+	/// Gets license name used for the API.
+	/// </summary>
+	public string Name { get; }
+	/// <summary>
+	/// Gets or sets an SPDX license expression for the API.
+	/// </summary>
 	public string? Identifier { get; set; }
+	/// <summary>
+	/// Gets or sets URL to the license used for the API.
+	/// </summary>
 	public Uri? Url { get; set; }
 	/// <summary>
 	/// Gets or set extension data.
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
+	/// <summary>
+	/// Creates a new <see cref="LicenseInfo"/>
+	/// </summary>
+	/// <param name="name">The license name used for the API.</param>
 	public LicenseInfo(string name)
 	{
 		Name = name;

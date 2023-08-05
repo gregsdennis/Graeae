@@ -19,6 +19,9 @@ public class ServerVariable : IRefTargetContainer
 
 	public IEnumerable<string>? Enum { get; set; }
 	public string Default { get; }
+	/// <summary>
+	/// Gets or sets the description.
+	/// </summary>
 	public string? Description { get; set; }
 	/// <summary>
 	/// Gets or set extension data.

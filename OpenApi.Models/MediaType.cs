@@ -20,9 +20,21 @@ public class MediaType : IRefTargetContainer
 		"encoding"
 	};
 
+	/// <summary>
+	/// Gets or sets a schema for the meta type.
+	/// </summary>
 	public JsonSchema? Schema { get; set; }
-	public JsonNode? Example { get; set; } // use JsonNull
+	/// <summary>
+	/// Gets or sets an example.
+	/// </summary>
+	public JsonNode? Example { get; set; }
+	/// <summary>
+	/// Gets or sets a collection of examples.
+	/// </summary>
 	public Dictionary<string, Example>? Examples { get; set; }
+	/// <summary>
+	/// Gets or sets a collection of encodings.
+	/// </summary>
 	public Dictionary<string, Encoding>? Encoding { get; set; }
 	/// <summary>
 	/// Gets or set extension data.

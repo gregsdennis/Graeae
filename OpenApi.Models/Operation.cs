@@ -28,8 +28,17 @@ public class Operation : IRefTargetContainer
 	};
 
 	public IEnumerable<string>? Tags { get; set; }
+	/// <summary>
+	/// Gets or sets the summary.
+	/// </summary>
 	public string? Summary { get; set; }
+	/// <summary>
+	/// Gets or sets the description.
+	/// </summary>
 	public string? Description { get; set; }
+	/// <summary>
+	/// Gets or sets external documentation.
+	/// </summary>
 	public ExternalDocumentation? ExternalDocs { get; set; }
 	public string? OperationId { get; set; }
 	public IEnumerable<Parameter>? Parameters { get; set; }

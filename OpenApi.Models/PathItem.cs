@@ -27,7 +27,13 @@ public class PathItem : IRefTargetContainer
 		"parameters"
 	};
 
+	/// <summary>
+	/// Gets or sets the summary.
+	/// </summary>
 	public string? Summary { get; set; }
+	/// <summary>
+	/// Gets or sets the description.
+	/// </summary>
 	public string? Description { get; set; }
 	public Operation? Get { get; set; }
 	public Operation? Put { get; set; }
@@ -224,23 +230,36 @@ public class PathItemRef : PathItem, IComponentRef
 	public Uri Ref { get; }
 
 	/// <summary>
-	/// Gets the summary.
+	/// Gets or sets the summary.
 	/// </summary>
-	public string? Summary { get; set; }
+	public new string? Summary { get; set; }
 
 	/// <summary>
-	/// Gets the description.
+	/// Gets or sets the description.
 	/// </summary>
-	public string? Description { get; set; }
+	public new string? Description { get; set; }
 
 	/// <summary>
 	/// Gets whether the reference has been resolved.
 	/// </summary>
 	public bool IsResolved { get; private set; }
 
+	/// <summary>
+	/// Creates a new <see cref="PathItemRef"/>
+	/// </summary>
+	/// <param name="reference">The reference URI</param>
 	public PathItemRef(Uri reference)
 	{
 		Ref = reference ?? throw new ArgumentNullException(nameof(reference));
+	}
+
+	/// <summary>
+	/// Creates a new <see cref="PathItemRef"/>
+	/// </summary>
+	/// <param name="reference">The reference URI</param>
+	public PathItemRef(string reference)
+	{
+		Ref = new Uri(reference ?? throw new ArgumentNullException(nameof(reference)), UriKind.RelativeOrAbsolute);
 	}
 
 	async Task IComponentRef.Resolve(OpenApiDocument root)

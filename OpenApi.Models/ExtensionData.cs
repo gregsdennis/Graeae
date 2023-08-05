@@ -7,7 +7,7 @@ namespace OpenApi.Models;
 /// </summary>
 public class ExtensionData : Dictionary<string, JsonNode?>, IRefTargetContainer
 {
-	public static ExtensionData? FromNode(JsonObject obj)
+	internal static ExtensionData? FromNode(JsonObject obj)
 	{
 		var data = new ExtensionData();
 		foreach (var (key, value) in obj.Where(x => x.Key.StartsWith("x-")))

@@ -19,9 +19,21 @@ public class Example : IRefTargetContainer
 		"externalValue"
 	};
 
+	/// <summary>
+	/// Gets or sets the summary.
+	/// </summary>
 	public string? Summary { get; set; }
+	/// <summary>
+	/// Gets or sets the description.
+	/// </summary>
 	public string? Description { get; set; }
+	/// <summary>
+	/// Gets or sets the example value.
+	/// </summary>
 	public JsonNode? Value { get; set; }
+	/// <summary>
+	/// Gets or sets a URI that points to the literal example.
+	/// </summary>
 	public string? ExternalValue { get; set; }
 	/// <summary>
 	/// Gets or set extension data.
@@ -120,25 +132,33 @@ public class ExampleRef : Example, IComponentRef
 	public Uri Ref { get; }
 
 	/// <summary>
-	/// Gets the summary.
+	/// Gets or sets the summary.
 	/// </summary>
-	public string? Summary { get; set; }
+	public new string? Summary { get; set; }
 
 	/// <summary>
-	/// Gets the description.
+	/// Gets or sets the description.
 	/// </summary>
-	public string? Description { get; set; }
+	public new string? Description { get; set; }
 
 	/// <summary>
 	/// Gets whether the reference has been resolved.
 	/// </summary>
 	public bool IsResolved { get; private set; }
 
+	/// <summary>
+	/// Creates a new <see cref="ExampleRef"/>
+	/// </summary>
+	/// <param name="reference">The reference URI</param>
 	public ExampleRef(Uri reference)
 	{
 		Ref = reference ?? throw new ArgumentNullException(nameof(reference));
 	}
 
+	/// <summary>
+	/// Creates a new <see cref="ExampleRef"/>
+	/// </summary>
+	/// <param name="reference">The reference URI</param>
 	public ExampleRef(string reference)
 	{
 		Ref = new Uri(reference ?? throw new ArgumentNullException(nameof(reference)), UriKind.RelativeOrAbsolute);
