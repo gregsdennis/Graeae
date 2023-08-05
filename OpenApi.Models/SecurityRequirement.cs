@@ -11,7 +11,7 @@ namespace OpenApi.Models;
 [JsonConverter(typeof(SecurityRequirementJsonConverter))]
 public class SecurityRequirement : Dictionary<string, IEnumerable<string>>
 {
-	public static SecurityRequirement FromNode(JsonNode? node)
+	internal static SecurityRequirement FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -32,7 +32,7 @@ public class SecurityRequirement : Dictionary<string, IEnumerable<string>>
 		return callback;
 	}
 
-	public static JsonNode? ToNode(SecurityRequirement? requirement)
+	internal static JsonNode? ToNode(SecurityRequirement? requirement)
 	{
 		if (requirement == null) return null;
 

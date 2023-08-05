@@ -30,7 +30,7 @@ public class Encoding : IRefTargetContainer
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	public static Encoding FromNode(JsonNode? node)
+	internal static Encoding FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -50,7 +50,7 @@ public class Encoding : IRefTargetContainer
 		return encoding;
 	}
 
-	public static JsonNode? ToNode(Encoding? encoding, JsonSerializerOptions? options)
+	internal static JsonNode? ToNode(Encoding? encoding, JsonSerializerOptions? options)
 	{
 		if (encoding == null) return null;
 
@@ -66,7 +66,7 @@ public class Encoding : IRefTargetContainer
 		return obj;
 	}
 
-	public object? Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(Span<string> keys)
 	{
 		if (keys.Length == 0) return this;
 

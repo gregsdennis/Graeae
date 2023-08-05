@@ -39,7 +39,7 @@ public class OpenApiInfo : IRefTargetContainer
 		Version = version;
 	}
 
-	public static OpenApiInfo FromNode(JsonNode? node)
+	internal static OpenApiInfo FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -61,7 +61,7 @@ public class OpenApiInfo : IRefTargetContainer
 		return info;
 	}
 
-	public static JsonNode? ToNode(OpenApiInfo? info)
+	internal static JsonNode? ToNode(OpenApiInfo? info)
 	{
 		if (info == null) return null;
 
@@ -81,7 +81,7 @@ public class OpenApiInfo : IRefTargetContainer
 		return obj;
 	}
 
-	public object? Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(Span<string> keys)
 	{
 		if (keys.Length == 0) return this;
 

@@ -30,7 +30,7 @@ public class ServerVariable : IRefTargetContainer
 		Default = @default;
 	}
 
-	public static ServerVariable FromNode(JsonNode? node)
+	internal static ServerVariable FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -47,7 +47,7 @@ public class ServerVariable : IRefTargetContainer
 		return vars;
 	}
 
-	public static JsonNode? ToNode(ServerVariable? variable)
+	internal static JsonNode? ToNode(ServerVariable? variable)
 	{
 		if (variable == null) return null;
 
@@ -63,7 +63,7 @@ public class ServerVariable : IRefTargetContainer
 		return obj;
 	}
 
-	public object? Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(Span<string> keys)
 	{
 		if (keys.Length == 0) return this;
 

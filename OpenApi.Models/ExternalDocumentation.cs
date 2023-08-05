@@ -28,7 +28,7 @@ public class ExternalDocumentation : IRefTargetContainer
 		Url = url;
 	}
 
-	public static ExternalDocumentation FromNode(JsonNode? node)
+	internal static ExternalDocumentation FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -44,7 +44,7 @@ public class ExternalDocumentation : IRefTargetContainer
 		return docs;
 	}
 
-	public static JsonNode? ToNode(ExternalDocumentation? docs)
+	internal static JsonNode? ToNode(ExternalDocumentation? docs)
 	{
 		if (docs == null) return null;
 
@@ -59,7 +59,7 @@ public class ExternalDocumentation : IRefTargetContainer
 		return obj;
 	}
 
-	public object? Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(Span<string> keys)
 	{
 		if (keys.Length == 0) return this;
 

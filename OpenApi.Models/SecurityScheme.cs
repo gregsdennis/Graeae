@@ -41,7 +41,7 @@ public class SecurityScheme : IRefTargetContainer
 	}
 	private protected SecurityScheme(){}
 
-	public static SecurityScheme FromNode(JsonNode? node)
+	internal static SecurityScheme FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -79,7 +79,7 @@ public class SecurityScheme : IRefTargetContainer
 		ExtensionData = ExtensionData.FromNode(obj);
 	}
 
-	public static JsonNode? ToNode(SecurityScheme? scheme)
+	internal static JsonNode? ToNode(SecurityScheme? scheme)
 	{
 		if (scheme == null) return null;
 
@@ -107,7 +107,7 @@ public class SecurityScheme : IRefTargetContainer
 		return obj;
 	}
 
-	public object? Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(Span<string> keys)
 	{
 		if (keys.Length == 0) return this;
 

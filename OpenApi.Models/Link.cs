@@ -31,7 +31,7 @@ public class Link : IRefTargetContainer
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	public static Link FromNode(JsonNode? node)
+	internal static Link FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -68,7 +68,7 @@ public class Link : IRefTargetContainer
 		ExtensionData = ExtensionData.FromNode(obj);
 	}
 
-	public static JsonNode? ToNode(Link? link)
+	internal static JsonNode? ToNode(Link? link)
 	{
 		if (link == null) return null;
 
@@ -94,7 +94,7 @@ public class Link : IRefTargetContainer
 		return obj;
 	}
 
-	public object? Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(Span<string> keys)
 	{
 		if (keys.Length == 0) return this;
 

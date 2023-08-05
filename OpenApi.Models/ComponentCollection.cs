@@ -40,7 +40,7 @@ public class ComponentCollection : IRefTargetContainer
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	public static ComponentCollection FromNode(JsonNode? node)
+	internal static ComponentCollection FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -65,7 +65,7 @@ public class ComponentCollection : IRefTargetContainer
 		return components;
 	}
 
-	public static JsonNode? ToNode(ComponentCollection? components, JsonSerializerOptions? options)
+	internal static JsonNode? ToNode(ComponentCollection? components, JsonSerializerOptions? options)
 	{
 		if (components == null) return null;
 
@@ -86,7 +86,7 @@ public class ComponentCollection : IRefTargetContainer
 		return obj;
 	}
 
-	public object? Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(Span<string> keys)
 	{
 		if (keys.Length == 0) return this;
 
@@ -141,7 +141,7 @@ public class ComponentCollection : IRefTargetContainer
 			: ExtensionData?.Resolve(keys);
 	}
 
-	public IEnumerable<JsonSchema> FindSchemas()
+	internal IEnumerable<JsonSchema> FindSchemas()
 	{
 		return GeneralHelpers.Collect(Schemas?.Values,
 			Responses?.Values.SelectMany(x => x.FindSchemas()),
@@ -153,7 +153,7 @@ public class ComponentCollection : IRefTargetContainer
 		);
 	}
 
-	public IEnumerable<IComponentRef> FindRefs()
+	internal IEnumerable<IComponentRef> FindRefs()
 	{
 		return GeneralHelpers.Collect(
 			Responses?.Values.SelectMany(x => x.FindRefs()),

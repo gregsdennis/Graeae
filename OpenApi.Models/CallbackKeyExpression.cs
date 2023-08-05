@@ -18,7 +18,7 @@ public class CallbackKeyExpression : IEquatable<string>
 		_parameters = parameters;
 	}
 
-	public static CallbackKeyExpression Parse(string source)
+	internal static CallbackKeyExpression Parse(string source)
 	{
 		var matches = TemplateVarsIdentifier.Matches(source);
 		var parameters = matches.SelectMany(x => x.Groups["runtimeExpr"].Captures.Select(c => c.Value))

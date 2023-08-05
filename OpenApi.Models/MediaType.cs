@@ -29,7 +29,7 @@ public class MediaType : IRefTargetContainer
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	public static MediaType FromNode(JsonNode? node)
+	internal static MediaType FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -48,7 +48,7 @@ public class MediaType : IRefTargetContainer
 		return mediaType;
 	}
 
-	public static JsonNode? ToNode(MediaType? mediaType, JsonSerializerOptions? options)
+	internal static JsonNode? ToNode(MediaType? mediaType, JsonSerializerOptions? options)
 	{
 		if (mediaType == null) return null;
 
@@ -63,7 +63,7 @@ public class MediaType : IRefTargetContainer
 		return obj;
 	}
 
-	public object? Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(Span<string> keys)
 	{
 		if (keys.Length == 0) return this;
 

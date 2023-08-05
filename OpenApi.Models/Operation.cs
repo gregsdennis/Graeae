@@ -44,7 +44,7 @@ public class Operation : IRefTargetContainer
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	public static Operation FromNode(JsonNode? node)
+	internal static Operation FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -71,7 +71,7 @@ public class Operation : IRefTargetContainer
 		return operation;
 	}
 
-	public static JsonNode? ToNode(Operation? operation, JsonSerializerOptions? options)
+	internal static JsonNode? ToNode(Operation? operation, JsonSerializerOptions? options)
 	{
 		if (operation == null) return null;
 
@@ -94,7 +94,7 @@ public class Operation : IRefTargetContainer
 		return obj;
 	}
 
-	public object? Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(Span<string> keys)
 	{
 		if (keys.Length == 0) return this;
 

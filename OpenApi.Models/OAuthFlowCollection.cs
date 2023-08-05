@@ -27,7 +27,7 @@ public class OAuthFlowCollection : IRefTargetContainer
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	public static OAuthFlowCollection FromNode(JsonNode? node)
+	internal static OAuthFlowCollection FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -46,7 +46,7 @@ public class OAuthFlowCollection : IRefTargetContainer
 		return flows;
 	}
 
-	public static JsonNode? ToNode(OAuthFlowCollection? flows)
+	internal static JsonNode? ToNode(OAuthFlowCollection? flows)
 	{
 		if (flows == null) return null;
 
@@ -61,7 +61,7 @@ public class OAuthFlowCollection : IRefTargetContainer
 		return obj;
 	}
 
-	public object? Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(Span<string> keys)
 	{
 		if (keys.Length == 0) return this;
 

@@ -56,7 +56,7 @@ public class Parameter : IRefTargetContainer
 	private protected Parameter(){}
 #pragma warning restore CS8618
 
-	public static Parameter FromNode(JsonNode? node)
+	internal static Parameter FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -100,7 +100,7 @@ public class Parameter : IRefTargetContainer
 		ExtensionData = ExtensionData.FromNode(obj);
 	}
 
-	public static JsonNode? ToNode(Parameter? parameter, JsonSerializerOptions? options)
+	internal static JsonNode? ToNode(Parameter? parameter, JsonSerializerOptions? options)
 	{
 		if (parameter == null) return null;
 
@@ -133,7 +133,7 @@ public class Parameter : IRefTargetContainer
 		return obj;
 	}
 
-	public object? Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(Span<string> keys)
 	{
 		if (keys.Length == 0) return this;
 

@@ -16,7 +16,7 @@ public class Callback : Dictionary<CallbackKeyExpression, PathItem>, IRefTargetC
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	public static Callback FromNode(JsonNode? node)
+	internal static Callback FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -51,7 +51,7 @@ public class Callback : Dictionary<CallbackKeyExpression, PathItem>, IRefTargetC
 		}
 	}
 
-	public static JsonNode? ToNode(Callback? callback, JsonSerializerOptions? options)
+	internal static JsonNode? ToNode(Callback? callback, JsonSerializerOptions? options)
 	{
 		if (callback == null) return null;
 
@@ -67,7 +67,7 @@ public class Callback : Dictionary<CallbackKeyExpression, PathItem>, IRefTargetC
 		return obj;
 	}
 
-	public object? Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(Span<string> keys)
 	{
 		if (keys.Length == 0) return null;
 
@@ -75,12 +75,12 @@ public class Callback : Dictionary<CallbackKeyExpression, PathItem>, IRefTargetC
 		       ExtensionData?.Resolve(keys);
 	}
 
-	public IEnumerable<JsonSchema> FindSchemas()
+	internal IEnumerable<JsonSchema> FindSchemas()
 	{
 		return Values.SelectMany(x => x.FindSchemas());
 	}
 
-	public IEnumerable<IComponentRef> FindRefs()
+	internal IEnumerable<IComponentRef> FindRefs()
 	{
 		if (this is CallbackRef cRef)
 			yield return cRef;

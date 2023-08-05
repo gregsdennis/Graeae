@@ -34,7 +34,7 @@ public class RequestBody : IRefTargetContainer
 	private protected RequestBody(){}
 #pragma warning restore CS8618
 
-	public static RequestBody FromNode(JsonNode? node)
+	internal static RequestBody FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -67,7 +67,7 @@ public class RequestBody : IRefTargetContainer
 		ExtensionData = ExtensionData.FromNode(obj);
 	}
 
-	public static JsonNode? ToNode(RequestBody? body, JsonSerializerOptions? options)
+	internal static JsonNode? ToNode(RequestBody? body, JsonSerializerOptions? options)
 	{
 		if (body == null) return null;
 
@@ -90,7 +90,7 @@ public class RequestBody : IRefTargetContainer
 		return obj;
 	}
 
-	public object? Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(Span<string> keys)
 	{
 		if (keys.Length == 0) return this;
 

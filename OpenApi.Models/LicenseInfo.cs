@@ -30,7 +30,7 @@ public class LicenseInfo : IRefTargetContainer
 		Name = name;
 	}
 
-	public static LicenseInfo FromNode(JsonNode? node)
+	internal static LicenseInfo FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -47,7 +47,7 @@ public class LicenseInfo : IRefTargetContainer
 		return info;
 	}
 
-	public static JsonNode? ToNode(LicenseInfo? license)
+	internal static JsonNode? ToNode(LicenseInfo? license)
 	{
 		if (license == null) return null;
 
@@ -63,7 +63,7 @@ public class LicenseInfo : IRefTargetContainer
 		return obj;
 	}
 
-	public object? Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(Span<string> keys)
 	{
 		if (keys.Length == 0) return this;
 

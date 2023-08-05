@@ -18,7 +18,7 @@ public class ResponseCollection : Dictionary<HttpStatusCode, Response>, IRefTarg
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	public static ResponseCollection FromNode(JsonNode? node)
+	internal static ResponseCollection FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -46,7 +46,7 @@ public class ResponseCollection : Dictionary<HttpStatusCode, Response>, IRefTarg
 		return collection;
 	}
 
-	public static JsonNode? ToNode(ResponseCollection? responses, JsonSerializerOptions? options)
+	internal static JsonNode? ToNode(ResponseCollection? responses, JsonSerializerOptions? options)
 	{
 		if (responses == null) return null;
 
@@ -64,7 +64,7 @@ public class ResponseCollection : Dictionary<HttpStatusCode, Response>, IRefTarg
 		return obj;
 	}
 
-	public object? Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(Span<string> keys)
 	{
 		if (keys.Length == 0) return null;
 

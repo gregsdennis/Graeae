@@ -18,7 +18,7 @@ public class ExtensionData : Dictionary<string, JsonNode?>, IRefTargetContainer
 		return data.Any() ? data : null;
 	}
 
-	public object? Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(Span<string> keys)
 	{
 		if (keys.Length == 0)
 			throw new InvalidOperationException("Greg forgot to check for an empty span.");

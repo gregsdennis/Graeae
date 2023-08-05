@@ -42,7 +42,7 @@ public class RuntimeExpression : IEquatable<string>
 	private RuntimeExpression(){}
 #pragma warning restore CS8618
 
-	public static RuntimeExpression FromNode(JsonNode? node)
+	internal static RuntimeExpression FromNode(JsonNode? node)
 	{
 		if (node is not JsonValue value || !value.TryGetValue(out string? source))
 			throw new JsonException("runtime expressions must be strings");

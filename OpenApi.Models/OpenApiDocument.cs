@@ -79,7 +79,7 @@ public class OpenApiDocument : IBaseDocument
 		return Find<JsonSchema>(pointer);
 	}
 
-	public static OpenApiDocument FromNode(JsonNode? node)
+	internal static OpenApiDocument FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -108,7 +108,7 @@ public class OpenApiDocument : IBaseDocument
 		return document;
 	}
 
-	public static JsonNode? ToNode(OpenApiDocument? document, JsonSerializerOptions? options)
+	internal static JsonNode? ToNode(OpenApiDocument? document, JsonSerializerOptions? options)
 	{
 		if (document == null) return null;
 

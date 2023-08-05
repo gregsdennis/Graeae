@@ -44,7 +44,7 @@ public class PathItem : IRefTargetContainer
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	public static PathItem FromNode(JsonNode? node)
+	internal static PathItem FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -91,7 +91,7 @@ public class PathItem : IRefTargetContainer
 		ExtensionData = ExtensionData.FromNode(obj);
 	}
 
-	public static JsonNode? ToNode(PathItem? item, JsonSerializerOptions? options)
+	internal static JsonNode? ToNode(PathItem? item, JsonSerializerOptions? options)
 	{
 		if (item == null) return null;
 
@@ -123,7 +123,7 @@ public class PathItem : IRefTargetContainer
 		return obj;
 	}
 
-	public object? Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(Span<string> keys)
 	{
 		if (keys.Length == 0) return this;
 

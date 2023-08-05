@@ -17,8 +17,17 @@ public class Tag : IRefTargetContainer
 		"externalDocs"
 	};
 
+	/// <summary>
+	/// Gets the tag name.
+	/// </summary>
 	public string Name { get; }
+	/// <summary>
+	/// Gets or sets the tag description.
+	/// </summary>
 	public string? Description { get; set; }
+	/// <summary>
+	/// Gets or sets external documentation.
+	/// </summary>
 	public ExternalDocumentation? ExternalDocs { get; set; }
 	/// <summary>
 	/// Gets or set extension data.
@@ -30,7 +39,13 @@ public class Tag : IRefTargetContainer
 		Name = name;
 	}
 
-	public static Tag FromNode(JsonNode? node)
+	/// <summary>
+	/// Creates a new <see cref="Tag"/> from a <see cref="JsonNode"/>.
+	/// </summary>
+	/// <param name="node">The `JsonNode`.</param>
+	/// <returns>The model.</returns>
+	/// <exception cref="JsonException">Thrown when the JSON does not accurately represent the model.</exception>
+	internal static Tag FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -47,7 +62,7 @@ public class Tag : IRefTargetContainer
 		return tag;
 	}
 
-	public static JsonNode? ToNode(Tag? tag)
+	internal static JsonNode? ToNode(Tag? tag)
 	{
 		if (tag == null) return null;
 
@@ -63,7 +78,7 @@ public class Tag : IRefTargetContainer
 		return obj;
 	}
 
-	public object? Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(Span<string> keys)
 	{
 		if (keys.Length == 0) return this;
 

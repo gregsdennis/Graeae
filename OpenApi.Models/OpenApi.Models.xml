@@ -4,9 +4,358 @@
         <name>OpenApi.Models</name>
     </assembly>
     <members>
+        <member name="T:OpenApi.Models.Callback">
+            <summary>
+            Models a callback.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Callback.ExtensionData">
+            <summary>
+            Gets or set extension data.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.CallbackRef">
+            <summary>
+            Models a `$ref` to a callback.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.CallbackKeyExpression">
+            <summary>
+            Models a callback key expression.
+            </summary>
+        </member>
+        <member name="M:OpenApi.Models.CallbackKeyExpression.Resolve">
+            <summary>
+            (not yet implemented) Resolves the callback expression.
+            </summary>
+            <returns>Throws not implemented.</returns>
+            <exception cref="T:System.NotImplementedException">It's not implemented.</exception>
+        </member>
+        <member name="M:OpenApi.Models.CallbackKeyExpression.Equals(System.String)">
+            <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+            <param name="other">An object to compare with this object.</param>
+            <returns>
+            <see langword="true" /> if the current object is equal to the <paramref name="other" /> parameter; otherwise, <see langword="false" />.</returns>
+        </member>
+        <member name="M:OpenApi.Models.CallbackKeyExpression.ToString">
+            <summary>Returns a string that represents the current object.</summary>
+            <returns>A string that represents the current object.</returns>
+        </member>
+        <member name="T:OpenApi.Models.ComponentCollection">
+            <summary>
+            Models the `components` collection.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ComponentCollection.ExtensionData">
+            <summary>
+            Gets or set extension data.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.ContactInfo">
+            <summary>
+            Models the contact information.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ContactInfo.ExtensionData">
+            <summary>
+            Gets or set extension data.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.Encoding">
+            <summary>
+            Models an encoding object.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Encoding.ExtensionData">
+            <summary>
+            Gets or set extension data.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.Example">
+            <summary>
+            Models an example.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Example.ExtensionData">
+            <summary>
+            Gets or set extension data.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.ExampleRef">
+            <summary>
+            Models a `$ref` to an example.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.ExtensionData">
+            <summary>
+            Supports extension data for all types.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.ExternalDocumentation">
+            <summary>
+            Models external documentation.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ExternalDocumentation.ExtensionData">
+            <summary>
+            Gets or set extension data.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.Formats">
+            <summary>
+            Provides extended JSON Schema formats.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.Header">
+            <summary>
+            Models a header.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Header.ExtensionData">
+            <summary>
+            Gets or set extension data.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.HeaderRef">
+            <summary>
+            Models a `$ref` to a header.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.IComponentRef">
+            <summary>
+            Indicates that the item is a reference to another object rather than being the object itself.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.IComponentRef.Ref">
+            <summary>
+            The URI for the reference.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.IComponentRef.Summary">
+            <summary>
+            Gets the summary.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.IComponentRef.Description">
+            <summary>
+            Gets the description.
+            </summary>
+        </member>
+        <member name="M:OpenApi.Models.IComponentRef.Resolve(OpenApi.Models.OpenApiDocument)">
+            <summary>
+            Resolves the reference.
+            </summary>
+            <param name="root">The document root.</param>
+            <returns>A task.</returns>
+        </member>
+        <member name="T:OpenApi.Models.LicenseInfo">
+            <summary>
+            Models the license information.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.LicenseInfo.ExtensionData">
+            <summary>
+            Gets or set extension data.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.Link">
+            <summary>
+            Models a link object.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Link.ExtensionData">
+            <summary>
+            Gets or set extension data.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.LinkRef">
+            <summary>
+            Models a `$ref` to a link.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.MediaType">
+            <summary>
+            Models a media type object.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.MediaType.ExtensionData">
+            <summary>
+            Gets or set extension data.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.OAuthFlow">
+            <summary>
+            Models an OAuth flow.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.OAuthFlow.ExtensionData">
+            <summary>
+            Gets or set extension data.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.OAuthFlowCollection">
+            <summary>
+            Models the OAuth flow collection.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.OAuthFlowCollection.ExtensionData">
+            <summary>
+            Gets or set extension data.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.OpenApiDocument">
+            <summary>
+            Models the OpenAPI document.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.OpenApiDocument.ExtensionData">
+            <summary>
+            Gets or set extension data.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.OpenApiInfo">
+            <summary>
+            Models the info object.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.OpenApiInfo.ExtensionData">
+            <summary>
+            Gets or set extension data.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.Operation">
+            <summary>
+            Models an operation.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Operation.ExtensionData">
+            <summary>
+            Gets or set extension data.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.Parameter">
+            <summary>
+            Models a parameter.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Parameter.ExtensionData">
+            <summary>
+            Gets or set extension data.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.ParameterRef">
+            <summary>
+            Models a `$ref` to a parameter.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.ParameterLocation">
+            <summary>
+            Defines the different parameter locations.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.ParameterStyle">
+            <summary>
+            Defines the different parameter styles.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.PathCollection">
+            <summary>
+            Models a path collection.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.PathCollection.ExtensionData">
+            <summary>
+            Gets or set extension data.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.PathItem">
+            <summary>
+            Models an individual path.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.PathItem.ExtensionData">
+            <summary>
+            Gets or set extension data.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.PathItemRef">
+            <summary>
+            Models a `$ref` to a path item.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.PathTemplate">
+            <summary>
+            Models the path URI.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.RefHelper">
+            <summary>
+            Allows customization of `$ref` resolutions.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.RefResolutionException">
+            <summary>
+            Thrown when a `$ref` cannot be resolved.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.RequestBody">
+            <summary>
+            Models a request body.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.RequestBody.ExtensionData">
+            <summary>
+            Gets or set extension data.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.RequestBodyRef">
+            <summary>
+            Models a `$ref` to a request body.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.Response">
+            <summary>
+            Models a response.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Response.ExtensionData">
+            <summary>
+            Gets or set extension data.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.ResponseRef">
+            <summary>
+            Models a `$ref` to a response.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.ResponseCollection">
+            <summary>
+            Models a response collection.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ResponseCollection.ExtensionData">
+            <summary>
+            Gets or set extension data.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.RuntimeExpression">
+            <summary>
+            Models an OpenAPI runtime expression.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.RuntimeExpressionSourceType">
+            <summary>
+            Defines the different runtime expression sources.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.RuntimeExpressionType">
+            <summary>
+            Defines the different types of runtime expressions.
+            </summary>
+        </member>
         <member name="T:OpenApi.Models.SchemaDraft4.Draft4ExclusiveMaximumKeyword">
             <summary>
-            Overrides the <see cref="T:Json.Schema.ExclusiveMaximumKeyword"/> to support draft 4 boolean values.
+            Overrides the JSON Schema <see cref="T:Json.Schema.ExclusiveMaximumKeyword"/> to support draft 4 boolean values.
             </summary>
         </member>
         <member name="F:OpenApi.Models.SchemaDraft4.Draft4ExclusiveMaximumKeyword.Name">
@@ -48,7 +397,7 @@
         </member>
         <member name="T:OpenApi.Models.SchemaDraft4.Draft4ExclusiveMinimumKeyword">
             <summary>
-            Overrides the <see cref="T:Json.Schema.ExclusiveMinimumKeyword"/> to support draft 4 boolean values.
+            Overrides the JSON Schema <see cref="T:Json.Schema.ExclusiveMinimumKeyword"/> to support draft 4 boolean values.
             </summary>
         </member>
         <member name="F:OpenApi.Models.SchemaDraft4.Draft4ExclusiveMinimumKeyword.Name">
@@ -88,6 +437,16 @@
             <param name="context">The <see cref="T:Json.Schema.EvaluationContext" />.</param>
             <returns>A constraint object.</returns>
         </member>
+        <member name="T:OpenApi.Models.SchemaDraft4.Draft4IdKeyword">
+            <summary>
+            Represents the JSON Schema draft 4 `id` keyword.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.SchemaDraft4.Draft4IdKeyword.Name">
+            <summary>
+            The name of the keyword.
+            </summary>
+        </member>
         <member name="P:OpenApi.Models.SchemaDraft4.Draft4IdKeyword.Id">
             <summary>
             The ID.
@@ -98,6 +457,56 @@
             Creates a new <see cref="T:Json.Schema.IdKeyword"/>.
             </summary>
             <param name="id">The ID.</param>
+        </member>
+        <member name="M:OpenApi.Models.SchemaDraft4.Draft4IdKeyword.GetConstraint(Json.Schema.SchemaConstraint,System.Collections.Generic.IReadOnlyList{Json.Schema.KeywordConstraint},Json.Schema.EvaluationContext)">
+            <summary>Builds a constraint object for a keyword.</summary>
+            <param name="schemaConstraint">The <see cref="T:Json.Schema.SchemaConstraint" /> for the schema object that houses this keyword.</param>
+            <param name="localConstraints">
+            The set of other <see cref="T:Json.Schema.KeywordConstraint" />s that have been processed prior to this one.
+            Will contain the constraints for keyword dependencies.
+            </param>
+            <param name="context">The <see cref="T:Json.Schema.EvaluationContext" />.</param>
+            <returns>A constraint object.</returns>
+        </member>
+        <member name="T:OpenApi.Models.SchemaDraft4.Draft4Support">
+            <summary>
+            Provides additional functionality for JSON Schema draft 4 support.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.SchemaDraft4.Draft4Support.Draft4Version">
+            <summary>
+            Defines a JSON Schema draft 4 spec version.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.SchemaDraft4.Draft4Support.FileDataType">
+            <summary>
+            Defines the OpenAPI / JSON Schema draft 4 `file` type.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.SchemaDraft4.Draft4Support.Draft4MetaSchemaUri">
+            <summary>
+            Defines the JSON Schema draft 4 meta-schema URI.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.SchemaDraft4.Draft4Support.Draft4MetaSchema">
+            <summary>
+            Defines the JSON Schema draft 4 meta-schema.
+            </summary>
+        </member>
+        <member name="M:OpenApi.Models.SchemaDraft4.Draft4Support.Enable">
+            <summary>
+            Enables support for OpenAPI v3.0 and JSON Schema draft 4.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.SchemaDraft4.Draft4TypeKeyword">
+            <summary>
+            Overrides the JSON Schema <see cref="T:Json.Schema.TypeKeyword"/> to support draft 4.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.SchemaDraft4.Draft4TypeKeyword.Name">
+            <summary>
+            The name of the keyword.
+            </summary>
         </member>
         <member name="P:OpenApi.Models.SchemaDraft4.Draft4TypeKeyword.Type">
             <summary>
@@ -110,6 +519,79 @@
             </summary>
             <param name="type">The instance type that is allowed.</param>
         </member>
+        <member name="M:OpenApi.Models.SchemaDraft4.Draft4TypeKeyword.GetConstraint(Json.Schema.SchemaConstraint,System.Collections.Generic.IReadOnlyList{Json.Schema.KeywordConstraint},Json.Schema.EvaluationContext)">
+            <summary>Builds a constraint object for a keyword.</summary>
+            <param name="schemaConstraint">The <see cref="T:Json.Schema.SchemaConstraint" /> for the schema object that houses this keyword.</param>
+            <param name="localConstraints">
+            The set of other <see cref="T:Json.Schema.KeywordConstraint" />s that have been processed prior to this one.
+            Will contain the constraints for keyword dependencies.
+            </param>
+            <param name="context">The <see cref="T:Json.Schema.EvaluationContext" />.</param>
+            <returns>A constraint object.</returns>
+        </member>
+        <member name="T:OpenApi.Models.SchemaDraft4.JsonSchemaKeywordExtensions">
+            <summary>
+            Provides extension methods for explicitly building draft 4 schemas.
+            </summary>
+        </member>
+        <member name="M:OpenApi.Models.SchemaDraft4.JsonSchemaKeywordExtensions.ExclusiveMaximum(Json.Schema.JsonSchemaBuilder,System.Boolean)">
+            <summary>
+            Adds the draft 4 `exclusiveMaximum` override.
+            </summary>
+            <param name="builder">The builder</param>
+            <param name="value">The value</param>
+            <returns>The builder</returns>
+        </member>
+        <member name="M:OpenApi.Models.SchemaDraft4.JsonSchemaKeywordExtensions.ExclusiveMinimum(Json.Schema.JsonSchemaBuilder,System.Boolean)">
+            <summary>
+            Adds the draft 4 `exclusiveMinimum` override.
+            </summary>
+            <param name="builder">The builder</param>
+            <param name="value">The value</param>
+            <returns>The builder</returns>
+        </member>
+        <member name="M:OpenApi.Models.SchemaDraft4.JsonSchemaKeywordExtensions.OasId(Json.Schema.JsonSchemaBuilder,System.Uri)">
+            <summary>
+            Adds the draft 4 `id` override.
+            </summary>
+            <param name="builder">The builder</param>
+            <param name="id">The id</param>
+            <returns>The builder</returns>
+        </member>
+        <member name="M:OpenApi.Models.SchemaDraft4.JsonSchemaKeywordExtensions.OasId(Json.Schema.JsonSchemaBuilder,System.String)">
+            <summary>
+            Adds the draft 4 `id` override.
+            </summary>
+            <param name="builder">The builder</param>
+            <param name="id">The id</param>
+            <returns>The builder</returns>
+        </member>
+        <member name="M:OpenApi.Models.SchemaDraft4.JsonSchemaKeywordExtensions.OasType(Json.Schema.JsonSchemaBuilder,Json.Schema.SchemaValueType)">
+            <summary>
+            Adds the draft 4 `type` override.
+            </summary>
+            <param name="builder">The builder</param>
+            <param name="type">The type</param>
+            <returns>The builder</returns>
+        </member>
+        <member name="M:OpenApi.Models.SchemaDraft4.JsonSchemaKeywordExtensions.Nullable(Json.Schema.JsonSchemaBuilder,System.Boolean)">
+            <summary>
+            Adds the `nullable` keyword.
+            </summary>
+            <param name="builder">The builder</param>
+            <param name="value">The value</param>
+            <returns>The builder</returns>
+        </member>
+        <member name="T:OpenApi.Models.SchemaDraft4.NullableKeyword">
+            <summary>
+            Provides the OpenAPI `nullable` keyword.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.SchemaDraft4.NullableKeyword.Name">
+            <summary>
+            The name of the keyword.
+            </summary>
+        </member>
         <member name="P:OpenApi.Models.SchemaDraft4.NullableKeyword.Value">
             <summary>
             The ID.
@@ -120,6 +602,99 @@
             Creates a new <see cref="T:Json.Schema.IdKeyword"/>.
             </summary>
             <param name="value">Whether the `minimum` value should be considered exclusive.</param>
+        </member>
+        <member name="M:OpenApi.Models.SchemaDraft4.NullableKeyword.GetConstraint(Json.Schema.SchemaConstraint,System.Collections.Generic.IReadOnlyList{Json.Schema.KeywordConstraint},Json.Schema.EvaluationContext)">
+            <summary>Builds a constraint object for a keyword.</summary>
+            <param name="schemaConstraint">The <see cref="T:Json.Schema.SchemaConstraint" /> for the schema object that houses this keyword.</param>
+            <param name="localConstraints">
+            The set of other <see cref="T:Json.Schema.KeywordConstraint" />s that have been processed prior to this one.
+            Will contain the constraints for keyword dependencies.
+            </param>
+            <param name="context">The <see cref="T:Json.Schema.EvaluationContext" />.</param>
+            <returns>A constraint object.</returns>
+        </member>
+        <member name="T:OpenApi.Models.SecurityRequirement">
+            <summary>
+            Models a security requirement.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.SecurityScheme">
+            <summary>
+            Models a security scheme.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.SecurityScheme.ExtensionData">
+            <summary>
+            Gets or set extension data.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.SecuritySchemeRef">
+            <summary>
+            Models a `$ref` to a security scheme.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.SecuritySchemeLocation">
+            <summary>
+            Defines the different security scheme locations.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.SecuritySchemeType">
+            <summary>
+            Defines the different security schema types.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.Server">
+            <summary>
+            Models a server.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Server.ExtensionData">
+            <summary>
+            Gets or set extension data.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.ServerVariable">
+            <summary>
+            Models a server variable.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ServerVariable.ExtensionData">
+            <summary>
+            Gets or set extension data.
+            </summary>
+        </member>
+        <member name="T:OpenApi.Models.Tag">
+            <summary>
+            Models a tag.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Tag.Name">
+            <summary>
+            Gets the tag name.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Tag.Description">
+            <summary>
+            Gets or sets the tag description.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Tag.ExternalDocs">
+            <summary>
+            Gets or sets external documentation.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Tag.ExtensionData">
+            <summary>
+            Gets or set extension data.
+            </summary>
+        </member>
+        <member name="M:OpenApi.Models.Tag.FromNode(System.Text.Json.Nodes.JsonNode)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.Tag"/> from a <see cref="T:System.Text.Json.Nodes.JsonNode"/>.
+            </summary>
+            <param name="node">The `JsonNode`.</param>
+            <returns>The model.</returns>
+            <exception cref="T:System.Text.Json.JsonException">Thrown when the JSON does not accurately represent the model.</exception>
         </member>
     </members>
 </doc>

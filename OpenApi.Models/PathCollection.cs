@@ -16,7 +16,7 @@ public class PathCollection : Dictionary<PathTemplate, PathItem>, IRefTargetCont
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	public static PathCollection FromNode(JsonNode? node)
+	internal static PathCollection FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -40,7 +40,7 @@ public class PathCollection : Dictionary<PathTemplate, PathItem>, IRefTargetCont
 		return collection;
 	}
 
-	public static JsonNode? ToNode(PathCollection? paths, JsonSerializerOptions? options)
+	internal static JsonNode? ToNode(PathCollection? paths, JsonSerializerOptions? options)
 	{
 		if (paths == null) return null;
 
@@ -56,7 +56,7 @@ public class PathCollection : Dictionary<PathTemplate, PathItem>, IRefTargetCont
 		return obj;
 	}
 
-	public object? Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(Span<string> keys)
 	{
 		if (keys.Length == 0) return null;
 

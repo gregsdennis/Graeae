@@ -36,7 +36,7 @@ public class Response : IRefTargetContainer
 	private protected Response(){}
 #pragma warning restore CS8618
 
-	public static Response FromNode(JsonNode? node)
+	internal static Response FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -70,7 +70,7 @@ public class Response : IRefTargetContainer
 		ExtensionData = ExtensionData.FromNode(obj);
 	}
 
-	public static JsonNode? ToNode(Response? response, JsonSerializerOptions? options)
+	internal static JsonNode? ToNode(Response? response, JsonSerializerOptions? options)
 	{
 		if (response == null) return null;
 
@@ -94,7 +94,7 @@ public class Response : IRefTargetContainer
 		return obj;
 	}
 
-	public object? Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(Span<string> keys)
 	{
 		if (keys.Length == 0) return this;
 

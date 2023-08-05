@@ -32,7 +32,7 @@ public class Server : IRefTargetContainer
 		Url = url;
 	}
 
-	public static Server FromNode(JsonNode? node)
+	internal static Server FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -49,7 +49,7 @@ public class Server : IRefTargetContainer
 		return server;
 	}
 
-	public static JsonNode? ToNode(Server? server)
+	internal static JsonNode? ToNode(Server? server)
 	{
 		if (server == null) return null;
 
@@ -65,7 +65,7 @@ public class Server : IRefTargetContainer
 		return obj;
 	}
 
-	public object? Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(Span<string> keys)
 	{
 		if (keys.Length == 0) return this;
 

@@ -34,7 +34,7 @@ public class OAuthFlow : IRefTargetContainer
 		Scopes = scopes;
 	}
 
-	public static OAuthFlow FromNode(JsonNode? node)
+	internal static OAuthFlow FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -53,7 +53,7 @@ public class OAuthFlow : IRefTargetContainer
 		return flow;
 	}
 
-	public static JsonNode? ToNode(OAuthFlow? flow)
+	internal static JsonNode? ToNode(OAuthFlow? flow)
 	{
 		if (flow == null) return null;
 
@@ -76,7 +76,7 @@ public class OAuthFlow : IRefTargetContainer
 		return obj;
 	}
 
-	public object? Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(Span<string> keys)
 	{
 		if (keys.Length == 0) return this;
 

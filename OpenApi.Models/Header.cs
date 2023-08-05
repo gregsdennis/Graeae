@@ -43,7 +43,7 @@ public class Header : IRefTargetContainer
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	public static Header FromNode(JsonNode? node)
+	internal static Header FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -86,7 +86,7 @@ public class Header : IRefTargetContainer
 		ExtensionData = ExtensionData.FromNode(obj);
 	}
 
-	public static JsonNode? ToNode(Header? header, JsonSerializerOptions? options)
+	internal static JsonNode? ToNode(Header? header, JsonSerializerOptions? options)
 	{
 		if (header == null) return null;
 
@@ -117,7 +117,7 @@ public class Header : IRefTargetContainer
 		return obj;
 	}
 
-	public object? Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(Span<string> keys)
 	{
 		if (keys.Length == 0) return this;
 

@@ -25,7 +25,7 @@ public class ContactInfo : IRefTargetContainer
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	public static ContactInfo FromNode(JsonNode? node)
+	internal static ContactInfo FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -43,7 +43,7 @@ public class ContactInfo : IRefTargetContainer
 		return info;
 	}
 
-	public static JsonNode? ToNode(ContactInfo? contact)
+	internal static JsonNode? ToNode(ContactInfo? contact)
 	{
 		if (contact == null) return null;
 
@@ -57,7 +57,7 @@ public class ContactInfo : IRefTargetContainer
 		return obj;
 	}
 
-	public object? Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(Span<string> keys)
 	{
 		if (keys.Length == 0) return this;
 
