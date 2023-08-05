@@ -6,6 +6,9 @@ using Json.Schema;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Models a parameter.
+/// </summary>
 [JsonConverter(typeof(ParameterJsonConverter))]
 public class Parameter : IRefTargetContainer
 {
@@ -39,6 +42,9 @@ public class Parameter : IRefTargetContainer
 	public JsonNode? Example { get; set; } // use JsonNull
 	public Dictionary<string, Example>? Examples { get; set; }
 	public Dictionary<string, MediaType>? Content { get; set; }
+	/// <summary>
+	/// Gets or set extension data.
+	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
 	public Parameter(string name, ParameterLocation @in)
@@ -188,6 +194,9 @@ public class Parameter : IRefTargetContainer
 	}
 }
 
+/// <summary>
+/// Models a `$ref` to a parameter.
+/// </summary>
 public class ParameterRef : Parameter, IComponentRef
 {
 	public Uri Ref { get; }
@@ -236,7 +245,7 @@ public class ParameterRef : Parameter, IComponentRef
 	}
 }
 
-public class ParameterJsonConverter : JsonConverter<Parameter>
+internal class ParameterJsonConverter : JsonConverter<Parameter>
 {
 	public override Parameter Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{

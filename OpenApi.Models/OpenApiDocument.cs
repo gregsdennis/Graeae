@@ -7,6 +7,9 @@ using Vocabularies = Json.Schema.OpenApi.Vocabularies;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Models the OpenAPI document.
+/// </summary>
 [JsonConverter(typeof(OpenApiDocumentJsonConverter))]
 public class OpenApiDocument : IBaseDocument
 {
@@ -44,6 +47,9 @@ public class OpenApiDocument : IBaseDocument
 	public IEnumerable<SecurityRequirement>? Security { get; set; }
 	public IEnumerable<Tag>? Tags { get; set; }
 	public ExternalDocumentation? ExternalDocs { get; set; }
+	/// <summary>
+	/// Gets or set extension data.
+	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
 	Uri IBaseDocument.BaseUri { get; } = GenerateBaseUri();
@@ -229,7 +235,7 @@ public class OpenApiDocument : IBaseDocument
 	}
 }
 
-public class OpenApiDocumentJsonConverter : JsonConverter<OpenApiDocument>
+internal class OpenApiDocumentJsonConverter : JsonConverter<OpenApiDocument>
 {
 	public override OpenApiDocument Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{

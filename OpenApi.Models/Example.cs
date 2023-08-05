@@ -5,6 +5,9 @@ using System.Text.Json.Serialization;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Models an example.
+/// </summary>
 [JsonConverter(typeof(ExampleJsonConverter))]
 public class Example : IRefTargetContainer
 {
@@ -20,6 +23,9 @@ public class Example : IRefTargetContainer
 	public string? Description { get; set; }
 	public JsonNode? Value { get; set; }
 	public string? ExternalValue { get; set; }
+	/// <summary>
+	/// Gets or set extension data.
+	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
 	public static Example FromNode(JsonNode? node)
@@ -103,6 +109,9 @@ public class Example : IRefTargetContainer
 	}
 }
 
+/// <summary>
+/// Models a `$ref` to an example.
+/// </summary>
 public class ExampleRef : Example, IComponentRef
 {
 	public Uri Ref { get; set; }
@@ -144,7 +153,7 @@ public class ExampleRef : Example, IComponentRef
 	}
 }
 
-public class ExampleJsonConverter : JsonConverter<Example>
+internal class ExampleJsonConverter : JsonConverter<Example>
 {
 	public override Example Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{

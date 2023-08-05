@@ -4,11 +4,17 @@ using Json.Schema;
 
 namespace OpenApi.Models.SchemaDraft4;
 
+/// <summary>
+/// Represents the JSON Schema draft 4 `id` keyword.
+/// </summary>
 [SchemaKeyword(Name)]
 [SchemaSpecVersion(Draft4Support.Draft4Version)]
 [JsonConverter(typeof(Draft4IdKeywordJsonConverter))]
 public class Draft4IdKeyword : IIdKeyword
 {
+	/// <summary>
+	/// The name of the keyword.
+	/// </summary>
 	public const string Name = "id";
 
 	/// <summary>
@@ -25,6 +31,14 @@ public class Draft4IdKeyword : IIdKeyword
 		Id = id ?? throw new ArgumentNullException(nameof(id));
 	}
 
+	/// <summary>Builds a constraint object for a keyword.</summary>
+	/// <param name="schemaConstraint">The <see cref="T:Json.Schema.SchemaConstraint" /> for the schema object that houses this keyword.</param>
+	/// <param name="localConstraints">
+	/// The set of other <see cref="T:Json.Schema.KeywordConstraint" />s that have been processed prior to this one.
+	/// Will contain the constraints for keyword dependencies.
+	/// </param>
+	/// <param name="context">The <see cref="T:Json.Schema.EvaluationContext" />.</param>
+	/// <returns>A constraint object.</returns>
 	public KeywordConstraint GetConstraint(SchemaConstraint schemaConstraint, IReadOnlyList<KeywordConstraint> localConstraints, EvaluationContext context)
 	{
 		return KeywordConstraint.Skip;

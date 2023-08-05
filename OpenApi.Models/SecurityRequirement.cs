@@ -5,6 +5,9 @@ using Json.More;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Models a security requirement.
+/// </summary>
 [JsonConverter(typeof(SecurityRequirementJsonConverter))]
 public class SecurityRequirement : Dictionary<string, IEnumerable<string>>
 {
@@ -44,7 +47,7 @@ public class SecurityRequirement : Dictionary<string, IEnumerable<string>>
 	}
 }
 
-public class SecurityRequirementJsonConverter : JsonConverter<SecurityRequirement>
+internal class SecurityRequirementJsonConverter : JsonConverter<SecurityRequirement>
 {
 	public override SecurityRequirement Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{

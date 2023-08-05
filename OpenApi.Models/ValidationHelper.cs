@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 
 namespace OpenApi.Models;
 
-public static class ValidationHelper
+internal static class ValidationHelper
 {
 	private static readonly string[] ReferenceKeys =
 	{

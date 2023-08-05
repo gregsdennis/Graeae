@@ -5,9 +5,15 @@ using Json.Schema;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Models a path collection.
+/// </summary>
 [JsonConverter(typeof(PathCollectionJsonConverter))]
 public class PathCollection : Dictionary<PathTemplate, PathItem>, IRefTargetContainer
 {
+	/// <summary>
+	/// Gets or set extension data.
+	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
 	public static PathCollection FromNode(JsonNode? node)
@@ -69,7 +75,7 @@ public class PathCollection : Dictionary<PathTemplate, PathItem>, IRefTargetCont
 	}
 }
 
-public class PathCollectionJsonConverter : JsonConverter<PathCollection>
+internal class PathCollectionJsonConverter : JsonConverter<PathCollection>
 {
 	public override PathCollection Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{

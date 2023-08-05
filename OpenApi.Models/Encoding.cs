@@ -5,6 +5,9 @@ using Json.Schema;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Models an encoding object.
+/// </summary>
 [JsonConverter(typeof(EncodingJsonConverter))]
 public class Encoding : IRefTargetContainer
 {
@@ -22,6 +25,9 @@ public class Encoding : IRefTargetContainer
 	public ParameterStyle? Style { get; set; }
 	public bool? Explode { get; set; }
 	public bool? AllowReserved { get; set; }
+	/// <summary>
+	/// Gets or set extension data.
+	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
 	public static Encoding FromNode(JsonNode? node)
@@ -86,7 +92,7 @@ public class Encoding : IRefTargetContainer
 	}
 }
 
-public class EncodingJsonConverter : JsonConverter<Encoding>
+internal class EncodingJsonConverter : JsonConverter<Encoding>
 {
 	public override Encoding Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{

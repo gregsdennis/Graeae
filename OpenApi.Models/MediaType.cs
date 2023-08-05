@@ -6,6 +6,9 @@ using Json.Schema;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Models a media type object.
+/// </summary>
 [JsonConverter(typeof(MediaTypeJsonConverter))]
 public class MediaType : IRefTargetContainer
 {
@@ -21,6 +24,9 @@ public class MediaType : IRefTargetContainer
 	public JsonNode? Example { get; set; } // use JsonNull
 	public Dictionary<string, Example>? Examples { get; set; }
 	public Dictionary<string, Encoding>? Encoding { get; set; }
+	/// <summary>
+	/// Gets or set extension data.
+	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
 	public static MediaType FromNode(JsonNode? node)
@@ -111,7 +117,7 @@ public class MediaType : IRefTargetContainer
 	}
 }
 
-public class MediaTypeJsonConverter : JsonConverter<MediaType>
+internal class MediaTypeJsonConverter : JsonConverter<MediaType>
 {
 	public override MediaType Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{

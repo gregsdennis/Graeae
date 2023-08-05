@@ -5,9 +5,15 @@ using Json.Schema;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Models a callback.
+/// </summary>
 [JsonConverter(typeof(CallbackJsonConverter))]
 public class Callback : Dictionary<CallbackKeyExpression, PathItem>, IRefTargetContainer
 {
+	/// <summary>
+	/// Gets or set extension data.
+	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
 	public static Callback FromNode(JsonNode? node)
@@ -88,6 +94,9 @@ public class Callback : Dictionary<CallbackKeyExpression, PathItem>, IRefTargetC
 	}
 }
 
+/// <summary>
+/// Models a `$ref` to a callback.
+/// </summary>
 public class CallbackRef : Callback, IComponentRef
 {
 	public Uri Ref { get; }
@@ -124,7 +133,7 @@ public class CallbackRef : Callback, IComponentRef
 	}
 }
 
-public class CallbackJsonConverter : JsonConverter<Callback>
+internal class CallbackJsonConverter : JsonConverter<Callback>
 {
 	public override Callback Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{

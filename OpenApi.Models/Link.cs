@@ -4,6 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Models a link object.
+/// </summary>
 [JsonConverter(typeof(LinkJsonConverter))]
 public class Link : IRefTargetContainer
 {
@@ -23,6 +26,9 @@ public class Link : IRefTargetContainer
 	public RuntimeExpression? RequestBody { get; set; } // can be JsonNode?
 	public string? Description { get; set; }
 	public Server? Server { get; set; }
+	/// <summary>
+	/// Gets or set extension data.
+	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
 	public static Link FromNode(JsonNode? node)
@@ -108,6 +114,9 @@ public class Link : IRefTargetContainer
 	}
 }
 
+/// <summary>
+/// Models a `$ref` to a link.
+/// </summary>
 public class LinkRef : Link, IComponentRef
 {
 	public Uri Ref { get; }
@@ -146,7 +155,7 @@ public class LinkRef : Link, IComponentRef
 	}
 }
 
-public class LinkJsonConverter : JsonConverter<Link>
+internal class LinkJsonConverter : JsonConverter<Link>
 {
 	public override Link Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{

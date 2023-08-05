@@ -5,6 +5,9 @@ using Json.Schema;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Models the `components` collection.
+/// </summary>
 [JsonConverter(typeof(ComponentCollectionJsonConverter))]
 public class ComponentCollection : IRefTargetContainer
 {
@@ -32,6 +35,9 @@ public class ComponentCollection : IRefTargetContainer
 	public Dictionary<string, Link>? Links { get; set; }
 	public Dictionary<string, Callback>? Callbacks { get; set; }
 	public Dictionary<string, PathItem>? PathItems { get; set; }
+	/// <summary>
+	/// Gets or set extension data.
+	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
 	public static ComponentCollection FromNode(JsonNode? node)
@@ -163,7 +169,7 @@ public class ComponentCollection : IRefTargetContainer
 	}
 }
 
-public class ComponentCollectionJsonConverter : JsonConverter<ComponentCollection>
+internal class ComponentCollectionJsonConverter : JsonConverter<ComponentCollection>
 {
 	public override ComponentCollection Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
@@ -178,13 +184,5 @@ public class ComponentCollectionJsonConverter : JsonConverter<ComponentCollectio
 		var json = ComponentCollection.ToNode(value, options);
 
 		JsonSerializer.Serialize(writer, json, options);
-	}
-}
-
-public static class GeneralHelpers
-{
-	public static IEnumerable<T> Collect<T>(params IEnumerable<T>?[] collections)
-	{
-		return collections.Where(x => x != null).SelectMany(x => x!);
 	}
 }

@@ -3,6 +3,9 @@ using Json.Schema;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Provides extended JSON Schema formats.
+/// </summary>
 public static class Formats
 {
 	public static readonly Format Int32 = new PredicateFormat("int32", ValidateInt32);

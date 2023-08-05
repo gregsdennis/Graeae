@@ -4,6 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Models the info object.
+/// </summary>
 [JsonConverter(typeof(OpenApiInfoJsonConverter))]
 public class OpenApiInfo : IRefTargetContainer
 {
@@ -25,6 +28,9 @@ public class OpenApiInfo : IRefTargetContainer
 	public ContactInfo? Contact { get; set; }
 	public LicenseInfo? License { get; set; }
 	public string Version { get; }
+	/// <summary>
+	/// Gets or set extension data.
+	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
 	public OpenApiInfo(string title, string version)
@@ -97,7 +103,7 @@ public class OpenApiInfo : IRefTargetContainer
 	}
 }
 
-public class OpenApiInfoJsonConverter : JsonConverter<OpenApiInfo>
+internal class OpenApiInfoJsonConverter : JsonConverter<OpenApiInfo>
 {
 	public override OpenApiInfo Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{

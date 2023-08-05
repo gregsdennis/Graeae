@@ -5,6 +5,9 @@ using Json.Schema;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Models an individual path.
+/// </summary>
 [JsonConverter(typeof(PathItemJsonConverter))]
 public class PathItem : IRefTargetContainer
 {
@@ -36,6 +39,9 @@ public class PathItem : IRefTargetContainer
 	public Operation? Trace { get; set; }
 	public IEnumerable<Server>? Servers { get; set; }
 	public IEnumerable<Parameter>? Parameters { get; set; }
+	/// <summary>
+	/// Gets or set extension data.
+	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
 	public static PathItem FromNode(JsonNode? node)
@@ -207,6 +213,9 @@ public class PathItem : IRefTargetContainer
 	}
 }
 
+/// <summary>
+/// Models a `$ref` to a path item.
+/// </summary>
 public class PathItemRef : PathItem, IComponentRef
 {
 	public Uri Ref { get; }
@@ -253,7 +262,7 @@ public class PathItemRef : PathItem, IComponentRef
 	}
 }
 
-public class PathItemJsonConverter : JsonConverter<PathItem>
+internal class PathItemJsonConverter : JsonConverter<PathItem>
 {
 	public override PathItem Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{

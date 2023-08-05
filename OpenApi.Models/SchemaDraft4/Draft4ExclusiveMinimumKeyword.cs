@@ -6,7 +6,7 @@ using Json.Schema;
 namespace OpenApi.Models.SchemaDraft4;
 
 /// <summary>
-/// Overrides the <see cref="ExclusiveMinimumKeyword"/> to support draft 4 boolean values.
+/// Overrides the JSON Schema <see cref="ExclusiveMinimumKeyword"/> to support draft 4 boolean values.
 /// </summary>
 [SchemaKeyword(Name)]
 [SchemaSpecVersion(Draft4Support.Draft4Version)]

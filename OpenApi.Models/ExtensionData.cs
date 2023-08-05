@@ -2,6 +2,9 @@
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Supports extension data for all types.
+/// </summary>
 public class ExtensionData : Dictionary<string, JsonNode?>, IRefTargetContainer
 {
 	public static ExtensionData? FromNode(JsonObject obj)

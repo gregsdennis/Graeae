@@ -6,6 +6,9 @@ using Json.Schema;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Models a header.
+/// </summary>
 [JsonConverter(typeof(HeaderJsonConverter))]
 public class Header : IRefTargetContainer
 {
@@ -35,6 +38,9 @@ public class Header : IRefTargetContainer
 	public JsonNode? Example { get; set; } // use JsonNull
 	public Dictionary<string, Example>? Examples { get; set; }
 	public Dictionary<string, MediaType>? Content { get; set; }
+	/// <summary>
+	/// Gets or set extension data.
+	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
 	public static Header FromNode(JsonNode? node)
@@ -173,6 +179,9 @@ public class Header : IRefTargetContainer
 	}
 }
 
+/// <summary>
+/// Models a `$ref` to a header.
+/// </summary>
 public class HeaderRef : Header, IComponentRef
 {
 	public Uri Ref { get;  }
@@ -216,7 +225,7 @@ public class HeaderRef : Header, IComponentRef
 	}
 }
 
-public class HeaderJsonConverter : JsonConverter<Header>
+internal class HeaderJsonConverter : JsonConverter<Header>
 {
 	public override Header Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{

@@ -3,16 +3,31 @@ using Json.Schema;
 
 namespace OpenApi.Models.SchemaDraft4;
 
+/// <summary>
+/// Provides additional functionality for JSON Schema draft 4 support.
+/// </summary>
 public static class Draft4Support
 {
+	/// <summary>
+	/// Defines a JSON Schema draft 4 spec version.
+	/// </summary>
 	// This is kind of a hack since SpecVersion is an enum.
 	// Maybe it should be defined as string constants.
 	// This assumes that JsonSchema.Net supports custom spec versions (hidden feature).
 	public const SpecVersion Draft4Version = (SpecVersion)(1 << 10);
+	/// <summary>
+	/// Defines the OpenAPI / JSON Schema draft 4 `file` type.
+	/// </summary>
 	public const SchemaValueType FileDataType = (SchemaValueType)(1 << 10);
 
+	/// <summary>
+	/// Defines the JSON Schema draft 4 meta-schema URI.
+	/// </summary>
 	public const string Draft4MetaSchemaUri = "http://json-schema.org/draft-04/schema#";
 
+	/// <summary>
+	/// Defines the JSON Schema draft 4 meta-schema.
+	/// </summary>
 	public static readonly JsonSchema Draft4MetaSchema =
 		new JsonSchemaBuilder()
 			.OasId(Draft4MetaSchemaUri)
@@ -155,6 +170,9 @@ public static class Draft4Support
 		Draft4MetaSchema.Evaluate(new JsonObject(), new EvaluationOptions { EvaluateAs = Draft4Version });
 	}
 
+	/// <summary>
+	/// Enables support for OpenAPI v3.0 and JSON Schema draft 4.
+	/// </summary>
 	public static void Enable()
 	{
 		SchemaKeywordRegistry.Register<Draft4ExclusiveMaximumKeyword>();

@@ -4,6 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Models a security scheme.
+/// </summary>
 [JsonConverter(typeof(SecuritySchemeJsonConverter))]
 public class SecurityScheme : IRefTargetContainer
 {
@@ -27,6 +30,9 @@ public class SecurityScheme : IRefTargetContainer
 	public string? BearerFormat { get; set; }
 	public OAuthFlowCollection? Flows { get; set; }
 	public Uri? OpenIdConnectUrl { get; set; }
+	/// <summary>
+	/// Gets or set extension data.
+	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
 	public SecurityScheme(SecuritySchemeType type)
@@ -121,6 +127,9 @@ public class SecurityScheme : IRefTargetContainer
 	}
 }
 
+/// <summary>
+/// Models a `$ref` to a security scheme.
+/// </summary>
 public class SecuritySchemeRef : SecurityScheme, IComponentRef
 {
 	public Uri Ref { get; }
@@ -162,7 +171,7 @@ public class SecuritySchemeRef : SecurityScheme, IComponentRef
 	}
 }
 
-public class SecuritySchemeJsonConverter : JsonConverter<SecurityScheme>
+internal class SecuritySchemeJsonConverter : JsonConverter<SecurityScheme>
 {
 	public override SecurityScheme Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{

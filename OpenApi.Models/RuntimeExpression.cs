@@ -4,6 +4,9 @@ using Json.Pointer;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Models an OpenAPI runtime expression.
+/// </summary>
 public class RuntimeExpression : IEquatable<string>
 {
 	// see https://spec.openapis.org/oas/v3.1.0#runtime-expressions

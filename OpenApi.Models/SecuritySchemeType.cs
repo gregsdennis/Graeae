@@ -4,6 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Defines the different security schema types.
+/// </summary>
 [JsonConverter(typeof(EnumStringConverter<SecuritySchemeType>))]
 public enum SecuritySchemeType
 {

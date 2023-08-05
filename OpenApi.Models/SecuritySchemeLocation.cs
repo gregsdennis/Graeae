@@ -4,6 +4,9 @@ using Json.More;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Defines the different security scheme locations.
+/// </summary>
 [JsonConverter(typeof(EnumStringConverter<SecuritySchemeLocation>))]
 public enum SecuritySchemeLocation
 {

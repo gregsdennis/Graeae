@@ -4,7 +4,7 @@ using Json.More;
 
 namespace OpenApi.Models;
 
-public static class SerializationExtensions
+internal static class SerializationExtensions
 {
 	public static T? MaybeDeserialize<T>(this JsonObject obj, string propertyName, JsonSerializerOptions? options = null)
 		where T : class

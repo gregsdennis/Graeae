@@ -4,6 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Models an OAuth flow.
+/// </summary>
 [JsonConverter(typeof(OAuthFlowJsonConverter))]
 public class OAuthFlow : IRefTargetContainer
 {
@@ -19,6 +22,9 @@ public class OAuthFlow : IRefTargetContainer
 	public Uri TokenUrl { get; }
 	public Uri? RefreshUrl { get; set; }
 	public Dictionary<string, string> Scopes { get; }
+	/// <summary>
+	/// Gets or set extension data.
+	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
 	public OAuthFlow(Uri authorizationUrl, Uri tokenUrl, Dictionary<string, string> scopes)
@@ -78,7 +84,7 @@ public class OAuthFlow : IRefTargetContainer
 	}
 }
 
-public class OAuthFlowJsonConverter : JsonConverter<OAuthFlow>
+internal class OAuthFlowJsonConverter : JsonConverter<OAuthFlow>
 {
 	public override OAuthFlow Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{

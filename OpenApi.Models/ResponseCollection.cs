@@ -6,10 +6,16 @@ using Json.Schema;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Models a response collection.
+/// </summary>
 [JsonConverter(typeof(ResponseCollectionJsonConverter))]
 public class ResponseCollection : Dictionary<HttpStatusCode, Response>, IRefTargetContainer
 {
 	public Response? Default { get; set; }
+	/// <summary>
+	/// Gets or set extension data.
+	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
 	public static ResponseCollection FromNode(JsonNode? node)
@@ -89,7 +95,7 @@ public class ResponseCollection : Dictionary<HttpStatusCode, Response>, IRefTarg
 	}
 }
 
-public class ResponseCollectionJsonConverter : JsonConverter<ResponseCollection>
+internal class ResponseCollectionJsonConverter : JsonConverter<ResponseCollection>
 {
 	public override ResponseCollection Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{

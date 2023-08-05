@@ -4,6 +4,9 @@ using Json.More;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Defines the different parameter styles.
+/// </summary>
 [JsonConverter(typeof(EnumStringConverter<ParameterStyle>))]
 public enum ParameterStyle
 {

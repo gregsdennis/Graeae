@@ -5,6 +5,9 @@ using Json.Schema;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Models a response.
+/// </summary>
 [JsonConverter(typeof(ResponseJsonConverter))]
 public class Response : IRefTargetContainer
 {
@@ -20,6 +23,9 @@ public class Response : IRefTargetContainer
 	public Dictionary<string, Header>? Headers { get; set; }
 	public Dictionary<string, MediaType>? Content { get; set; }
 	public Dictionary<string, Link>? Links { get; set; }
+	/// <summary>
+	/// Gets or set extension data.
+	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
 	public Response(string description)
@@ -144,6 +150,9 @@ public class Response : IRefTargetContainer
 	}
 }
 
+/// <summary>
+/// Models a `$ref` to a response.
+/// </summary>
 public class ResponseRef : Response, IComponentRef
 {
 	public Uri Ref { get; }
@@ -181,7 +190,7 @@ public class ResponseRef : Response, IComponentRef
 	}
 }
 
-public class ResponseJsonConverter : JsonConverter<Response>
+internal class ResponseJsonConverter : JsonConverter<Response>
 {
 	public override Response Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{

@@ -5,6 +5,9 @@ using Json.Schema;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Models an operation.
+/// </summary>
 [JsonConverter(typeof(OperationJsonConverter))]
 public class Operation : IRefTargetContainer
 {
@@ -36,6 +39,9 @@ public class Operation : IRefTargetContainer
 	public bool? Deprecated { get; set; }
 	public IEnumerable<SecurityRequirement>? Security { get; set; }
 	public IEnumerable<Server>? Servers { get; set; }
+	/// <summary>
+	/// Gets or set extension data.
+	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
 	public static Operation FromNode(JsonNode? node)
@@ -148,7 +154,7 @@ public class Operation : IRefTargetContainer
 	}
 }
 
-public class OperationJsonConverter : JsonConverter<Operation>
+internal class OperationJsonConverter : JsonConverter<Operation>
 {
 	public override Operation Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{

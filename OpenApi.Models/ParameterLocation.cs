@@ -4,6 +4,9 @@ using Json.More;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Defines the different parameter locations.
+/// </summary>
 [JsonConverter(typeof(EnumStringConverter<ParameterLocation>))]
 public enum ParameterLocation
 {

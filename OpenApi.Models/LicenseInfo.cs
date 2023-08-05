@@ -4,6 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Models the license information.
+/// </summary>
 [JsonConverter(typeof(LicenseInfoJsonConverter))]
 public class LicenseInfo : IRefTargetContainer
 {
@@ -17,6 +20,9 @@ public class LicenseInfo : IRefTargetContainer
 	public string Name { get; set; }
 	public string? Identifier { get; set; }
 	public Uri? Url { get; set; }
+	/// <summary>
+	/// Gets or set extension data.
+	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
 	public LicenseInfo(string name)
@@ -65,7 +71,7 @@ public class LicenseInfo : IRefTargetContainer
 	}
 }
 
-public class LicenseInfoJsonConverter : JsonConverter<LicenseInfo>
+internal class LicenseInfoJsonConverter : JsonConverter<LicenseInfo>
 {
 	public override LicenseInfo Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{

@@ -3,6 +3,9 @@ using Json.Pointer;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Models the path URI.
+/// </summary>
 public class PathTemplate : IEquatable<PathTemplate>, IEquatable<string>
 {
 	// /path/{item} and /path/{otherItem} are equal

@@ -4,6 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Models external documentation.
+/// </summary>
 [JsonConverter(typeof(ExternalDocumentationJsonConverter))]
 public class ExternalDocumentation : IRefTargetContainer
 {
@@ -15,6 +18,9 @@ public class ExternalDocumentation : IRefTargetContainer
 
 	public string? Description { get; set; }
 	public Uri Url { get; }
+	/// <summary>
+	/// Gets or set extension data.
+	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
 	public ExternalDocumentation(Uri url)
@@ -61,7 +67,7 @@ public class ExternalDocumentation : IRefTargetContainer
 	}
 }
 
-public class ExternalDocumentationJsonConverter : JsonConverter<ExternalDocumentation>
+internal class ExternalDocumentationJsonConverter : JsonConverter<ExternalDocumentation>
 {
 	public override ExternalDocumentation Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{

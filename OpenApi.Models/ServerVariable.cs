@@ -4,6 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Models a server variable.
+/// </summary>
 [JsonConverter(typeof(ServerVariableJsonConverter))]
 public class ServerVariable : IRefTargetContainer
 {
@@ -17,6 +20,9 @@ public class ServerVariable : IRefTargetContainer
 	public IEnumerable<string>? Enum { get; set; }
 	public string Default { get; }
 	public string? Description { get; set; }
+	/// <summary>
+	/// Gets or set extension data.
+	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
 	public ServerVariable(string @default)
@@ -65,7 +71,7 @@ public class ServerVariable : IRefTargetContainer
 	}
 }
 
-public class ServerVariableJsonConverter : JsonConverter<ServerVariable>
+internal class ServerVariableJsonConverter : JsonConverter<ServerVariable>
 {
 	public override ServerVariable Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{

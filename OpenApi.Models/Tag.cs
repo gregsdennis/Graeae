@@ -4,6 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Models a tag.
+/// </summary>
 [JsonConverter(typeof(TagJsonConverter))]
 public class Tag : IRefTargetContainer
 {
@@ -17,6 +20,9 @@ public class Tag : IRefTargetContainer
 	public string Name { get; }
 	public string? Description { get; set; }
 	public ExternalDocumentation? ExternalDocs { get; set; }
+	/// <summary>
+	/// Gets or set extension data.
+	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
 	public Tag(string name)
@@ -71,7 +77,7 @@ public class Tag : IRefTargetContainer
 	}
 }
 
-public class TagJsonConverter : JsonConverter<Tag>
+internal class TagJsonConverter : JsonConverter<Tag>
 {
 	public override Tag Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{

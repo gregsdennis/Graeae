@@ -4,6 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace OpenApi.Models;
 
+/// <summary>
+/// Models the contact information.
+/// </summary>
 [JsonConverter(typeof(ContactInfoJsonConverter))]
 public class ContactInfo : IRefTargetContainer
 {
@@ -17,6 +20,9 @@ public class ContactInfo : IRefTargetContainer
 	public string? Name { get; set; }
 	public Uri? Url { get; set; }
 	public string? Email { get; set; }
+	/// <summary>
+	/// Gets or set extension data.
+	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
 	public static ContactInfo FromNode(JsonNode? node)
@@ -59,7 +65,7 @@ public class ContactInfo : IRefTargetContainer
 	}
 }
 
-public class ContactInfoJsonConverter : JsonConverter<ContactInfo>
+internal class ContactInfoJsonConverter : JsonConverter<ContactInfo>
 {
 	public override ContactInfo Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
