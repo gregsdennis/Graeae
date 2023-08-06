@@ -19,3 +19,13 @@ Feel free to open issues & pull requests.
 Remember to follow the [Code of Conduct](./CODE_OF_CONDUCT.md) and [Contributing Guidelines](./CONTRIBUTING.md).
 
 To chat about this project, please [join me in Slack](https://join.slack.com/t/manateeopensource/shared_invite/enQtMzU4MjgzMjgyNzU3LWZjYzAzYzY3NjY1MjY3ODI0ZGJiZjc3Nzk1MDM5NTNlMjMyOTE0MzMxYWVjMjdiOGU1NDY5OGVhMGQ5YzY4Zjg).
+
+## Usage
+
+The library supports OpenAPI v3.1 (de)serialization out of the box.  To support OpenAPI v3.0.x, you'll need to enable JSON Schema draft 4 support.  To do that, add this to your app initialization:
+
+```c#
+using OpenApi.Models.SchemaDraft4;
+
+Draft4Support.Enable();
+```
