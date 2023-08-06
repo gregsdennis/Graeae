@@ -10,7 +10,35 @@
 
 OpenAPI models for System.Text.Json.  Supports specification versions v3.0.x & v3.1.
 
-JSON Schema support provided by [JsonSchema.Net](https://www.nuget.org/packages/JsonSchema.Net), part of the [`json-everything`](https://github.com/gregsdennis/json-everything) project.
+This project is supported by the [`json-everything`](https://github.com/gregsdennis/json-everything) project:
+
+- JSON Schema support provided by [JsonSchema.Net](https://www.nuget.org/packages/JsonSchema.Net)
+- YAML support provided by [Yaml2JsonNode](https://www.nuget.org/packages/Yaml2JsonNode)
+
+## Usage
+
+The library supports OpenAPI v3.1 (de)serialization out of the box.
+
+```c#
+// read from a file
+var yamlText = File.ReadAllText("openapi.yaml");
+var openApiDoc = YamlSerializer.Deserialize<OpenApiDocument>(yamlText);
+
+// back to text
+var asText = YamlSerializer.Serialize(openApiDoc);
+```
+
+***HINT** Because YAML is a superset of JSON, the `YamlSerializer` class also supports JSON files, so you don't need to check which format the file is in.*
+
+To support OpenAPI v3.0.x, you'll need to enable JSON Schema draft 4 support first.  To do that, add this to your app initialization:
+
+```c#
+using OpenApi.Models.SchemaDraft4;
+
+Draft4Support.Enable();
+```
+
+## Contributing and Support
 
 This project is in its infancy and is open for help and suggestions.  Additional functionality such as code generation is planned as extension libraries.
 
@@ -19,13 +47,3 @@ Feel free to open issues & pull requests.
 Remember to follow the [Code of Conduct](./CODE_OF_CONDUCT.md) and [Contributing Guidelines](./CONTRIBUTING.md).
 
 To chat about this project, please [join me in Slack](https://join.slack.com/t/manateeopensource/shared_invite/enQtMzU4MjgzMjgyNzU3LWZjYzAzYzY3NjY1MjY3ODI0ZGJiZjc3Nzk1MDM5NTNlMjMyOTE0MzMxYWVjMjdiOGU1NDY5OGVhMGQ5YzY4Zjg).
-
-## Usage
-
-The library supports OpenAPI v3.1 (de)serialization out of the box.  To support OpenAPI v3.0.x, you'll need to enable JSON Schema draft 4 support.  To do that, add this to your app initialization:
-
-```c#
-using OpenApi.Models.SchemaDraft4;
-
-Draft4Support.Enable();
-```
