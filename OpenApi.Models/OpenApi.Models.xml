@@ -296,6 +296,31 @@
             Provides extended JSON Schema formats.
             </summary>
         </member>
+        <member name="F:OpenApi.Models.Formats.Int32">
+            <summary>
+            Validates that a number is a valid 32-bit integer.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.Formats.Int64">
+            <summary>
+            Validates that a number is a valid 64-bit integer.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.Formats.Float">
+            <summary>
+            Validates that a number is a valid single-precision floating point value.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.Formats.Double">
+            <summary>
+            Validates that a number is a valid double-precision floating point value.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.Formats.Password">
+            <summary>
+            Validates that a string is a password.
+            </summary>
+        </member>
         <member name="T:OpenApi.Models.Header">
             <summary>
             Models a header.
@@ -964,6 +989,31 @@
             Defines the different parameter locations.
             </summary>
         </member>
+        <member name="F:OpenApi.Models.ParameterLocation.Unspecified">
+            <summary>
+            Indicates the location is unknown.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.ParameterLocation.Query">
+            <summary>
+            Indicates the parameter is in the query string.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.ParameterLocation.Header">
+            <summary>
+            Indicates the parameter is in a header.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.ParameterLocation.Path">
+            <summary>
+            Indicates the parameter is in the path.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.ParameterLocation.Cookie">
+            <summary>
+            Indicates the parameter is in a cookie.
+            </summary>
+        </member>
         <member name="T:OpenApi.Models.ParameterStyle">
             <summary>
             Defines the different parameter styles.
@@ -1128,13 +1178,78 @@
         </member>
         <member name="T:OpenApi.Models.PathTemplate">
             <summary>
-            Models the path URI.
+            Models a templated path URI.
             </summary>
+        </member>
+        <member name="P:OpenApi.Models.PathTemplate.Segments">
+            <summary>
+            Gets the segments of the path.
+            </summary>
+        </member>
+        <member name="M:OpenApi.Models.PathTemplate.Parse(System.String)">
+            <summary>
+            Parses a new path template from a string.
+            </summary>
+            <param name="source">The string source</param>
+            <returns>A path template.</returns>
+        </member>
+        <member name="M:OpenApi.Models.PathTemplate.TryParse(System.String,OpenApi.Models.PathTemplate@)">
+            <summary>
+            Attempts to parse a new path template from a string.
+            </summary>
+            <param name="source">The string source</param>
+            <param name="template">The path template if the parse succeeded, otherwise null</param>
+            <returns>True if the parse succeeded, otherwise false.</returns>
+        </member>
+        <member name="M:OpenApi.Models.PathTemplate.ToString">
+            <summary>Returns a string that represents the current object.</summary>
+            <returns>A string that represents the current object.</returns>
+        </member>
+        <member name="M:OpenApi.Models.PathTemplate.Equals(OpenApi.Models.PathTemplate)">
+            <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+            <param name="other">An object to compare with this object.</param>
+            <returns>
+            <see langword="true" /> if the current object is equal to the <paramref name="other" /> parameter; otherwise, <see langword="false" />.</returns>
+        </member>
+        <member name="M:OpenApi.Models.PathTemplate.Equals(System.String)">
+            <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+            <param name="other">An object to compare with this object.</param>
+            <returns>
+            <see langword="true" /> if the current object is equal to the <paramref name="other" /> parameter; otherwise, <see langword="false" />.</returns>
+        </member>
+        <member name="M:OpenApi.Models.PathTemplate.Equals(System.Object)">
+            <summary>Determines whether the specified object is equal to the current object.</summary>
+            <param name="obj">The object to compare with the current object.</param>
+            <returns>
+            <see langword="true" /> if the specified object  is equal to the current object; otherwise, <see langword="false" />.</returns>
+        </member>
+        <member name="M:OpenApi.Models.PathTemplate.GetHashCode">
+            <summary>Serves as the default hash function.</summary>
+            <returns>A hash code for the current object.</returns>
+        </member>
+        <member name="M:OpenApi.Models.PathTemplate.op_Implicit(System.String)~OpenApi.Models.PathTemplate">
+            <summary>
+            Implicitly converts a string to a path template via parsing.
+            </summary>
+            <param name="source">The string source.</param>
         </member>
         <member name="T:OpenApi.Models.RefHelper">
             <summary>
             Allows customization of `$ref` resolutions.
             </summary>
+        </member>
+        <member name="P:OpenApi.Models.RefHelper.Fetch">
+            <summary>
+            Gets or sets the `$ref` fetching function.
+            </summary>
+        </member>
+        <member name="M:OpenApi.Models.RefHelper.FetchJson(System.Uri)">
+            <summary>
+            Defines a default basic fetching function that uses an
+            <see cref="T:System.Net.Http.HttpClient"/> and supports YAML and JSON content.
+            </summary>
+            <param name="uri">The resource URI</param>
+            <returns>The JSON content as a `JsonNode`</returns>
         </member>
         <member name="T:OpenApi.Models.RefResolutionException">
             <summary>
@@ -1220,10 +1335,36 @@
             Models a response.
             </summary>
         </member>
+        <member name="P:OpenApi.Models.Response.Description">
+            <summary>
+            Gets the description.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Response.Headers">
+            <summary>
+            Gets or sets the header collection.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Response.Content">
+            <summary>
+            Gets or sets the content collection.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Response.Links">
+            <summary>
+            Gets or sets the link collection.
+            </summary>
+        </member>
         <member name="P:OpenApi.Models.Response.ExtensionData">
             <summary>
             Gets or set extension data.
             </summary>
+        </member>
+        <member name="M:OpenApi.Models.Response.#ctor(System.String)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.Response"/>
+            </summary>
+            <param name="description">The description</param>
         </member>
         <member name="T:OpenApi.Models.ResponseRef">
             <summary>
@@ -1267,6 +1408,11 @@
             Models a response collection.
             </summary>
         </member>
+        <member name="P:OpenApi.Models.ResponseCollection.Default">
+            <summary>
+            Gets or sets the default response for the collection.
+            </summary>
+        </member>
         <member name="P:OpenApi.Models.ResponseCollection.ExtensionData">
             <summary>
             Gets or set extension data.
@@ -1277,14 +1423,112 @@
             Models an OpenAPI runtime expression.
             </summary>
         </member>
+        <member name="P:OpenApi.Models.RuntimeExpression.ExpressionType">
+            <summary>
+            Gets the expression type.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.RuntimeExpression.SourceType">
+            <summary>
+            Gets the source type.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.RuntimeExpression.Token">
+            <summary>
+            Gets the token.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.RuntimeExpression.Name">
+            <summary>
+            Gets the name.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.RuntimeExpression.JsonPointer">
+            <summary>
+            Gets the JSON Pointer.
+            </summary>
+        </member>
+        <member name="M:OpenApi.Models.RuntimeExpression.Parse(System.String)">
+            <summary>
+            Parses a runtime expression from a string.
+            </summary>
+            <param name="source">The string source</param>
+            <returns>A runtime expression</returns>
+            <exception cref="T:System.Text.Json.JsonException">Throw when the parse fails</exception>
+        </member>
+        <member name="M:OpenApi.Models.RuntimeExpression.Equals(System.String)">
+            <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+            <param name="other">An object to compare with this object.</param>
+            <returns>
+            <see langword="true" /> if the current object is equal to the <paramref name="other" /> parameter; otherwise, <see langword="false" />.</returns>
+        </member>
+        <member name="M:OpenApi.Models.RuntimeExpression.ToString">
+            <summary>Returns a string that represents the current object.</summary>
+            <returns>A string that represents the current object.</returns>
+        </member>
         <member name="T:OpenApi.Models.RuntimeExpressionSourceType">
             <summary>
             Defines the different runtime expression sources.
             </summary>
         </member>
+        <member name="F:OpenApi.Models.RuntimeExpressionSourceType.Unspecified">
+            <summary>
+            Indicates the expression source type is unknown.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.RuntimeExpressionSourceType.Header">
+            <summary>
+            Indicates the expression source is the header.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.RuntimeExpressionSourceType.Query">
+            <summary>
+            Indicates the expression source is the query string.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.RuntimeExpressionSourceType.Path">
+            <summary>
+            Indicates the expression source is the path.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.RuntimeExpressionSourceType.Body">
+            <summary>
+            Indicates the expression source is the body.
+            </summary>
+        </member>
         <member name="T:OpenApi.Models.RuntimeExpressionType">
             <summary>
             Defines the different types of runtime expressions.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.RuntimeExpressionType.Unspecified">
+            <summary>
+            Indicates the expression type is unknown.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.RuntimeExpressionType.Url">
+            <summary>
+            Indicates a `$url` expression.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.RuntimeExpressionType.Method">
+            <summary>
+            Indicates a `$method` expression.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.RuntimeExpressionType.StatusCode">
+            <summary>
+            Indicates a `$statusCode` expression.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.RuntimeExpressionType.Request">
+            <summary>
+            Indicates a `$request` expression.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.RuntimeExpressionType.Response">
+            <summary>
+            Indicates a `$response` expression.
             </summary>
         </member>
         <member name="T:OpenApi.Models.SchemaDraft4.Draft4ExclusiveMaximumKeyword">
@@ -1557,15 +1801,56 @@
             Models a security scheme.
             </summary>
         </member>
+        <member name="P:OpenApi.Models.SecurityScheme.Type">
+            <summary>
+            Gets the type of security scheme.
+            </summary>
+        </member>
         <member name="P:OpenApi.Models.SecurityScheme.Description">
             <summary>
             Gets or sets the description.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.SecurityScheme.Name">
+            <summary>
+            Gets or sets the name.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.SecurityScheme.In">
+            <summary>
+            Gets or sets the location of the API key.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.SecurityScheme.Scheme">
+            <summary>
+            Gets or sets the scheme.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.SecurityScheme.BearerFormat">
+            <summary>
+            Gets or sets the bearer token format.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.SecurityScheme.Flows">
+            <summary>
+            Gets or sets the collection of OAuth flows.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.SecurityScheme.OpenIdConnectUrl">
+            <summary>
+            Gets the OpenID Connect URL.
             </summary>
         </member>
         <member name="P:OpenApi.Models.SecurityScheme.ExtensionData">
             <summary>
             Gets or set extension data.
             </summary>
+        </member>
+        <member name="M:OpenApi.Models.SecurityScheme.#ctor(System.String)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.SecurityScheme"/>
+            </summary>
+            <param name="type">The security scheme type</param>
         </member>
         <member name="T:OpenApi.Models.SecuritySchemeRef">
             <summary>
@@ -1609,9 +1894,24 @@
             Defines the different security scheme locations.
             </summary>
         </member>
-        <member name="T:OpenApi.Models.SecuritySchemeType">
+        <member name="F:OpenApi.Models.SecuritySchemeLocation.Unspecified">
             <summary>
-            Defines the different security schema types.
+            Indicates the location is unknown.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.SecuritySchemeLocation.Query">
+            <summary>
+            Indicates the API key is located in the query.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.SecuritySchemeLocation.Header">
+            <summary>
+            Indicates the API key is located in a header.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.SecuritySchemeLocation.Cookie">
+            <summary>
+            Indicates the API key is located in a cookie.
             </summary>
         </member>
         <member name="T:OpenApi.Models.Server">
@@ -1619,9 +1919,19 @@
             Models a server.
             </summary>
         </member>
+        <member name="P:OpenApi.Models.Server.Url">
+            <summary>
+            Gets the URL of the server.
+            </summary>
+        </member>
         <member name="P:OpenApi.Models.Server.Description">
             <summary>
             Gets or sets the description.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Server.Variables">
+            <summary>
+            Gets or sets the variable map.
             </summary>
         </member>
         <member name="P:OpenApi.Models.Server.ExtensionData">
@@ -1629,9 +1939,25 @@
             Gets or set extension data.
             </summary>
         </member>
+        <member name="M:OpenApi.Models.Server.#ctor(System.String)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.Server"/>
+            </summary>
+            <param name="url">The server URL</param>
+        </member>
         <member name="T:OpenApi.Models.ServerVariable">
             <summary>
             Models a server variable.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ServerVariable.Enum">
+            <summary>
+            Gets or sets an enumeration of string values to be used if the substitution options are from a limited set.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ServerVariable.Default">
+            <summary>
+            Gets the default value to use for substitution.
             </summary>
         </member>
         <member name="P:OpenApi.Models.ServerVariable.Description">
@@ -1643,6 +1969,12 @@
             <summary>
             Gets or set extension data.
             </summary>
+        </member>
+        <member name="M:OpenApi.Models.ServerVariable.#ctor(System.String)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.ServerVariable"/>
+            </summary>
+            <param name="default">The default value</param>
         </member>
         <member name="T:OpenApi.Models.Tag">
             <summary>
@@ -1668,6 +2000,12 @@
             <summary>
             Gets or set extension data.
             </summary>
+        </member>
+        <member name="M:OpenApi.Models.Tag.#ctor(System.String)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.Tag"/>
+            </summary>
+            <param name="name">The tag name</param>
         </member>
         <member name="M:OpenApi.Models.Tag.FromNode(System.Text.Json.Nodes.JsonNode)">
             <summary>

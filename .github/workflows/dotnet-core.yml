@@ -1,0 +1,88 @@
+name: Build & Test
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/dotnet-core.yml'
+      - 'OpenApi.Models*/**/*'
+  pull_request:
+    paths:
+      - '.github/workflows/dotnet-core.yml'
+      - 'OpenApi.Models*/**/*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: restore submodules
+        run: git submodule update --init
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: |
+            6.0.x
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+      - name: Test
+        run: dotnet test --no-restore --verbosity normal --logger:"trx;LogFileName=test-results.trx"
+      - name: Upload Unit Test Results
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: Unit Test Results
+          path: '**/*/test-results.trx'
+
+  test-results:
+    runs-on: ubuntu-latest
+    needs: build
+    if: success() || failure()
+    name: Publish Unit Test Results
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: artifacts
+      - name: Publish Unit Test Results
+        uses: EnricoMi/publish-unit-test-result-action/composite@v2
+        if: always()
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          files: '**/*/test-results.trx'
+
+  # test-badge:
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   if: success() || failure()
+  #   steps:
+  #     - name: Extract Branch Name
+  #       run: echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
+  #     - name: Download Artifacts
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         path: artifacts
+  #     - name: Get badge details
+  #       run: |
+  #         find . -name test-results.trx -exec cat '{}' >> all-results.xml \;
+  #         echo "FAIL_COUNT=`grep -Pio '(?<=failed=")\d+' all-results.xml | awk '{ SUM += $1} END { print SUM }'`" >> $GITHUB_ENV
+  #         echo "PASS_COUNT=`grep -Pio '(?<=passed=")\d+' all-results.xml | awk '{ SUM += $1} END { print SUM }'`" >> $GITHUB_ENV
+  #         if [[ $FAIL_COUNT -eq 0 ]]
+  #         then
+  #           echo "BUILD_STATUS=success" >> $GITHUB_ENV
+  #         else
+  #           echo "BUILD_STATUS=critical" >> $GITHUB_ENV
+  #         fi
+  #     - name: Create test results badge
+  #       if: env.BRANCH == 'master'
+  #       uses: schneegans/dynamic-badges-action@v1.0.0
+  #       with:
+  #         auth: ${{ secrets.TEST_BADGE_KEY }}
+  #         gistID: 28607f2d276032f4d9a7f2c807e44df7
+  #         filename: test-results-badge.json
+  #         label: tests
+  #         message: ${{ format('{0} passing | {1} failing', env.PASS_COUNT, env.FAIL_COUNT) }}
+  #         color: ${{ env.BUILD_STATUS }}
