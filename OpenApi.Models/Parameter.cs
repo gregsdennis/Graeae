@@ -29,27 +29,68 @@ public class Parameter : IRefTargetContainer
 		"content"
 	};
 
+	/// <summary>
+	/// Gets the name.
+	/// </summary>
 	public string Name { get; private protected set; }
+	/// <summary>
+	/// Gets the parameter location.
+	/// </summary>
 	public ParameterLocation In { get; private protected set; }
 	/// <summary>
 	/// Gets or sets the description.
 	/// </summary>
 	public string? Description { get; set; }
+	/// <summary>
+	/// Gets or sets whether the parameter is required.
+	/// </summary>
 	public bool? Required { get; set; }
+	/// <summary>
+	/// Gets or sets whether the parameter is deprecated.
+	/// </summary>
 	public bool? Deprecated { get; set; }
+	/// <summary>
+	/// Gets or sets whether the parameter is allowed to be present with an empty value.
+	/// </summary>
 	public bool? AllowEmptyValue { get; set; }
+	/// <summary>
+	/// Gets or sets how the parameter value will be serialized.
+	/// </summary>
 	public ParameterStyle? Style { get; set; }
+	/// <summary>
+	/// Gets or sets whether this will be exploded into multiple parameters.
+	/// </summary>
 	public bool? Explode { get; set; }
+	/// <summary>
+	/// Gets or sets whether the parameter value should allow reserved characters.
+	/// </summary>
 	public bool? AllowReserved { get; set; }
+	/// <summary>
+	/// Gets or sets a schema for the content.
+	/// </summary>
 	public JsonSchema? Schema { get; set; }
-	public JsonNode? Example { get; set; } // use JsonNull
+	/// <summary>
+	/// Gets or sets an example.
+	/// </summary>
+	public JsonNode? Example { get; set; }
+	/// <summary>
+	/// Gets or sets a collection of examples.
+	/// </summary>
 	public Dictionary<string, Example>? Examples { get; set; }
+	/// <summary>
+	/// Gets or sets a collection of content.
+	/// </summary>
 	public Dictionary<string, MediaType>? Content { get; set; }
 	/// <summary>
 	/// Gets or set extension data.
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
+	/// <summary>
+	/// Creates a new <see cref="Parameter"/>
+	/// </summary>
+	/// <param name="name">The name</param>
+	/// <param name="in">The parameter location</param>
 	public Parameter(string name, ParameterLocation @in)
 	{
 		Name = name;

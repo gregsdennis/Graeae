@@ -27,6 +27,9 @@ public class Operation : IRefTargetContainer
 		"servers"
 	};
 
+	/// <summary>
+	/// Gets or sets the tags.
+	/// </summary>
 	public IEnumerable<string>? Tags { get; set; }
 	/// <summary>
 	/// Gets or sets the summary.
@@ -40,13 +43,37 @@ public class Operation : IRefTargetContainer
 	/// Gets or sets external documentation.
 	/// </summary>
 	public ExternalDocumentation? ExternalDocs { get; set; }
+	/// <summary>
+	/// Gets or sets the operation ID.
+	/// </summary>
 	public string? OperationId { get; set; }
+	/// <summary>
+	/// Gets or sets the parameters.
+	/// </summary>
 	public IEnumerable<Parameter>? Parameters { get; set; }
+	/// <summary>
+	/// Gets or sets the request body.
+	/// </summary>
 	public RequestBody? RequestBody { get; set; }
+	/// <summary>
+	/// Gets or sets the response collection.
+	/// </summary>
 	public ResponseCollection? Responses { get; set; }
+	/// <summary>
+	/// Gets or sets the callbacks collection.
+	/// </summary>
 	public Dictionary<string, Callback>? Callbacks { get; set; }
+	/// <summary>
+	/// Gets or sets whether the operation is deprecated.
+	/// </summary>
 	public bool? Deprecated { get; set; }
+	/// <summary>
+	/// Gets or sets the security requirements.
+	/// </summary>
 	public IEnumerable<SecurityRequirement>? Security { get; set; }
+	/// <summary>
+	/// Gets or sets the server collection.
+	/// </summary>
 	public IEnumerable<Server>? Servers { get; set; }
 	/// <summary>
 	/// Gets or set extension data.

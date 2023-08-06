@@ -22,27 +22,54 @@ public class SecurityScheme : IRefTargetContainer
 		"openIdConnectUrl",
 	};
 
-	public SecuritySchemeType Type { get; private protected set; }
+	/// <summary>
+	/// Gets the type of security scheme.
+	/// </summary>
+	public string Type { get; private protected set; }
 	/// <summary>
 	/// Gets or sets the description.
 	/// </summary>
 	public string? Description { get; set; }
+	/// <summary>
+	/// Gets or sets the name.
+	/// </summary>
 	public string? Name { get; set; }
+	/// <summary>
+	/// Gets or sets the location of the API key.
+	/// </summary>
 	public SecuritySchemeLocation? In { get; set; }
+	/// <summary>
+	/// Gets or sets the scheme.
+	/// </summary>
 	public string? Scheme { get; set; }
+	/// <summary>
+	/// Gets or sets the bearer token format.
+	/// </summary>
 	public string? BearerFormat { get; set; }
+	/// <summary>
+	/// Gets or sets the collection of OAuth flows.
+	/// </summary>
 	public OAuthFlowCollection? Flows { get; set; }
+	/// <summary>
+	/// Gets the OpenID Connect URL.
+	/// </summary>
 	public Uri? OpenIdConnectUrl { get; set; }
 	/// <summary>
 	/// Gets or set extension data.
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	public SecurityScheme(SecuritySchemeType type)
+	/// <summary>
+	/// Creates a new <see cref="SecurityScheme"/>
+	/// </summary>
+	/// <param name="type">The security scheme type</param>
+	public SecurityScheme(string type)
 	{
 		Type = type;
 	}
+#pragma warning disable CS8618
 	private protected SecurityScheme(){}
+#pragma warning restore CS8618
 
 	internal static SecurityScheme FromNode(JsonNode? node)
 	{
@@ -62,7 +89,7 @@ public class SecurityScheme : IRefTargetContainer
 		}
 		else
 		{
-			scheme = new SecurityScheme(obj.ExpectEnum<SecuritySchemeType>("type", "securityScheme"));
+			scheme = new SecurityScheme(obj.ExpectString("type", "securityScheme"));
 			scheme.Import(obj);
 
 			obj.ValidateNoExtraKeys(KnownKeys, scheme.ExtensionData?.Keys);
@@ -96,7 +123,7 @@ public class SecurityScheme : IRefTargetContainer
 		}
 		else
 		{
-			obj.MaybeAddEnum<SecuritySchemeType>("type", scheme.Type);
+			obj.MaybeAdd("type", scheme.Type);
 			obj.MaybeAdd("description", scheme.Description);
 			obj.MaybeAdd("name", scheme.Name);
 			obj.MaybeAddEnum("in", scheme.In);
@@ -179,7 +206,7 @@ public class SecuritySchemeRef : SecurityScheme, IComponentRef
 		{
 			if (node is not JsonObject obj) return false;
 
-			Type = obj.ExpectEnum<SecuritySchemeType>("type", "securityScheme");
+			Type = obj.ExpectString("type", "securityScheme");
 			Import(obj);
 			return true;
 		}

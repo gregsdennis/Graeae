@@ -19,6 +19,38 @@
             Models a `$ref` to a callback.
             </summary>
         </member>
+        <member name="P:OpenApi.Models.CallbackRef.Ref">
+            <summary>
+            The URI for the reference.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.CallbackRef.Summary">
+            <summary>
+            Gets or sets the summary.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.CallbackRef.Description">
+            <summary>
+            Gets or sets the description.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.CallbackRef.IsResolved">
+            <summary>
+            Gets whether the reference has been resolved.
+            </summary>
+        </member>
+        <member name="M:OpenApi.Models.CallbackRef.#ctor(System.Uri)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.CallbackRef"/>
+            </summary>
+            <param name="reference">The reference URI</param>
+        </member>
+        <member name="M:OpenApi.Models.CallbackRef.#ctor(System.String)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.CallbackRef"/>
+            </summary>
+            <param name="reference">The reference URI</param>
+        </member>
         <member name="T:OpenApi.Models.CallbackKeyExpression">
             <summary>
             Models a callback key expression.
@@ -46,6 +78,56 @@
             Models the `components` collection.
             </summary>
         </member>
+        <member name="P:OpenApi.Models.ComponentCollection.Schemas">
+            <summary>
+            Gets or sets the schema components.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ComponentCollection.Responses">
+            <summary>
+            Gets or sets the response components.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ComponentCollection.Parameters">
+            <summary>
+            Gets or sets the parameter components.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ComponentCollection.Examples">
+            <summary>
+            Gets or sets the example components.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ComponentCollection.RequestBodies">
+            <summary>
+            Gets or sets the request body components.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ComponentCollection.Headers">
+            <summary>
+            Gets or sets the header components.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ComponentCollection.SecuritySchemes">
+            <summary>
+            Gets or sets the security scheme components.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ComponentCollection.Links">
+            <summary>
+            Gets or sets the link components.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ComponentCollection.Callbacks">
+            <summary>
+            Gets or sets the callback components.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ComponentCollection.PathItems">
+            <summary>
+            Gets or sets the path item components.
+            </summary>
+        </member>
         <member name="P:OpenApi.Models.ComponentCollection.ExtensionData">
             <summary>
             Gets or set extension data.
@@ -54,6 +136,21 @@
         <member name="T:OpenApi.Models.ContactInfo">
             <summary>
             Models the contact information.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ContactInfo.Name">
+            <summary>
+            Gets or sets the contact name.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ContactInfo.Url">
+            <summary>
+            Gets or sets the contact URL.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ContactInfo.Email">
+            <summary>
+            Gets or sets the contact email.
             </summary>
         </member>
         <member name="P:OpenApi.Models.ContactInfo.ExtensionData">
@@ -66,6 +163,31 @@
             Models an encoding object.
             </summary>
         </member>
+        <member name="P:OpenApi.Models.Encoding.ContentType">
+            <summary>
+            Gets or sets the encoding content type.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Encoding.Headers">
+            <summary>
+            Gets or sets headers.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Encoding.Style">
+            <summary>
+            Gets or sets the encoding parameter style.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Encoding.Explode">
+            <summary>
+            Gets or sets whether this will be exploded into multiple parameters.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Encoding.AllowReserved">
+            <summary>
+            Gets or sets whether the parameter value SHOULD allow reserved characters.
+            </summary>
+        </member>
         <member name="P:OpenApi.Models.Encoding.ExtensionData">
             <summary>
             Gets or set extension data.
@@ -74,6 +196,26 @@
         <member name="T:OpenApi.Models.Example">
             <summary>
             Models an example.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Example.Summary">
+            <summary>
+            Gets or sets the summary.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Example.Description">
+            <summary>
+            Gets or sets the description.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Example.Value">
+            <summary>
+            Gets or sets the example value.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Example.ExternalValue">
+            <summary>
+            Gets or sets a URI that points to the literal example.
             </summary>
         </member>
         <member name="P:OpenApi.Models.Example.ExtensionData">
@@ -86,6 +228,38 @@
             Models a `$ref` to an example.
             </summary>
         </member>
+        <member name="P:OpenApi.Models.ExampleRef.Ref">
+            <summary>
+            The URI for the reference.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ExampleRef.Summary">
+            <summary>
+            Gets or sets the summary.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ExampleRef.Description">
+            <summary>
+            Gets or sets the description.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ExampleRef.IsResolved">
+            <summary>
+            Gets whether the reference has been resolved.
+            </summary>
+        </member>
+        <member name="M:OpenApi.Models.ExampleRef.#ctor(System.Uri)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.ExampleRef"/>
+            </summary>
+            <param name="reference">The reference URI</param>
+        </member>
+        <member name="M:OpenApi.Models.ExampleRef.#ctor(System.String)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.ExampleRef"/>
+            </summary>
+            <param name="reference">The reference URI</param>
+        </member>
         <member name="T:OpenApi.Models.ExtensionData">
             <summary>
             Supports extension data for all types.
@@ -96,10 +270,26 @@
             Models external documentation.
             </summary>
         </member>
+        <member name="P:OpenApi.Models.ExternalDocumentation.Description">
+            <summary>
+            Gets or sets the description.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ExternalDocumentation.Url">
+            <summary>
+            Gets the URL for the target documentation.
+            </summary>
+        </member>
         <member name="P:OpenApi.Models.ExternalDocumentation.ExtensionData">
             <summary>
             Gets or set extension data.
             </summary>
+        </member>
+        <member name="M:OpenApi.Models.ExternalDocumentation.#ctor(System.Uri)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.ExternalDocumentation"/>
+            </summary>
+            <param name="url">The URL for the target documentation.</param>
         </member>
         <member name="T:OpenApi.Models.Formats">
             <summary>
@@ -111,6 +301,61 @@
             Models a header.
             </summary>
         </member>
+        <member name="P:OpenApi.Models.Header.Description">
+            <summary>
+            Gets or sets the description.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Header.Required">
+            <summary>
+            Gets or sets whether the header is required.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Header.Deprecated">
+            <summary>
+            Gets or sets whether the header is deprecated.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Header.AllowEmptyValue">
+            <summary>
+            Gets or sets whether the header can be present with an empty value.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Header.Style">
+            <summary>
+            Gets or sets how the header value will be serialized.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Header.Explode">
+            <summary>
+            Gets or sets whether this will be exploded into multiple parameters.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Header.AllowReserved">
+            <summary>
+            Gets or sets whether the parameter value should allow reserved characters.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Header.Schema">
+            <summary>
+            Gets or sets a schema for the content.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Header.Example">
+            <summary>
+            Gets or sets an example.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Header.Examples">
+            <summary>
+            Gets or sets a collection of examples.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Header.Content">
+            <summary>
+            Gets or sets a collection of content.
+            </summary>
+        </member>
         <member name="P:OpenApi.Models.Header.ExtensionData">
             <summary>
             Gets or set extension data.
@@ -120,6 +365,38 @@
             <summary>
             Models a `$ref` to a header.
             </summary>
+        </member>
+        <member name="P:OpenApi.Models.HeaderRef.Ref">
+            <summary>
+            The URI for the reference.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.HeaderRef.Summary">
+            <summary>
+            Gets or sets the summary.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.HeaderRef.Description">
+            <summary>
+            Gets or sets the description.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.HeaderRef.IsResolved">
+            <summary>
+            Gets whether the reference has been resolved.
+            </summary>
+        </member>
+        <member name="M:OpenApi.Models.HeaderRef.#ctor(System.Uri)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.HeaderRef"/>
+            </summary>
+            <param name="reference">The reference URI</param>
+        </member>
+        <member name="M:OpenApi.Models.HeaderRef.#ctor(System.String)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.HeaderRef"/>
+            </summary>
+            <param name="reference">The reference URI</param>
         </member>
         <member name="T:OpenApi.Models.IComponentRef">
             <summary>
@@ -141,6 +418,11 @@
             Gets or sets the description.
             </summary>
         </member>
+        <member name="P:OpenApi.Models.IComponentRef.IsResolved">
+            <summary>
+            Gets whether the reference has been resolved.
+            </summary>
+        </member>
         <member name="M:OpenApi.Models.IComponentRef.Resolve(OpenApi.Models.OpenApiDocument)">
             <summary>
             Resolves the reference.
@@ -153,14 +435,65 @@
             Models the license information.
             </summary>
         </member>
+        <member name="P:OpenApi.Models.LicenseInfo.Name">
+            <summary>
+            Gets license name used for the API.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.LicenseInfo.Identifier">
+            <summary>
+            Gets or sets an SPDX license expression for the API.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.LicenseInfo.Url">
+            <summary>
+            Gets or sets URL to the license used for the API.
+            </summary>
+        </member>
         <member name="P:OpenApi.Models.LicenseInfo.ExtensionData">
             <summary>
             Gets or set extension data.
             </summary>
         </member>
+        <member name="M:OpenApi.Models.LicenseInfo.#ctor(System.String)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.LicenseInfo"/>
+            </summary>
+            <param name="name">The license name used for the API.</param>
+        </member>
         <member name="T:OpenApi.Models.Link">
             <summary>
             Models a link object.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Link.OperationRef">
+            <summary>
+            Gets or sets a relative or absolute URI reference to an OAS operation.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Link.OperationId">
+            <summary>
+            Gets or sets the name of the operation.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Link.Parameters">
+            <summary>
+            Gets or sets the parameter collection.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Link.RequestBody">
+            <summary>
+            Gets or sets the request body for the target operation.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Link.Description">
+            <summary>
+            Gets or sets the description.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Link.Server">
+            <summary>
+            Gets or sets the server for the target operation.
             </summary>
         </member>
         <member name="P:OpenApi.Models.Link.ExtensionData">
@@ -173,9 +506,61 @@
             Models a `$ref` to a link.
             </summary>
         </member>
+        <member name="P:OpenApi.Models.LinkRef.Ref">
+            <summary>
+            The URI for the reference.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.LinkRef.Summary">
+            <summary>
+            Gets or sets the summary.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.LinkRef.Description">
+            <summary>
+            Gets or sets the description.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.LinkRef.IsResolved">
+            <summary>
+            Gets whether the reference has been resolved.
+            </summary>
+        </member>
+        <member name="M:OpenApi.Models.LinkRef.#ctor(System.Uri)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.LinkRef"/>
+            </summary>
+            <param name="reference">The reference URI</param>
+        </member>
+        <member name="M:OpenApi.Models.LinkRef.#ctor(System.String)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.LinkRef"/>
+            </summary>
+            <param name="reference">The reference URI</param>
+        </member>
         <member name="T:OpenApi.Models.MediaType">
             <summary>
             Models a media type object.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.MediaType.Schema">
+            <summary>
+            Gets or sets a schema for the meta type.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.MediaType.Example">
+            <summary>
+            Gets or sets an example.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.MediaType.Examples">
+            <summary>
+            Gets or sets a collection of examples.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.MediaType.Encoding">
+            <summary>
+            Gets or sets a collection of encodings.
             </summary>
         </member>
         <member name="P:OpenApi.Models.MediaType.ExtensionData">
@@ -188,14 +573,62 @@
             Models an OAuth flow.
             </summary>
         </member>
+        <member name="P:OpenApi.Models.OAuthFlow.AuthorizationUrl">
+            <summary>
+            Gets the authorization URL.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.OAuthFlow.TokenUrl">
+            <summary>
+            Gets the token URL.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.OAuthFlow.RefreshUrl">
+            <summary>
+            Gets or sets the refresh token URL.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.OAuthFlow.Scopes">
+            <summary>
+            Gets the scopes.
+            </summary>
+        </member>
         <member name="P:OpenApi.Models.OAuthFlow.ExtensionData">
             <summary>
             Gets or set extension data.
             </summary>
         </member>
+        <member name="M:OpenApi.Models.OAuthFlow.#ctor(System.Uri,System.Uri,System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.OAuthFlow"/>
+            </summary>
+            <param name="authorizationUrl">The authorization URL</param>
+            <param name="tokenUrl">The token URL</param>
+            <param name="scopes">The scopes</param>
+        </member>
         <member name="T:OpenApi.Models.OAuthFlowCollection">
             <summary>
             Models the OAuth flow collection.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.OAuthFlowCollection.Implicit">
+            <summary>
+            Gets or sets the implicit flow.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.OAuthFlowCollection.Password">
+            <summary>
+            Gets or sets the password flow.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.OAuthFlowCollection.ClientCredentials">
+            <summary>
+            Gets or sets the client-credentials flow.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.OAuthFlowCollection.AuthorizationCode">
+            <summary>
+            Gets or sets the authorization-code flow.
             </summary>
         </member>
         <member name="P:OpenApi.Models.OAuthFlowCollection.ExtensionData">
@@ -208,14 +641,121 @@
             Models the OpenAPI document.
             </summary>
         </member>
+        <member name="P:OpenApi.Models.OpenApiDocument.OpenApi">
+            <summary>
+            Gets the OpenAPI document version.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.OpenApiDocument.Info">
+            <summary>
+            Gets the API information.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.OpenApiDocument.JsonSchemaDialect">
+            <summary>
+            Gets or sets the default JSON Schema dialect.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.OpenApiDocument.Servers">
+            <summary>
+            Gets or sets the server collection.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.OpenApiDocument.Paths">
+            <summary>
+            Gets or sets the paths collection.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.OpenApiDocument.Webhooks">
+            <summary>
+            Gets or sets the webhooks collection.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.OpenApiDocument.Components">
+            <summary>
+            Gets or sets the components collection.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.OpenApiDocument.Security">
+            <summary>
+            Gets or sets the security requirements collection.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.OpenApiDocument.Tags">
+            <summary>
+            Gets or sets the tags.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.OpenApiDocument.ExternalDocs">
+            <summary>
+            Gets or sets external documentation.
+            </summary>
+        </member>
         <member name="P:OpenApi.Models.OpenApiDocument.ExtensionData">
             <summary>
             Gets or set extension data.
             </summary>
         </member>
+        <member name="M:OpenApi.Models.OpenApiDocument.#ctor(System.String,OpenApi.Models.OpenApiInfo)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.OpenApiDocument"/>
+            </summary>
+            <param name="openApi">The OpenAPI version</param>
+            <param name="info">The API information</param>
+        </member>
+        <member name="M:OpenApi.Models.OpenApiDocument.Initialize(Json.Schema.SchemaRegistry)">
+            <summary>
+            Initializes the document model.
+            </summary>
+            <param name="schemaRegistry"></param>
+            <returns></returns>
+        </member>
+        <member name="M:OpenApi.Models.OpenApiDocument.Find``1(Json.Pointer.JsonPointer)">
+            <summary>
+            Finds and retrieves an object within the document at a specified location.
+            </summary>
+            <typeparam name="T">The type of object</typeparam>
+            <param name="pointer">The expected location</param>
+            <returns>The object, if an object of that type exists at that location; otherwise null.</returns>
+        </member>
         <member name="T:OpenApi.Models.OpenApiInfo">
             <summary>
             Models the info object.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.OpenApiInfo.Title">
+            <summary>
+            Gets the title.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.OpenApiInfo.Summary">
+            <summary>
+            Gets or sets the summary.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.OpenApiInfo.Description">
+            <summary>
+            Gets or sets the description.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.OpenApiInfo.TermsOfService">
+            <summary>
+            Gets or sets the link to the terms of service.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.OpenApiInfo.Contact">
+            <summary>
+            Gets or sets the contact information.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.OpenApiInfo.License">
+            <summary>
+            Gets or sets the license information.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.OpenApiInfo.Version">
+            <summary>
+            Gets or sets the API version.
             </summary>
         </member>
         <member name="P:OpenApi.Models.OpenApiInfo.ExtensionData">
@@ -223,9 +763,76 @@
             Gets or set extension data.
             </summary>
         </member>
+        <member name="M:OpenApi.Models.OpenApiInfo.#ctor(System.String,System.String)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.OpenApiInfo"/>
+            </summary>
+            <param name="title">The title</param>
+            <param name="version">The API version</param>
+        </member>
         <member name="T:OpenApi.Models.Operation">
             <summary>
             Models an operation.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Operation.Tags">
+            <summary>
+            Gets or sets the tags.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Operation.Summary">
+            <summary>
+            Gets or sets the summary.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Operation.Description">
+            <summary>
+            Gets or sets the description.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Operation.ExternalDocs">
+            <summary>
+            Gets or sets external documentation.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Operation.OperationId">
+            <summary>
+            Gets or sets the operation ID.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Operation.Parameters">
+            <summary>
+            Gets or sets the parameters.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Operation.RequestBody">
+            <summary>
+            Gets or sets the request body.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Operation.Responses">
+            <summary>
+            Gets or sets the response collection.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Operation.Callbacks">
+            <summary>
+            Gets or sets the callbacks collection.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Operation.Deprecated">
+            <summary>
+            Gets or sets whether the operation is deprecated.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Operation.Security">
+            <summary>
+            Gets or sets the security requirements.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Operation.Servers">
+            <summary>
+            Gets or sets the server collection.
             </summary>
         </member>
         <member name="P:OpenApi.Models.Operation.ExtensionData">
@@ -238,15 +845,119 @@
             Models a parameter.
             </summary>
         </member>
+        <member name="P:OpenApi.Models.Parameter.Name">
+            <summary>
+            Gets the name.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Parameter.In">
+            <summary>
+            Gets the parameter location.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Parameter.Description">
+            <summary>
+            Gets or sets the description.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Parameter.Required">
+            <summary>
+            Gets or sets whether the parameter is required.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Parameter.Deprecated">
+            <summary>
+            Gets or sets whether the parameter is deprecated.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Parameter.AllowEmptyValue">
+            <summary>
+            Gets or sets whether the parameter is allowed to be present with an empty value.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Parameter.Style">
+            <summary>
+            Gets or sets how the parameter value will be serialized.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Parameter.Explode">
+            <summary>
+            Gets or sets whether this will be exploded into multiple parameters.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Parameter.AllowReserved">
+            <summary>
+            Gets or sets whether the parameter value should allow reserved characters.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Parameter.Schema">
+            <summary>
+            Gets or sets a schema for the content.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Parameter.Example">
+            <summary>
+            Gets or sets an example.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Parameter.Examples">
+            <summary>
+            Gets or sets a collection of examples.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.Parameter.Content">
+            <summary>
+            Gets or sets a collection of content.
+            </summary>
+        </member>
         <member name="P:OpenApi.Models.Parameter.ExtensionData">
             <summary>
             Gets or set extension data.
             </summary>
         </member>
+        <member name="M:OpenApi.Models.Parameter.#ctor(System.String,OpenApi.Models.ParameterLocation)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.Parameter"/>
+            </summary>
+            <param name="name">The name</param>
+            <param name="in">The parameter location</param>
+        </member>
         <member name="T:OpenApi.Models.ParameterRef">
             <summary>
             Models a `$ref` to a parameter.
             </summary>
+        </member>
+        <member name="P:OpenApi.Models.ParameterRef.Ref">
+            <summary>
+            The URI for the reference.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ParameterRef.Summary">
+            <summary>
+            Gets or sets the summary.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ParameterRef.Description">
+            <summary>
+            Gets or sets the description.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ParameterRef.IsResolved">
+            <summary>
+            Gets whether the reference has been resolved.
+            </summary>
+        </member>
+        <member name="M:OpenApi.Models.ParameterRef.#ctor(System.Uri)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.ParameterRef"/>
+            </summary>
+            <param name="reference">The reference URI</param>
+        </member>
+        <member name="M:OpenApi.Models.ParameterRef.#ctor(System.String)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.ParameterRef"/>
+            </summary>
+            <param name="reference">The reference URI</param>
         </member>
         <member name="T:OpenApi.Models.ParameterLocation">
             <summary>
@@ -256,6 +967,46 @@
         <member name="T:OpenApi.Models.ParameterStyle">
             <summary>
             Defines the different parameter styles.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.ParameterStyle.Unspecified">
+            <summary>
+            Indicates the parameter type is unknown.
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.ParameterStyle.Matrix">
+            <summary>
+            Path-style parameters defined by RFC6570
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.ParameterStyle.Label">
+            <summary>
+            Label style parameters defined by RFC6570
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.ParameterStyle.Form">
+            <summary>
+            Form style parameters defined by RFC6570
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.ParameterStyle.Simple">
+            <summary>
+            Simple style parameters defined by RFC6570
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.ParameterStyle.SpaceDelimited">
+            <summary>
+            Space separated array or object values
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.ParameterStyle.PipeDelimited">
+            <summary>
+            Pipe separated array or object values
+            </summary>
+        </member>
+        <member name="F:OpenApi.Models.ParameterStyle.DeepObject">
+            <summary>
+            Provides a simple way of rendering nested objects using form parameters
             </summary>
         </member>
         <member name="T:OpenApi.Models.PathCollection">
@@ -273,6 +1024,66 @@
             Models an individual path.
             </summary>
         </member>
+        <member name="P:OpenApi.Models.PathItem.Summary">
+            <summary>
+            Gets or sets the summary.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.PathItem.Description">
+            <summary>
+            Gets or sets the description.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.PathItem.Get">
+            <summary>
+            Gets or sets the GET operation.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.PathItem.Put">
+            <summary>
+            Gets or sets the PUT operation.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.PathItem.Post">
+            <summary>
+            Gets or sets the POST operation.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.PathItem.Delete">
+            <summary>
+            Gets or sets the DELETE operation.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.PathItem.Options">
+            <summary>
+            Gets or sets the OPTIONS operation.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.PathItem.Head">
+            <summary>
+            Gets or sets the HEAD operation.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.PathItem.Patch">
+            <summary>
+            Gets or sets the PATCH operation.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.PathItem.Trace">
+            <summary>
+            Gets or sets the TRACE operation.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.PathItem.Servers">
+            <summary>
+            Gets or sets the collection of servers.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.PathItem.Parameters">
+            <summary>
+            Gets or sets the collection of parameters.
+            </summary>
+        </member>
         <member name="P:OpenApi.Models.PathItem.ExtensionData">
             <summary>
             Gets or set extension data.
@@ -282,6 +1093,38 @@
             <summary>
             Models a `$ref` to a path item.
             </summary>
+        </member>
+        <member name="P:OpenApi.Models.PathItemRef.Ref">
+            <summary>
+            The URI for the reference.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.PathItemRef.Summary">
+            <summary>
+            Gets or sets the summary.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.PathItemRef.Description">
+            <summary>
+            Gets or sets the description.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.PathItemRef.IsResolved">
+            <summary>
+            Gets whether the reference has been resolved.
+            </summary>
+        </member>
+        <member name="M:OpenApi.Models.PathItemRef.#ctor(System.Uri)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.PathItemRef"/>
+            </summary>
+            <param name="reference">The reference URI</param>
+        </member>
+        <member name="M:OpenApi.Models.PathItemRef.#ctor(System.String)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.PathItemRef"/>
+            </summary>
+            <param name="reference">The reference URI</param>
         </member>
         <member name="T:OpenApi.Models.PathTemplate">
             <summary>
@@ -298,9 +1141,30 @@
             Thrown when a `$ref` cannot be resolved.
             </summary>
         </member>
+        <member name="M:OpenApi.Models.RefResolutionException.#ctor(System.String)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.RefResolutionException"/>
+            </summary>
+            <param name="message">The exception message.</param>
+        </member>
         <member name="T:OpenApi.Models.RequestBody">
             <summary>
             Models a request body.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.RequestBody.Description">
+            <summary>
+            Gets or sets the description.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.RequestBody.Content">
+            <summary>
+            Gets the content collection.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.RequestBody.Required">
+            <summary>
+            Gets or sets whether the request body is required.
             </summary>
         </member>
         <member name="P:OpenApi.Models.RequestBody.ExtensionData">
@@ -308,10 +1172,48 @@
             Gets or set extension data.
             </summary>
         </member>
+        <member name="M:OpenApi.Models.RequestBody.#ctor(System.Collections.Generic.Dictionary{System.String,OpenApi.Models.MediaType})">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.RequestBody"/>
+            </summary>
+            <param name="content"></param>
+        </member>
         <member name="T:OpenApi.Models.RequestBodyRef">
             <summary>
             Models a `$ref` to a request body.
             </summary>
+        </member>
+        <member name="P:OpenApi.Models.RequestBodyRef.Ref">
+            <summary>
+            The URI for the reference.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.RequestBodyRef.Summary">
+            <summary>
+            Gets or sets the summary.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.RequestBodyRef.Description">
+            <summary>
+            Gets or sets the description.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.RequestBodyRef.IsResolved">
+            <summary>
+            Gets whether the reference has been resolved.
+            </summary>
+        </member>
+        <member name="M:OpenApi.Models.RequestBodyRef.#ctor(System.Uri)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.RequestBodyRef"/>
+            </summary>
+            <param name="reference">The reference URI</param>
+        </member>
+        <member name="M:OpenApi.Models.RequestBodyRef.#ctor(System.String)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.RequestBodyRef"/>
+            </summary>
+            <param name="reference">The reference URI</param>
         </member>
         <member name="T:OpenApi.Models.Response">
             <summary>
@@ -327,6 +1229,38 @@
             <summary>
             Models a `$ref` to a response.
             </summary>
+        </member>
+        <member name="P:OpenApi.Models.ResponseRef.Ref">
+            <summary>
+            The URI for the reference.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ResponseRef.Summary">
+            <summary>
+            Gets or sets the summary.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ResponseRef.Description">
+            <summary>
+            Gets or sets the description.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ResponseRef.IsResolved">
+            <summary>
+            Gets whether the reference has been resolved.
+            </summary>
+        </member>
+        <member name="M:OpenApi.Models.ResponseRef.#ctor(System.Uri)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.ResponseRef"/>
+            </summary>
+            <param name="reference">The reference URI</param>
+        </member>
+        <member name="M:OpenApi.Models.ResponseRef.#ctor(System.String)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.ResponseRef"/>
+            </summary>
+            <param name="reference">The reference URI</param>
         </member>
         <member name="T:OpenApi.Models.ResponseCollection">
             <summary>
@@ -623,6 +1557,11 @@
             Models a security scheme.
             </summary>
         </member>
+        <member name="P:OpenApi.Models.SecurityScheme.Description">
+            <summary>
+            Gets or sets the description.
+            </summary>
+        </member>
         <member name="P:OpenApi.Models.SecurityScheme.ExtensionData">
             <summary>
             Gets or set extension data.
@@ -632,6 +1571,38 @@
             <summary>
             Models a `$ref` to a security scheme.
             </summary>
+        </member>
+        <member name="P:OpenApi.Models.SecuritySchemeRef.Ref">
+            <summary>
+            The URI for the reference.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.SecuritySchemeRef.Summary">
+            <summary>
+            Gets or sets the summary.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.SecuritySchemeRef.Description">
+            <summary>
+            Gets or sets the description.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.SecuritySchemeRef.IsResolved">
+            <summary>
+            Gets whether the reference has been resolved.
+            </summary>
+        </member>
+        <member name="M:OpenApi.Models.SecuritySchemeRef.#ctor(System.Uri)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.SecuritySchemeRef"/>
+            </summary>
+            <param name="reference">The reference URI</param>
+        </member>
+        <member name="M:OpenApi.Models.SecuritySchemeRef.#ctor(System.String)">
+            <summary>
+            Creates a new <see cref="T:OpenApi.Models.SecuritySchemeRef"/>
+            </summary>
+            <param name="reference">The reference URI</param>
         </member>
         <member name="T:OpenApi.Models.SecuritySchemeLocation">
             <summary>
@@ -648,6 +1619,11 @@
             Models a server.
             </summary>
         </member>
+        <member name="P:OpenApi.Models.Server.Description">
+            <summary>
+            Gets or sets the description.
+            </summary>
+        </member>
         <member name="P:OpenApi.Models.Server.ExtensionData">
             <summary>
             Gets or set extension data.
@@ -656,6 +1632,11 @@
         <member name="T:OpenApi.Models.ServerVariable">
             <summary>
             Models a server variable.
+            </summary>
+        </member>
+        <member name="P:OpenApi.Models.ServerVariable.Description">
+            <summary>
+            Gets or sets the description.
             </summary>
         </member>
         <member name="P:OpenApi.Models.ServerVariable.ExtensionData">

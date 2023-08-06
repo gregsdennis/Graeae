@@ -17,19 +17,27 @@ public class Server : IRefTargetContainer
 		"variables"
 	};
 
-	public static Server Default { get; } = new("/");
-
+	/// <summary>
+	/// Gets the URL of the server.
+	/// </summary>
 	public string Url { get; } // may include variables
 	/// <summary>
 	/// Gets or sets the description.
 	/// </summary>
 	public string? Description { get; set; }
+	/// <summary>
+	/// Gets or sets the variable map.
+	/// </summary>
 	public Dictionary<string, ServerVariable>? Variables { get; set; }
 	/// <summary>
 	/// Gets or set extension data.
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
+	/// <summary>
+	/// Creates a new <see cref="Server"/>
+	/// </summary>
+	/// <param name="url">The server URL</param>
 	public Server(string url)
 	{
 		Url = url;

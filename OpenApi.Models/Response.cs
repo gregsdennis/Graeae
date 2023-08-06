@@ -19,15 +19,31 @@ public class Response : IRefTargetContainer
 		"links"
 	};
 
+	/// <summary>
+	/// Gets the description.
+	/// </summary>
 	public string Description { get; private protected set; }
+	/// <summary>
+	/// Gets or sets the header collection.
+	/// </summary>
 	public Dictionary<string, Header>? Headers { get; set; }
+	/// <summary>
+	/// Gets or sets the content collection.
+	/// </summary>
 	public Dictionary<string, MediaType>? Content { get; set; }
+	/// <summary>
+	/// Gets or sets the link collection.
+	/// </summary>
 	public Dictionary<string, Link>? Links { get; set; }
 	/// <summary>
 	/// Gets or set extension data.
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
+	/// <summary>
+	/// Creates a new <see cref="Response"/>
+	/// </summary>
+	/// <param name="description">The description</param>
 	public Response(string description)
 	{
 		Description = description;
@@ -87,7 +103,7 @@ public class Response : IRefTargetContainer
 			obj.MaybeAdd("description", response.Description);
 			obj.MaybeAddMap("headers", response.Headers, x => Header.ToNode(x, options));
 			obj.MaybeAddMap("content", response.Content, x => MediaType.ToNode(x, options));
-			obj.MaybeAddMap("links", response.Links, x => Link.ToNode(x));
+			obj.MaybeAddMap("links", response.Links, Link.ToNode);
 			obj.AddExtensions(response.ExtensionData);
 		}
 

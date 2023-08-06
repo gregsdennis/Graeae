@@ -21,6 +21,9 @@ public class OpenApiInfo : IRefTargetContainer
 		"version"
 	};
 
+	/// <summary>
+	/// Gets the title.
+	/// </summary>
 	public string Title { get; }
 	/// <summary>
 	/// Gets or sets the summary.
@@ -30,15 +33,32 @@ public class OpenApiInfo : IRefTargetContainer
 	/// Gets or sets the description.
 	/// </summary>
 	public string? Description { get; set; }
-	public string? TermsOfService { get; set; }
+	/// <summary>
+	/// Gets or sets the link to the terms of service.
+	/// </summary>
+	public Uri? TermsOfService { get; set; }
+	/// <summary>
+	/// Gets or sets the contact information.
+	/// </summary>
 	public ContactInfo? Contact { get; set; }
+	/// <summary>
+	/// Gets or sets the license information.
+	/// </summary>
 	public LicenseInfo? License { get; set; }
+	/// <summary>
+	/// Gets or sets the API version.
+	/// </summary>
 	public string Version { get; }
 	/// <summary>
 	/// Gets or set extension data.
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
+	/// <summary>
+	/// Creates a new <see cref="OpenApiInfo"/>
+	/// </summary>
+	/// <param name="title">The title</param>
+	/// <param name="version">The API version</param>
 	public OpenApiInfo(string title, string version)
 	{
 		Title = title;
@@ -56,7 +76,7 @@ public class OpenApiInfo : IRefTargetContainer
 		{
 			Summary = obj.MaybeString("summary", "open api info"),
 			Description = obj.MaybeString("description", "open api info"),
-			TermsOfService = obj.MaybeString("termsOfService", "open api info"),
+			TermsOfService = obj.MaybeUri("termsOfService", "open api info"),
 			Contact = obj.Maybe("contact", ContactInfo.FromNode),
 			License = obj.Maybe("license", LicenseInfo.FromNode),
 			ExtensionData = ExtensionData.FromNode(obj)
@@ -79,7 +99,7 @@ public class OpenApiInfo : IRefTargetContainer
 
 		obj.MaybeAdd("summary", info.Summary);
 		obj.MaybeAdd("description", info.Description);
-		obj.MaybeAdd("termsOfService", info.TermsOfService);
+		obj.MaybeAdd("termsOfService", info.TermsOfService?.ToString());
 		obj.MaybeAdd("contact", ContactInfo.ToNode(info.Contact));
 		obj.MaybeAdd("license", LicenseInfo.ToNode(info.License));
 		obj.AddExtensions(info.ExtensionData);

@@ -12,6 +12,9 @@ namespace OpenApi.Models;
 [JsonConverter(typeof(ResponseCollectionJsonConverter))]
 public class ResponseCollection : Dictionary<HttpStatusCode, Response>, IRefTargetContainer
 {
+	/// <summary>
+	/// Gets or sets the default response for the collection.
+	/// </summary>
 	public Response? Default { get; set; }
 	/// <summary>
 	/// Gets or set extension data.

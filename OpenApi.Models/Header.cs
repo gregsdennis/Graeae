@@ -52,7 +52,7 @@ public class Header : IRefTargetContainer
 	/// </summary>
 	public bool? Explode { get; set; }
 	/// <summary>
-	/// Gets or sets whether the parameter value SHOULD allow reserved characters.
+	/// Gets or sets whether the parameter value should allow reserved characters.
 	/// </summary>
 	public bool? AllowReserved { get; set; }
 	/// <summary>

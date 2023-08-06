@@ -34,6 +34,10 @@ public class Tag : IRefTargetContainer
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
+	/// <summary>
+	/// Creates a new <see cref="Tag"/>
+	/// </summary>
+	/// <param name="name">The tag name</param>
 	public Tag(string name)
 	{
 		Name = name;

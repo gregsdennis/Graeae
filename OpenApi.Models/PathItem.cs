@@ -35,15 +35,45 @@ public class PathItem : IRefTargetContainer
 	/// Gets or sets the description.
 	/// </summary>
 	public string? Description { get; set; }
+	/// <summary>
+	/// Gets or sets the GET operation.
+	/// </summary>
 	public Operation? Get { get; set; }
+	/// <summary>
+	/// Gets or sets the PUT operation.
+	/// </summary>
 	public Operation? Put { get; set; }
+	/// <summary>
+	/// Gets or sets the POST operation.
+	/// </summary>
 	public Operation? Post { get; set; }
+	/// <summary>
+	/// Gets or sets the DELETE operation.
+	/// </summary>
 	public Operation? Delete { get; set; }
+	/// <summary>
+	/// Gets or sets the OPTIONS operation.
+	/// </summary>
 	public Operation? Options { get; set; }
+	/// <summary>
+	/// Gets or sets the HEAD operation.
+	/// </summary>
 	public Operation? Head { get; set; }
+	/// <summary>
+	/// Gets or sets the PATCH operation.
+	/// </summary>
 	public Operation? Patch { get; set; }
+	/// <summary>
+	/// Gets or sets the TRACE operation.
+	/// </summary>
 	public Operation? Trace { get; set; }
+	/// <summary>
+	/// Gets or sets the collection of servers.
+	/// </summary>
 	public IEnumerable<Server>? Servers { get; set; }
+	/// <summary>
+	/// Gets or sets the collection of parameters.
+	/// </summary>
 	public IEnumerable<Parameter>? Parameters { get; set; }
 	/// <summary>
 	/// Gets or set extension data.

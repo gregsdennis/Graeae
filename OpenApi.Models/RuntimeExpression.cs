@@ -7,6 +7,7 @@ namespace OpenApi.Models;
 /// <summary>
 /// Models an OpenAPI runtime expression.
 /// </summary>
+// TODO: maybe in the future build some factory methods.
 public class RuntimeExpression : IEquatable<string>
 {
 	// see https://spec.openapis.org/oas/v3.1.0#runtime-expressions
@@ -28,15 +29,30 @@ public class RuntimeExpression : IEquatable<string>
 	// tchar = "!" / "#" / "$" / "%" / "&" / "'" / "*" / "+" / "-" / "." /
 	//         "^" / "_" / "`" / "|" / "~" / DIGIT / ALPHA
 
-	private static string TokenSymbols = "!#$&'*+-.^_`|~";
+	private const string TokenSymbols = "!#$&'*+-.^_`|~";
 
 	private string _source;
 
-	public RuntimeExpressionType ExpressionType { get; set; }
-	public RuntimeExpressionSourceType? SourceType { get; set; }
-	public string? Token { get; set; }
-	public string? Name { get; set; }
-	public JsonPointer? JsonPointer { get; set; }
+	/// <summary>
+	/// Gets the expression type.
+	/// </summary>
+	public RuntimeExpressionType ExpressionType { get; private set; }
+	/// <summary>
+	/// Gets the source type.
+	/// </summary>
+	public RuntimeExpressionSourceType? SourceType { get; private set; }
+	/// <summary>
+	/// Gets the token.
+	/// </summary>
+	public string? Token { get; private set; }
+	/// <summary>
+	/// Gets the name.
+	/// </summary>
+	public string? Name { get; private set; }
+	/// <summary>
+	/// Gets the JSON Pointer.
+	/// </summary>
+	public JsonPointer? JsonPointer { get; private set; }
 
 #pragma warning disable CS8618
 	private RuntimeExpression(){}
@@ -50,6 +66,12 @@ public class RuntimeExpression : IEquatable<string>
 		return Parse(source);
 	}
 
+	/// <summary>
+	/// Parses a runtime expression from a string.
+	/// </summary>
+	/// <param name="source">The string source</param>
+	/// <returns>A runtime expression</returns>
+	/// <exception cref="JsonException">Throw when the parse fails</exception>
 	public static RuntimeExpression Parse(string source)
 	{
 		var expr = new RuntimeExpression{_source = source};
@@ -117,14 +139,19 @@ public class RuntimeExpression : IEquatable<string>
 		return expr;
 	}
 
+	/// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+	/// <param name="other">An object to compare with this object.</param>
+	/// <returns>
+	/// <see langword="true" /> if the current object is equal to the <paramref name="other" /> parameter; otherwise, <see langword="false" />.</returns>
 	public bool Equals(string? other)
 	{
 		return other == _source;
 	}
 
+	/// <summary>Returns a string that represents the current object.</summary>
+	/// <returns>A string that represents the current object.</returns>
 	public override string ToString()
 	{
-		// TODO: need generation logic for this
 		return _source;
 	}
 }

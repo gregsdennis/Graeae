@@ -70,11 +70,20 @@ public static class RefHelper
 		return import(targetContent);
 	}
 
+	/// <summary>
+	/// Gets or sets the `$ref` fetching function.
+	/// </summary>
 	public static Func<Uri, Task<JsonNode?>>? Fetch { get; set; } = FetchJson;
 
-	// This is inefficient, but it gets the job done.
+	/// <summary>
+	/// Defines a default basic fetching function that uses an
+	/// <see cref="HttpClient"/> and supports YAML and JSON content.
+	/// </summary>
+	/// <param name="uri">The resource URI</param>
+	/// <returns>The JSON content as a `JsonNode`</returns>
 	public static async Task<JsonNode?> FetchJson(Uri uri)
 	{
+		// This is inefficient, but it gets the job done.
 		using var client = new HttpClient();
 		var content = await client.GetStringAsync(uri);
 		var yaml = YamlSerializer.Parse(content);

@@ -17,7 +17,13 @@ public class ServerVariable : IRefTargetContainer
 		"description"
 	};
 
+	/// <summary>
+	/// Gets or sets an enumeration of string values to be used if the substitution options are from a limited set.
+	/// </summary>
 	public IEnumerable<string>? Enum { get; set; }
+	/// <summary>
+	/// Gets the default value to use for substitution.
+	/// </summary>
 	public string Default { get; }
 	/// <summary>
 	/// Gets or sets the description.
@@ -28,6 +34,10 @@ public class ServerVariable : IRefTargetContainer
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
+	/// <summary>
+	/// Creates a new <see cref="ServerVariable"/>
+	/// </summary>
+	/// <param name="default">The default value</param>
 	public ServerVariable(string @default)
 	{
 		Default = @default;

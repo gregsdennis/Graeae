@@ -22,13 +22,23 @@ public class RequestBody : IRefTargetContainer
 	/// Gets or sets the description.
 	/// </summary>
 	public string? Description { get; set; }
+	/// <summary>
+	/// Gets the content collection.
+	/// </summary>
 	public Dictionary<string, MediaType> Content { get; private protected set; }
+	/// <summary>
+	/// Gets or sets whether the request body is required.
+	/// </summary>
 	public bool? Required { get; set; }
 	/// <summary>
 	/// Gets or set extension data.
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
+	/// <summary>
+	/// Creates a new <see cref="RequestBody"/>
+	/// </summary>
+	/// <param name="content"></param>
 	public RequestBody(Dictionary<string, MediaType> content)
 	{
 		Content = content;
