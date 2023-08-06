@@ -40,7 +40,7 @@ jobs:
   test-results:
     runs-on: ubuntu-latest
     needs: build
-    if: (success() || failure()) && env.BRANCH != 'main'
+    if: (success() || failure()) && github.event_name == 'pull_request'
     name: Publish Unit Test Results
     steps:
       - name: Download Artifacts
