@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
 
     <IsPackable>false</IsPackable>
+    <nowarn>NUnit2005</nowarn>
   </PropertyGroup>
 
   <ItemGroup>

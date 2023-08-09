@@ -224,7 +224,7 @@ public class SecuritySchemeRef : SecurityScheme, IComponentRef
 			ExtensionData = other.ExtensionData;
 		}
 
-		IsResolved = await RefHelper.Resolve<SecurityScheme>(root, Ref, import, copy);
+		IsResolved = await Models.Ref.Resolve<SecurityScheme>(root, Ref, import, copy);
 	}
 }
 

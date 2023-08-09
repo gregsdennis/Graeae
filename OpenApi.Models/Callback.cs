@@ -57,12 +57,20 @@ public class Callback : Dictionary<CallbackKeyExpression, PathItem>, IRefTargetC
 
 		var obj = new JsonObject();
 
-		foreach (var (key, value) in callback)
+		if (callback is CallbackRef reference)
 		{
-			obj.Add(key.ToString(), PathItem.ToNode(value, options));
+			obj.Add("$ref", reference.Ref.ToString());
+			obj.MaybeAdd("description", reference.Description);
+			obj.MaybeAdd("summary", reference.Summary);
 		}
-
-		obj.AddExtensions(callback.ExtensionData);
+		else
+		{
+			foreach (var (key, value) in callback)
+			{
+				obj.Add(key.ToString(), PathItem.ToNode(value, options));
+			}
+			obj.AddExtensions(callback.ExtensionData);
+		}
 
 		return obj;
 	}
@@ -156,7 +164,7 @@ public class CallbackRef : Callback, IComponentRef
 			}
 		}
 
-		IsResolved = await RefHelper.Resolve<Callback>(root, Ref, import, copy);
+		IsResolved = await Models.Ref.Resolve<Callback>(root, Ref, import, copy);
 	}
 }
 

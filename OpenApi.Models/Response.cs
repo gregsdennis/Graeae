@@ -229,7 +229,7 @@ public class ResponseRef : Response, IComponentRef
 			ExtensionData = other.ExtensionData;
 		}
 
-		IsResolved = await RefHelper.Resolve<Response>(root, Ref, import, copy);
+		IsResolved = await Models.Ref.Resolve<Response>(root, Ref, import, copy);
 	}
 }
 

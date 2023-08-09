@@ -281,7 +281,7 @@ public class HeaderRef : Header, IComponentRef
 			ExtensionData = other.ExtensionData;
 		}
 
-		IsResolved = await RefHelper.Resolve<Header>(root, Ref, import, copy);
+		IsResolved = await Models.Ref.Resolve<Header>(root, Ref, import, copy);
 	}
 }
 

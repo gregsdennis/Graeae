@@ -183,7 +183,7 @@ public class ExampleRef : Example, IComponentRef
 			ExtensionData = other.ExtensionData;
 		}
 
-		IsResolved = await RefHelper.Resolve<Example>(root, Ref, import, copy);
+		IsResolved = await Models.Ref.Resolve<Example>(root, Ref, import, copy);
 	}
 }
 

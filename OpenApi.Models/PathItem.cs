@@ -321,7 +321,7 @@ public class PathItemRef : PathItem, IComponentRef
 			ExtensionData = other.ExtensionData;
 		}
 
-		IsResolved = await RefHelper.Resolve<PathItem>(root, Ref, import, copy);
+		IsResolved = await Models.Ref.Resolve<PathItem>(root, Ref, import, copy);
 	}
 }
 

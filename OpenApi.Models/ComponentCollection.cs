@@ -108,7 +108,7 @@ public class ComponentCollection : IRefTargetContainer
 		obj.MaybeAddMap("requestBodies", components.RequestBodies, x => RequestBody.ToNode(x, options));
 		obj.MaybeAddMap("headers", components.Headers, x => Header.ToNode(x, options));
 		obj.MaybeAddMap("securitySchemes", components.SecuritySchemes, SecurityScheme.ToNode);
-		obj.MaybeAddMap("links", components.Links, x => Link.ToNode(x));
+		obj.MaybeAddMap("links", components.Links, Link.ToNode);
 		obj.MaybeAddMap("callbacks", components.Callbacks, x => Callback.ToNode(x, options));
 		obj.MaybeAddMap("pathItems", components.PathItems, x => PathItem.ToNode(x, options));
 		obj.AddExtensions(components.ExtensionData);

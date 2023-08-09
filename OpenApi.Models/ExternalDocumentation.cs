@@ -38,6 +38,15 @@ public class ExternalDocumentation : IRefTargetContainer
 		Url = url;
 	}
 
+	/// <summary>
+	/// Creates a new <see cref="ExternalDocumentation"/>
+	/// </summary>
+	/// <param name="url">The URL for the target documentation.</param>
+	public ExternalDocumentation(string url)
+	{
+		Url = new Uri(url, UriKind.RelativeOrAbsolute);
+	}
+
 	internal static ExternalDocumentation FromNode(JsonNode? node)
 	{
 		if (node is not JsonObject obj)

@@ -84,8 +84,7 @@ public class OpenApiDocument : IBaseDocument
 
 	Uri IBaseDocument.BaseUri { get; } = GenerateBaseUri();
 
-	// TODO: Change this base URI to something appropriate for this library.
-	private static Uri GenerateBaseUri() => new($"https://json-everything.net/{Guid.NewGuid().ToString("N")[..10]}");
+	private static Uri GenerateBaseUri() => new($"openapi:stj.openapi.models:{Guid.NewGuid().ToString("N")[..10]}");
 
 	static OpenApiDocument()
 	{
@@ -170,7 +169,7 @@ public class OpenApiDocument : IBaseDocument
 	/// Initializes the document model.
 	/// </summary>
 	/// <param name="schemaRegistry"></param>
-	/// <returns></returns>
+	/// <exception cref="RefResolutionException">Thrown if a reference cannot be resolved.</exception>
 	public async Task Initialize(SchemaRegistry? schemaRegistry = null)
 	{
 		schemaRegistry ??= SchemaRegistry.Global;

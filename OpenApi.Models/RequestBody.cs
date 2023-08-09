@@ -198,7 +198,7 @@ public class RequestBodyRef : RequestBody, IComponentRef
 			ExtensionData = other.ExtensionData;
 		}
 
-		IsResolved = await RefHelper.Resolve<RequestBody>(root, Ref, import, copy);
+		IsResolved = await Models.Ref.Resolve<RequestBody>(root, Ref, import, copy);
 	}
 }
 

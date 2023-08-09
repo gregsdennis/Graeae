@@ -196,7 +196,7 @@ public class LinkRef : Link, IComponentRef
 			ExtensionData = other.ExtensionData;
 		}
 
-		IsResolved = await RefHelper.Resolve<Link>(root, Ref, import, copy);
+		IsResolved = await Models.Ref.Resolve<Link>(root, Ref, import, copy);
 	}
 }
 

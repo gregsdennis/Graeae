@@ -10,12 +10,16 @@ public class CallbackKeyExpression : IEquatable<string>
 	private static readonly Regex TemplateVarsIdentifier = new(@"^([^{]*)(\{(?<runtimeExpr>[^}]+)\}([^{])*)*$");
 	
 	private readonly string _source;
-	private IEnumerable<RuntimeExpression> _parameters;
+
+	/// <summary>
+	/// Gets the <see cref="RuntimeExpression"/> parameters that exist in the key expression.
+	/// </summary>
+	public RuntimeExpression[] Parameters { get; }
 
 	private CallbackKeyExpression(string source, IEnumerable<RuntimeExpression> parameters)
 	{
 		_source = source;
-		_parameters = parameters;
+		Parameters = parameters.ToArray();
 	}
 
 	internal static CallbackKeyExpression Parse(string source)
@@ -32,6 +36,11 @@ public class CallbackKeyExpression : IEquatable<string>
 	/// </summary>
 	/// <returns>Throws not implemented.</returns>
 	/// <exception cref="NotImplementedException">It's not implemented.</exception>
+	/// <remarks>
+	/// In order to implement this, an HttpRequest or HttpResponse is required, which
+	/// means adding a reference to ASP.net.  As a result, it may make more sense for
+	/// resolution functionality to exist in a secondary package.
+	/// </remarks>
 	// likely needs an http request or something.
 	public Uri Resolve()
 	{
@@ -52,5 +61,14 @@ public class CallbackKeyExpression : IEquatable<string>
 	public override string ToString()
 	{
 		return _source;
+	}
+
+	/// <summary>
+	/// Implicitly converts a string to a <see cref="CallbackKeyExpression"/> via parsing.
+	/// </summary>
+	/// <param name="source">A <see cref="CallbackKeyExpression"/></param>
+	public static implicit operator CallbackKeyExpression(string source)
+	{
+		return Parse(source);
 	}
 }

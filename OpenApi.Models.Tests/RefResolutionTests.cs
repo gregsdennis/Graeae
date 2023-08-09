@@ -122,7 +122,7 @@ public class RefResolutionTests
 	{
 		try
 		{
-			RefHelper.Fetch = async uri =>
+			Ref.Fetch = async uri =>
 			{
 				var fileName = uri.OriginalString.Replace("http://localhost:1234/", string.Empty);
 				var fullFileName = GetFile(fileName);
@@ -175,7 +175,7 @@ public class RefResolutionTests
 		}
 		finally
 		{
-			RefHelper.Fetch = RefHelper.FetchJson;
+			Ref.Fetch = Ref.FetchJson;
 		}
 	}
 }

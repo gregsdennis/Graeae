@@ -312,7 +312,7 @@ public class ParameterRef : Parameter, IComponentRef
 			ExtensionData = other.ExtensionData;
 		}
 
-		IsResolved = await RefHelper.Resolve<Parameter>(root, Ref, import, copy);
+		IsResolved = await Models.Ref.Resolve<Parameter>(root, Ref, import, copy);
 	}
 }
 
