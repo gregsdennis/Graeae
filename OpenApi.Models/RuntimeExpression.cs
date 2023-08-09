@@ -36,15 +36,17 @@ public class RuntimeExpression : IEquatable<string>, IEquatable<RuntimeExpressio
 	/// <summary>
 	/// A `$url` runtime expression.
 	/// </summary>
-	public static readonly RuntimeExpression Url = new() { ExpressionType = RuntimeExpressionType.Url };
+	public static readonly RuntimeExpression Url = new() { ExpressionType = RuntimeExpressionType.Url, _source = "$url" };
+
 	/// <summary>
 	/// A `$method` runtime expression.
 	/// </summary>
-	public static readonly RuntimeExpression Method = new() { ExpressionType = RuntimeExpressionType.Method };
+	public static readonly RuntimeExpression Method = new() { ExpressionType = RuntimeExpressionType.Method, _source = "$method" };
+
 	/// <summary>
 	/// A `$statusCode` runtime expression.
 	/// </summary>
-	public static readonly RuntimeExpression StatusCode = new() { ExpressionType = RuntimeExpressionType.StatusCode };
+	public static readonly RuntimeExpression StatusCode = new() { ExpressionType = RuntimeExpressionType.StatusCode, _source = "$statusCode" };
 
 	/// <summary>
 	/// Gets the expression type.
