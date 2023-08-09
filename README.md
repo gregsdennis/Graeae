@@ -63,6 +63,16 @@ To support these differences, additional extension methods have been added to su
 | `.ExclusiveMaximum(bool)` | Adds a boolean-valued `exclusiveMaximum` keyword |
 | `.ExclusiveMinimum(bool)` | Adds a boolean-valued `exclusiveMinimum` keyword |
 
+Lastly, when validating a draft 4 schema, it's important to specify that it's draft 4 using the `EvaluationsOptions.EvaluateAs` property.
+
+```c#
+var results = schema.Evaluate(instance, new EvaluationOptions
+{
+    OutputFormat = OutputFormat.List,
+    EvaluateAs = Draft4Support.Draft4Version
+});
+```
+
 ### External reference resolution
 
 The `OpenApiDocument.Initialize()` method will scan the document model and attempt to resolve any references.  References to locations within the document are automatically supported, however references to external locations are not supported by default.
