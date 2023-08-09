@@ -1,6 +1,4 @@
-﻿using Graeae.Models;
-
-namespace OpenApi.Models.Tests;
+﻿namespace Graeae.Models.Tests;
 
 public class RuntimeExpressionTests
 {

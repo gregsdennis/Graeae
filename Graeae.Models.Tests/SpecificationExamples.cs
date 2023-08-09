@@ -1,11 +1,10 @@
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using Graeae.Models;
 using Json.More;
 using Yaml2JsonNode;
 using YamlDotNet.RepresentationModel;
 
-namespace OpenApi.Models.Tests;
+namespace Graeae.Models.Tests;
 
 public class SpecificationExamples
 {

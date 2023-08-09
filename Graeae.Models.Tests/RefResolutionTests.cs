@@ -1,12 +1,11 @@
 using System.Net;
 using System.Text.Json.Nodes;
-using Graeae.Models;
 using Json.More;
 using Json.Pointer;
 using Json.Schema;
 using Yaml2JsonNode;
 
-namespace OpenApi.Models.Tests;
+namespace Graeae.Models.Tests;
 
 public class RefResolutionTests
 {

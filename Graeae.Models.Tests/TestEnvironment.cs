@@ -1,6 +1,6 @@
 using Graeae.Models.SchemaDraft4;
 
-namespace OpenApi.Models.Tests;
+namespace Graeae.Models.Tests;
 
 [SetUpFixture]
 public class TestEnvironment
