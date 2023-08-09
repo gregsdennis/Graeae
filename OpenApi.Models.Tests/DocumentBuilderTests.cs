@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using System.Text.Json.Nodes;
 using Json.Schema;
-using OpenApi.Models.SchemaDraft4;
 using Yaml2JsonNode;
 
 namespace OpenApi.Models.Tests;
@@ -11,7 +10,6 @@ namespace OpenApi.Models.Tests;
 // code is simple.
 public class DocumentBuilderTests
 {
-	[Test]
 	public void BuildDocument()
 	{
 		var doc = new OpenApiDocument("3.1.0", new("title", "1.0")
@@ -76,7 +74,10 @@ public class DocumentBuilderTests
 				}
 			}
 		};
+	}
 
+	public void PetStoreExample()
+	{
 		var document = new OpenApiDocument("3.0.0",
 			new("Swagger Petstore", "1.0.0")
 			{

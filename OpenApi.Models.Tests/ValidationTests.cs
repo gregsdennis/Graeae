@@ -11,11 +11,9 @@ public class ValidationTests
 	[TestCase("api-with-examples.yaml")]
 	[TestCase("callback-example.yaml")]
 	[TestCase("link-example.yaml")]
-	//[TestCase("non-oauth-scopes.yaml")]
 	[TestCase("petstore.yaml")]
 	[TestCase("petstore-expanded.yaml")]
 	[TestCase("uspto.yaml")]
-	//[TestCase("webhook-example.yaml")]
 	[TestCase("postman.yaml")]
 	public void ValidateOpenApiDoc_3_0(string fileName)
 	{
