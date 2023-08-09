@@ -199,163 +199,163 @@ Equivalent C#:
 
 ```c#
 var document = new OpenApiDocument("3.0.0",
-	new("Swagger Petstore", "1.0.0")
-	{
-		License = new("MIT")
-	}
+    new("Swagger Petstore", "1.0.0")
+    {
+        License = new("MIT")
+    }
 )
 {
-	Servers = new []
-	{
-		new Server("http://petstore.swagger.io/v1")
-	},
-	Paths = new()
-	{
-		["/pets"] = new()
-		{
-			Get = new()
-			{
-				Summary = "List all pets",
-				OperationId = "listPets",
-				Tags = new []{"pets"},
-				Parameters = new []
-				{
-					new Parameter("limit", ParameterLocation.Query)
-					{
-						Description = "How many items to return at one time (max 100)",
-						Required = false,
-						Schema = new JsonSchemaBuilder()
-							.Type(SchemaValueType.Integer)
-							.Maximum(100)
-							.Format(Formats.Int32)
-					}
-				},
-				Responses = new()
-				{
-					[HttpStatusCode.OK] = new("A paged array of pets")
-					{
-						Headers = new()
-						{
-							["x-next"] = new ()
-							{
-								Description = "A link to the next page of responses",
-								Schema = new JsonSchemaBuilder().Type(SchemaValueType.String)
-							}
-						},
-						Content = new()
-						{
-							["application/json"] = new()
-							{
-								Schema = Ref.To.Schema("Pets")
-							}
-						}
-					},
-					Default = new("unexpected error")
-					{
-						Content = new()
-						{
-							["application/json"] = new()
-							{
-								Schema = Ref.To.Schema("Error")
-							}
-						}
-					}
-				}
-			},
-			Post = new()
-			{
-				Summary = "Create a pet",
-				OperationId = "createPets",
-				Tags = new []{"pets"},
-				Responses = new()
-				{
-					[HttpStatusCode.Created] = new("Null response"),
-					Default = new("unexpected error")
-					{
-						Content = new(){
-							["application/json"] = new()
-							{
-								Schema = Ref.To.Schema("Error")
-							}
-						}
-					}
-				}
-			}
-		},
-		["/pets/{petId}"] = new()
-		{
-			Get = new()
-			{
-				Summary = "Info for a specific pet",
-				OperationId = "showPetById",
-				Tags = new []{"pets"},
-				Parameters = new []
-				{
-					new Parameter("petId", ParameterLocation.Path)
-					{
-						Required = true,
-						Description = "The id of the pet to retrieve",
-						Schema = new JsonSchemaBuilder()
-							.Type(SchemaValueType.String)
-					}
-				},
-				Responses = new()
-				{
-					[HttpStatusCode.OK] = new("Expected response to a valid request")
-					{
-						Content = new()
-						{
-							["application/json"] = new()
-							{
-								Schema = Ref.To.Schema("Pet")
-							}
-						}
-					},
-					Default = new("unexpected error")
-					{
-						Content = new()
-						{
-							["application/json"] = new()
-							{
-								Schema = Ref.To.Schema("Error")
-							}
-						}
-					}
-				}
-			}
-		}
-	},
-	Components = new()
-	{
-		Schemas = new()
-		{
-			["Pet"] = new JsonSchemaBuilder()
-				.Type(SchemaValueType.Object)
-				.Required("id", "name")
-				.Properties(
-					("id", new JsonSchemaBuilder()
-						.Type(SchemaValueType.Integer)
-						.Format(Formats.Int64)
-					),
-					("name", new JsonSchemaBuilder().Type(SchemaValueType.String)),
-					("tag", new JsonSchemaBuilder().Type(SchemaValueType.String))
-				),
-			["Pets"] = new JsonSchemaBuilder()
-				.Type(SchemaValueType.Array)
-				.MaxItems(100)
-				.Items(Ref.To.Schema("Pet")),
-			["Error"] = new JsonSchemaBuilder()
-				.Type(SchemaValueType.Object)
-				.Required("code", "message")
-				.Properties(
-					("code", new JsonSchemaBuilder()
-						.Type(SchemaValueType.Integer)
-						.Format(Formats.Int32)
-					),
-					("message", new JsonSchemaBuilder().Type(SchemaValueType.String))
-				)
-		}
-	}
+    Servers = new []
+    {
+        new Server("http://petstore.swagger.io/v1")
+    },
+    Paths = new()
+    {
+        ["/pets"] = new()
+        {
+            Get = new()
+            {
+                Summary = "List all pets",
+                OperationId = "listPets",
+                Tags = new []{"pets"},
+                Parameters = new []
+                {
+                    new Parameter("limit", ParameterLocation.Query)
+                    {
+                        Description = "How many items to return at one time (max 100)",
+                        Required = false,
+                        Schema = new JsonSchemaBuilder()
+                            .Type(SchemaValueType.Integer)
+                            .Maximum(100)
+                            .Format(Formats.Int32)
+                    }
+                },
+                Responses = new()
+                {
+                    [HttpStatusCode.OK] = new("A paged array of pets")
+                    {
+                        Headers = new()
+                        {
+                            ["x-next"] = new ()
+                            {
+                                Description = "A link to the next page of responses",
+                                Schema = new JsonSchemaBuilder().Type(SchemaValueType.String)
+                            }
+                        },
+                        Content = new()
+                        {
+                            ["application/json"] = new()
+                            {
+                                Schema = Ref.To.Schema("Pets")
+                            }
+                        }
+                    },
+                    Default = new("unexpected error")
+                    {
+                        Content = new()
+                        {
+                            ["application/json"] = new()
+                            {
+                                Schema = Ref.To.Schema("Error")
+                            }
+                        }
+                    }
+                }
+            },
+            Post = new()
+            {
+                Summary = "Create a pet",
+                OperationId = "createPets",
+                Tags = new []{"pets"},
+                Responses = new()
+                {
+                    [HttpStatusCode.Created] = new("Null response"),
+                    Default = new("unexpected error")
+                    {
+                        Content = new(){
+                            ["application/json"] = new()
+                            {
+                                Schema = Ref.To.Schema("Error")
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        ["/pets/{petId}"] = new()
+        {
+            Get = new()
+            {
+                Summary = "Info for a specific pet",
+                OperationId = "showPetById",
+                Tags = new []{"pets"},
+                Parameters = new []
+                {
+                    new Parameter("petId", ParameterLocation.Path)
+                    {
+                        Required = true,
+                        Description = "The id of the pet to retrieve",
+                        Schema = new JsonSchemaBuilder()
+                            .Type(SchemaValueType.String)
+                    }
+                },
+                Responses = new()
+                {
+                    [HttpStatusCode.OK] = new("Expected response to a valid request")
+                    {
+                        Content = new()
+                        {
+                            ["application/json"] = new()
+                            {
+                                Schema = Ref.To.Schema("Pet")
+                            }
+                        }
+                    },
+                    Default = new("unexpected error")
+                    {
+                        Content = new()
+                        {
+                            ["application/json"] = new()
+                            {
+                                Schema = Ref.To.Schema("Error")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    Components = new()
+    {
+        Schemas = new()
+        {
+            ["Pet"] = new JsonSchemaBuilder()
+                .Type(SchemaValueType.Object)
+                .Required("id", "name")
+                .Properties(
+                    ("id", new JsonSchemaBuilder()
+                        .Type(SchemaValueType.Integer)
+                        .Format(Formats.Int64)
+                    ),
+                    ("name", new JsonSchemaBuilder().Type(SchemaValueType.String)),
+                    ("tag", new JsonSchemaBuilder().Type(SchemaValueType.String))
+                ),
+            ["Pets"] = new JsonSchemaBuilder()
+                .Type(SchemaValueType.Array)
+                .MaxItems(100)
+                .Items(Ref.To.Schema("Pet")),
+            ["Error"] = new JsonSchemaBuilder()
+                .Type(SchemaValueType.Object)
+                .Required("code", "message")
+                .Properties(
+                    ("code", new JsonSchemaBuilder()
+                        .Type(SchemaValueType.Integer)
+                        .Format(Formats.Int32)
+                    ),
+                    ("message", new JsonSchemaBuilder().Type(SchemaValueType.String))
+                )
+        }
+    }
 };
 ```
 
