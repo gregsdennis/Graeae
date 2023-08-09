@@ -46,7 +46,7 @@ During initialization, if the document contains references that cannot be resolv
 To support OpenAPI v3.0.x, you'll need to enable JSON Schema draft 4 support first.  To do that, add this to your app initialization:
 
 ```c#
-using OpenApi.Models.SchemaDraft4;
+using Graeae.Models.SchemaDraft4;
 
 Draft4Support.Enable();
 ```
