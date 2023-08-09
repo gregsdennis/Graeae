@@ -5,11 +5,11 @@ on:
     branches: [ main ]
     paths:
       - '.github/workflows/dotnet-core.yml'
-      - 'OpenApi.Models*/**/*'
+      - 'Graeae.Models*/**/*'
   pull_request:
     paths:
       - '.github/workflows/dotnet-core.yml'
-      - 'OpenApi.Models*/**/*'
+      - 'Graeae.Models*/**/*'
   workflow_dispatch:
 
 jobs:

@@ -1,12 +1,12 @@
-[![Build & Test](https://github.com/gregsdennis/openapi/actions/workflows/dotnet-core.yml/badge.svg?branch=main&event=push)](https://github.com/gregsdennis/openapi/actions/workflows/dotnet-core.yml)
-[![Percentage of issues still open](http://isitmaintained.com/badge/open/gregsdennis/openapi.svg)](http://isitmaintained.com/project/gregsdennis/openapi "Percentage of issues still open")
-[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/gregsdennis/openapi.svg)](http://isitmaintained.com/project/gregsdennis/openapi "Average time to resolve an issue")
-[![License](https://img.shields.io/github/license/gregsdennis/openapi)](https://github.com/gregsdennis/openapi/blob/main/LICENSE)
+[![Build & Test](https://github.com/gregsdennis/Graeae/actions/workflows/dotnet-core.yml/badge.svg?branch=main&event=push)](https://github.com/gregsdennis/Graeae/actions/workflows/dotnet-core.yml)
+[![Percentage of issues still open](http://isitmaintained.com/badge/open/gregsdennis/Graeae.svg)](http://isitmaintained.com/project/gregsdennis/Graeae "Percentage of issues still open")
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/gregsdennis/Graeae.svg)](http://isitmaintained.com/project/gregsdennis/Graeae "Average time to resolve an issue")
+[![License](https://img.shields.io/github/license/gregsdennis/Graeae)](https://github.com/gregsdennis/Graeae/blob/main/LICENSE)
 <!-- [![Test results](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/gregsdennis/28607f2d276032f4d9a7f2c807e44df7/raw/test-results-badge.json)](https://github.com/gregsdennis/json-everything/actions?query=workflow%3A%22Build+%26+Test%22) -->
 
-# STJ.OpenApi.Models
+# Graeae.Models
 
-[![](https://img.shields.io/nuget/vpre/STJ.OpenApi.Models.svg?svg=true) ![](https://img.shields.io/nuget/dt/STJ.OpenApi.Models.svg?svg=true)](https://www.nuget.org/packages/STJ.OpenAPI.Models)
+[![](https://img.shields.io/nuget/vpre/Graeae.Models.svg?svg=true) ![](https://img.shields.io/nuget/dt/Graeae.Models.svg?svg=true)](https://www.nuget.org/packages/Graeae.Models)
 
 OpenAPI models for System.Text.Json.  Supports specification versions v3.0.x & v3.1.
 
@@ -14,6 +14,12 @@ This project is supported by the [`json-everything`](https://github.com/gregsden
 
 - JSON Schema support provided by [JsonSchema.Net](https://www.nuget.org/packages/JsonSchema.Net)
 - YAML support provided by [Yaml2JsonNode](https://www.nuget.org/packages/Yaml2JsonNode)
+
+## Why "Graeae"?
+
+Graeae (pronounced "gray-eye") is the collective name of the sisters in Greek mythology who share an eye, often referred to as the Fates.  Because these sisters share an eye, there must be some common interface between the sisters and the eye.
+
+In terms of web development the eye is an API, the sisters are clients, and that common interface is an OpenAPI document.
 
 ## Usage
 
