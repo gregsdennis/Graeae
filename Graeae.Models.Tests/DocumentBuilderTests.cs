@@ -69,7 +69,67 @@ public class DocumentBuilderTests
 									}
 								}
 							}
-						})
+						}),
+						Responses = new()
+						{
+							[HttpStatusCode.OK] = Ref.To.Response("item")
+						} 
+					}
+				}
+			},
+			Components = new()
+			{
+				Callbacks = new()
+				{
+					["basic"] = new()
+					{
+						["{$request.query.callbackUrl}"] = new()
+						{
+							Post = new()
+							{
+								RequestBody = new(new()
+								{
+									["application"] = new()
+									{
+										Schema = new JsonSchemaBuilder()
+											.Type(SchemaValueType.Object)
+											.PropertyNames(new JsonSchemaBuilder().Pattern(@"^[1-9][0-9]*$"))
+											.AdditionalProperties(new JsonSchemaBuilder().Type(SchemaValueType.Boolean))
+									}
+								}),
+								ExtensionData = new()
+								{
+									["x-comment"] = "this is a numerically-index dictionary of booleans"
+								}
+							}
+						}
+					}
+				},
+				Parameters = new()
+				{
+					["item"] = new("item content", ParameterLocation.Path)
+					{
+						AllowEmptyValue = false,
+						AllowReserved = true,
+						Required = true
+					}
+				},
+				Responses = new()
+				{
+					["item"] = new("item response")
+					{
+						Content = new()
+						{
+							["application/json"] = new()
+							{
+								Schema = new JsonSchemaBuilder()
+									.Type(SchemaValueType.Object)
+									.Properties(
+										("name", new JsonSchemaBuilder().Type(SchemaValueType.String))
+									),
+								Example = new JsonObject { ["name"] = "example item" }
+							}
+						}
 					}
 				}
 			}
