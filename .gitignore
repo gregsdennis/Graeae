@@ -397,4 +397,4 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-/Graeae.Models/OpenApi.Models.xml
+*.xml

@@ -56,6 +56,11 @@
             Models a callback key expression.
             </summary>
         </member>
+        <member name="P:Graeae.Models.CallbackKeyExpression.Source">
+            <summary>
+            Gets the original expression string.
+            </summary>
+        </member>
         <member name="P:Graeae.Models.CallbackKeyExpression.Parameters">
             <summary>
             Gets the <see cref="T:Graeae.Models.RuntimeExpression"/> parameters that exist in the key expression.
