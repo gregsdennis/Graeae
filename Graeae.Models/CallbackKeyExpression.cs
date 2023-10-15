@@ -8,8 +8,11 @@ namespace Graeae.Models;
 public class CallbackKeyExpression : IEquatable<string>
 {
 	private static readonly Regex TemplateVarsIdentifier = new(@"^([^{]*)(\{(?<runtimeExpr>[^}]+)\}([^{])*)*$");
-	
-	private readonly string _source;
+
+	/// <summary>
+	/// Gets the original expression string.
+	/// </summary>
+	public string Source { get; }
 
 	/// <summary>
 	/// Gets the <see cref="RuntimeExpression"/> parameters that exist in the key expression.
@@ -18,7 +21,7 @@ public class CallbackKeyExpression : IEquatable<string>
 
 	private CallbackKeyExpression(string source, IEnumerable<RuntimeExpression> parameters)
 	{
-		_source = source;
+		Source = source;
 		Parameters = parameters.ToArray();
 	}
 
@@ -53,14 +56,14 @@ public class CallbackKeyExpression : IEquatable<string>
 	/// <see langword="true" /> if the current object is equal to the <paramref name="other" /> parameter; otherwise, <see langword="false" />.</returns>
 	public bool Equals(string? other)
 	{
-		return _source == other;
+		return Source == other;
 	}
 
 	/// <summary>Returns a string that represents the current object.</summary>
 	/// <returns>A string that represents the current object.</returns>
 	public override string ToString()
 	{
-		return _source;
+		return Source;
 	}
 
 	/// <summary>
