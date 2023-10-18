@@ -13,10 +13,10 @@
     <PackageProjectUrl>https://github.com/gregsdennis/Graeae</PackageProjectUrl>
     <PackageIcon>openapi.png</PackageIcon>
     <RepositoryUrl>https://github.com/gregsdennis/Graeae</RepositoryUrl>
-    <PackageTags>openapi json schema models</PackageTags>
+    <PackageTags>openapi json schema aspnet webapi minimalapi api</PackageTags>
     <PackageReleaseNotes>Release notes can be found at https://github.com/gregsdennis/Graeae</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <DocumentationFile>Graeae.Models.xml</DocumentationFile>
+    <DocumentationFile>Graeae.AspNet.xml</DocumentationFile>
     <Version>0.1.0</Version>
     <FileVersion>0.1.0.0</FileVersion>
     <AssemblyVersion>0.1.0.0</AssemblyVersion>

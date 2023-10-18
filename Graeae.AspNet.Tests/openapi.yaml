@@ -1,0 +1,15 @@
+﻿openapi: 3.1.0
+info:
+  title: Graeae Generation Test Host
+  version: 1.0.0
+paths:
+  /hello:
+    get:
+      description: hello world
+      responses:
+        '200':
+          description: okay
+          content:
+            application/json:
+              schema:
+                type: string
