@@ -4,6 +4,6 @@ var builder = WebApplication.CreateBuilder();
 
 var app = builder.Build();
 
-await app.MapOpenApi("service.yaml");
+await app.MapOpenApi("openapi.yaml");
 
 app.Run();
