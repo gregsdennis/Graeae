@@ -122,7 +122,7 @@ public class RuntimeExpression : IEquatable<string>, IEquatable<RuntimeExpressio
 				{
 					j++;
 				}
-				expr.Token = source.Substring(i, j);
+				expr.Token = source.Substring(i, j-i);
 				break;
 			case "query":
 				expr.SourceType = RuntimeExpressionSourceType.Query;
