@@ -28,6 +28,9 @@
     <None Update="openapi.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="..\Graeae.AspNet\RequestHandlerAttribute.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

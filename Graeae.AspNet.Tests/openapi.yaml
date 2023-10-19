@@ -13,3 +13,13 @@ paths:
             application/json:
               schema:
                 type: string
+  /goodbye:
+    get:
+      description: goodbye world
+      responses:
+        '200':
+          description: okay
+          content:
+            application/json:
+              schema:
+                type: string
