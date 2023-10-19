@@ -4,9 +4,9 @@ using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading;
 using Graeae.Models;
-using Json.Schema;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -124,19 +124,19 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 
 				var methods = handlerType.Members.OfType<MethodDeclarationSyntax>().ToArray();
 
-				if (!CheckOperation(entry.Value.Get, methods))
+				if (!CheckOperation(entry.Key, entry.Value.Get, nameof(PathItem.Get), methods))
 					context.ReportDiagnostic(Diagnostics.MissingRouteOperationHandler(route, nameof(PathItem.Get)));
-				if (!CheckOperation(entry.Value.Post, methods))
+				if (!CheckOperation(entry.Key, entry.Value.Post, nameof(PathItem.Post), methods))
 					context.ReportDiagnostic(Diagnostics.MissingRouteOperationHandler(route, nameof(PathItem.Post)));
-				if (!CheckOperation(entry.Value.Put, methods))
+				if (!CheckOperation(entry.Key, entry.Value.Put, nameof(PathItem.Put), methods))
 					context.ReportDiagnostic(Diagnostics.MissingRouteOperationHandler(route, nameof(PathItem.Put)));
-				if (!CheckOperation(entry.Value.Delete, methods))
+				if (!CheckOperation(entry.Key, entry.Value.Delete, nameof(PathItem.Delete), methods))
 					context.ReportDiagnostic(Diagnostics.MissingRouteOperationHandler(route, nameof(PathItem.Delete)));
-				if (!CheckOperation(entry.Value.Trace, methods))
+				if (!CheckOperation(entry.Key, entry.Value.Trace, nameof(PathItem.Trace), methods))
 					context.ReportDiagnostic(Diagnostics.MissingRouteOperationHandler(route, nameof(PathItem.Trace)));
-				if (!CheckOperation(entry.Value.Options, methods))
+				if (!CheckOperation(entry.Key, entry.Value.Options, nameof(PathItem.Head), methods))
 					context.ReportDiagnostic(Diagnostics.MissingRouteOperationHandler(route, nameof(PathItem.Options)));
-				if (!CheckOperation(entry.Value.Head, methods))
+				if (!CheckOperation(entry.Key, entry.Value.Head, nameof(PathItem.Head), methods))
 					context.ReportDiagnostic(Diagnostics.MissingRouteOperationHandler(route, nameof(PathItem.Head)));
 			}
 		}
@@ -147,12 +147,88 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 		}
 	}
 
-	private static bool CheckOperation(Operation? op, IEnumerable<MethodDeclarationSyntax> methods)
+	private static readonly Regex TemplatedSegmentPattern = new(@"^\{(.*)\}$", RegexOptions.Compiled | RegexOptions.ECMAScript);
+
+	private record Parameter
+	{
+		public string Name { get; }
+		public ParameterLocation In { get; }
+
+		public Parameter(string name, ParameterLocation @in)
+		{
+			Name = name;
+			In = @in;
+		}
+	}
+
+	private static bool CheckOperation(PathTemplate route, Operation? op, string opName, IEnumerable<MethodDeclarationSyntax> methods)
 	{
 		if (op is null) return true;
 
 		// TODO: figure out parameters and body
+		// parameters can be implicitly or explicitly bound
+		//
+		// - path
+		//   - implicitly bound by name
+		//   - explicitly bound with [FromRoute(Name = "name")]
+		// - query
+		//   - implicitly bound by name
+		//   - explicitly bound with [FromQuery(Name = "name")]
+		// - header
+		//   - explicitly bound with [FromHeader(Name = "name")]
+		// - body
+		//   - implicitly bound by name
 
-		return true;
+		var implicitOpenApiParameters = route.Segments.Select(x =>
+		{
+			var match = TemplatedSegmentPattern.Match(x);
+			if (match.Success)
+				return new Parameter(match.Groups[0].Value, ParameterLocation.Path);
+
+			return null;
+		}).Where(x => x is not null);
+		var explicitOpenapiParameters = op.Parameters?.Select(x => new Parameter(x.Name, x.In)) ?? Enumerable.Empty<Parameter>();
+		var openApiParameters = implicitOpenApiParameters.Union(explicitOpenapiParameters).ToArray();
+		var methodParameterLists = methods.Where(x => string.Equals(x.Identifier.ValueText, opName, StringComparison.InvariantCultureIgnoreCase))
+			.Select(x => x.ParameterList.Parameters.SelectMany(GetParameters));
+
+		return methodParameterLists.Any(methodParameterList => openApiParameters.All(methodParameterList.Contains));
+	}
+
+	private static IEnumerable<Parameter> GetParameters(ParameterSyntax parameter)
+	{
+		if (TryGetAttribute(parameter.AttributeLists, "FromRoute", out var attribute) &&
+		    TryGetStringParameter(attribute!, out var name))
+			yield return new Parameter(name!, ParameterLocation.Path);
+		else if (TryGetAttribute(parameter.AttributeLists, "FromQuery", out attribute) &&
+		         TryGetStringParameter(attribute!, out name))
+			yield return new Parameter(name!, ParameterLocation.Query);
+		else if (TryGetAttribute(parameter.AttributeLists, "FromHeader", out attribute) &&
+		         TryGetStringParameter(attribute!, out name))
+			yield return new Parameter(name!, ParameterLocation.Header);
+		else
+		{
+			// if no attributes are found then consider both implicit options
+			yield return new Parameter(parameter.Identifier.ValueText, ParameterLocation.Path);
+			yield return new Parameter(parameter.Identifier.ValueText, ParameterLocation.Query);
+		}
+	}
+
+	private static bool TryGetAttribute(SyntaxList<AttributeListSyntax> attributeLists, string attributeName, out AttributeSyntax? attribute)
+	{
+		foreach (var attributeList in attributeLists)
+		{
+			foreach (var att in attributeList.Attributes)
+			{
+				if (att.Name.ToString() == attributeName)
+				{
+					attribute = att;
+					return true;
+				}
+			}
+		}
+
+		attribute = null;
+		return false;
 	}
 }
