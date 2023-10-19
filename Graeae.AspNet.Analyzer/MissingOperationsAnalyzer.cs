@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Graeae.Models;
+using Json.Schema;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -35,7 +37,7 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 		return node is ClassDeclarationSyntax { AttributeLists.Count: > 0 };
 	}
 
-	private static (string, INamedTypeSymbol)? HandlerClassTransform(GeneratorSyntaxContext context, CancellationToken token)
+	private static (string, ClassDeclarationSyntax)? HandlerClassTransform(GeneratorSyntaxContext context, CancellationToken token)
 	{
 		var classDeclaration = Unsafe.As<ClassDeclarationSyntax>(context.Node);
 		var symbol = context.SemanticModel.GetDeclaredSymbol(context.Node);
@@ -44,7 +46,7 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 		    TryGetAttribute(classDeclaration, "Graeae.AspNet.RequestHandlerAttribute", context.SemanticModel, token, out var attribute) &&
 		    TryGetStringParameter(attribute!, out var route))
 		{
-			return (route!, type);
+			return (route!, classDeclaration);
 		}
 
 		return null;
@@ -92,18 +94,18 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 		return false;
 	}
 
-	private static void AddDiagnostics(SourceProductionContext context, ((string Name, string? Content, string Path) File, ImmutableArray<(string Route, INamedTypeSymbol Type)?> Handlers) source)
+	private static void AddDiagnostics(SourceProductionContext context, ((string Name, string? Content, string Path) File, ImmutableArray<(string Route, ClassDeclarationSyntax Type)?> Handlers) source)
 	{
-		var file = source.File;
-
 		try
 		{
+			var file = source.File;
 			if (file.Content == null)
 				throw new Exception("Failed to read file \"" + file.Path + "\"");
 
 			var doc = YamlSerializer.Deserialize<OpenApiDocument>(file.Content);
+			doc!.Initialize().Wait();
 
-			if (doc!.Paths == null)
+			if (doc.Paths == null)
 			{
 				context.ReportDiagnostic(Diagnostics.NoPaths(file.Path));
 				return;
@@ -120,12 +122,37 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 					continue;
 				}
 
-				// TODO: search handler type for methods
+				var methods = handlerType.Members.OfType<MethodDeclarationSyntax>().ToArray();
+
+				if (!CheckOperation(entry.Value.Get, methods))
+					context.ReportDiagnostic(Diagnostics.MissingRouteOperationHandler(route, nameof(PathItem.Get)));
+				if (!CheckOperation(entry.Value.Post, methods))
+					context.ReportDiagnostic(Diagnostics.MissingRouteOperationHandler(route, nameof(PathItem.Post)));
+				if (!CheckOperation(entry.Value.Put, methods))
+					context.ReportDiagnostic(Diagnostics.MissingRouteOperationHandler(route, nameof(PathItem.Put)));
+				if (!CheckOperation(entry.Value.Delete, methods))
+					context.ReportDiagnostic(Diagnostics.MissingRouteOperationHandler(route, nameof(PathItem.Delete)));
+				if (!CheckOperation(entry.Value.Trace, methods))
+					context.ReportDiagnostic(Diagnostics.MissingRouteOperationHandler(route, nameof(PathItem.Trace)));
+				if (!CheckOperation(entry.Value.Options, methods))
+					context.ReportDiagnostic(Diagnostics.MissingRouteOperationHandler(route, nameof(PathItem.Options)));
+				if (!CheckOperation(entry.Value.Head, methods))
+					context.ReportDiagnostic(Diagnostics.MissingRouteOperationHandler(route, nameof(PathItem.Head)));
 			}
 		}
 		catch (Exception e)
 		{
 			var errorMessage = $"Error: {e.Message}\n\nStack trace: {e.StackTrace}";
+			context.ReportDiagnostic(Diagnostics.OperationalError(errorMessage));
 		}
+	}
+
+	private static bool CheckOperation(Operation? op, IEnumerable<MethodDeclarationSyntax> methods)
+	{
+		if (op is null) return true;
+
+		// TODO: figure out parameters and body
+
+		return true;
 	}
 }
