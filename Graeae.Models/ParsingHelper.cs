@@ -4,7 +4,7 @@ internal static class ParsingHelper
 {
 	public static string Expect(this string source, ref int i, params string[] options)
 	{
-		var text = source[i..];
+		var text = source.Substring(i);
 		foreach (var option in options)
 		{
 			if (text.StartsWith(option))

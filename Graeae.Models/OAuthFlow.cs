@@ -82,9 +82,9 @@ public class OAuthFlow : IRefTargetContainer
 		};
 
 		var scopes = new JsonObject();
-		foreach (var (key, value) in flow.Scopes)
+		foreach (var kvp in flow.Scopes)
 		{
-			scopes.Add(key, value);
+			scopes.Add(kvp.Key, kvp.Value);
 		}
 		obj.Add("scopes", scopes);
 
