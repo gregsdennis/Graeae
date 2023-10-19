@@ -16,6 +16,16 @@ paths:
   /goodbye:
     get:
       description: goodbye world
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+                - name
       responses:
         '200':
           description: okay
