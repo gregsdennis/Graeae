@@ -107,7 +107,7 @@ public class Example : IRefTargetContainer
 		if (keys[0] == "value")
 		{
 			if (keys.Length == 1) return Value;
-			keys[1..].ToPointer().TryEvaluate(Value, out var target);
+			keys.Slice(1).ToPointer().TryEvaluate(Value, out var target);
 			return target;
 		}
 

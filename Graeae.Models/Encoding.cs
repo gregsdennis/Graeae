@@ -88,7 +88,7 @@ public class Encoding : IRefTargetContainer
 		if (keys[0] == "headers")
 		{
 			if (keys.Length == 1) return null;
-			return Headers.GetFromMap(keys[1])?.Resolve(keys[2..]);
+			return Headers.GetFromMap(keys[1])?.Resolve(keys.Slice(2));
 		}
 
 		return ExtensionData?.Resolve(keys);

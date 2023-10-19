@@ -167,7 +167,7 @@ public class ComponentCollection : IRefTargetContainer
 		}
 
 		return target != null
-			? target.Resolve(keys[2..])
+			? target.Resolve(keys.Slice(2))
 			: ExtensionData?.Resolve(keys);
 	}
 

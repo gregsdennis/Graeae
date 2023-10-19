@@ -18,13 +18,13 @@ public class SecurityRequirement : Dictionary<string, IEnumerable<string>>
 
 		var callback = new SecurityRequirement();
 
-		foreach (var (key, value) in obj)
+		foreach (var kvp in obj)
 		{
-			if (value is not JsonArray array)
+			if (kvp.Value is not JsonArray array)
 				throw new JsonException("security requirements must be string arrays");
 			
 
-			callback.Add(key, array.Select(x => x is JsonValue v && v.TryGetValue(out string? s) ? s : throw new JsonException("security requirement values must be strings")));
+			callback.Add(kvp.Key, array.Select(x => x is JsonValue v && v.TryGetValue(out string? s) ? s : throw new JsonException("security requirement values must be strings")));
 		}
 
 		// Validating extra keys is done in the loop.
@@ -38,9 +38,9 @@ public class SecurityRequirement : Dictionary<string, IEnumerable<string>>
 
 		var obj = new JsonObject();
 
-		foreach (var (key, value) in requirement)
+		foreach (var kvp in requirement)
 		{
-			obj.Add(key, value.Select(x => (JsonNode?)x).ToJsonArray());
+			obj.Add(kvp.Key, kvp.Value.Select(x => (JsonNode?)x).ToJsonArray());
 		}
 
 		return obj;
