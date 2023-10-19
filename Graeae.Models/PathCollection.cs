@@ -26,11 +26,11 @@ public class PathCollection : Dictionary<PathTemplate, PathItem>, IRefTargetCont
 			ExtensionData = ExtensionData.FromNode(obj)
 		};
 
-		foreach (var (key, value) in obj)
+		foreach (var kvp in obj)
 		{
-			if (key.StartsWith("x-")) continue;
-			if (!PathTemplate.TryParse(key, out var template))
-				throw new JsonException($"`{key}` is not a valid path template");
+			if (kvp.Key.StartsWith("x-")) continue;
+			if (!PathTemplate.TryParse(kvp.Key, out var template))
+				throw new JsonException($"`{kvp.Key}` is not a valid path template");
 
 			collection.Add(template, PathItem.FromNode(value, options));
 		}
@@ -46,9 +46,9 @@ public class PathCollection : Dictionary<PathTemplate, PathItem>, IRefTargetCont
 
 		var obj = new JsonObject();
 
-		foreach (var (key, value) in paths)
+		foreach (var kvp in paths)
 		{
-			obj.Add(key.ToString(), PathItem.ToNode(value, options));
+			obj.Add(kvp.Key.ToString(), PathItem.ToNode(kvp.Value, options));
 		}
 
 		obj.AddExtensions(paths.ExtensionData);
@@ -60,7 +60,7 @@ public class PathCollection : Dictionary<PathTemplate, PathItem>, IRefTargetCont
 	{
 		if (keys.Length == 0) return null;
 
-		return this.GetFromMap(keys[0])?.Resolve(keys[1..]) ??
+		return this.GetFromMap(keys[0])?.Resolve(keys.Slice(1)) ??
 		       ExtensionData?.Resolve(keys);
 	}
 

@@ -29,4 +29,8 @@
     </AssemblyAttribute>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Graeae.Models\Graeae.Models.csproj" />
+  </ItemGroup>
+
 </Project>

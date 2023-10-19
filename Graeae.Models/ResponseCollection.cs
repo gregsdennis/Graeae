@@ -32,14 +32,14 @@ public class ResponseCollection : Dictionary<HttpStatusCode, Response>, IRefTarg
 			ExtensionData = ExtensionData.FromNode(obj)
 		};
 
-		foreach (var (key, value) in obj)
+		foreach (var kvp in obj)
 		{
-			if (key == "default") continue;
-			if (key.StartsWith("x-")) continue;
-			if (!short.TryParse(key, out var code))
-				throw new JsonException($"`{key}` is not a valid status code");
+			if (kvp.Key == "default") continue;
+			if (kvp.Key.StartsWith("x-")) continue;
+			if (!short.TryParse(kvp.Key, out var code))
+				throw new JsonException($"`{kvp.Key}` is not a valid status code");
 			if (Enum.GetName(typeof(HttpStatusCode), code) == null)
-				throw new JsonException($"`{key}` is not a known status code");
+				throw new JsonException($"`{kvp.Key}` is not a known status code");
 
 			collection.Add((HttpStatusCode)code, Response.FromNode(value, options));
 		}
@@ -55,9 +55,9 @@ public class ResponseCollection : Dictionary<HttpStatusCode, Response>, IRefTarg
 
 		var obj = new JsonObject();
 
-		foreach (var (key, value) in responses)
+		foreach (var kvp in responses)
 		{
-			obj.Add(((int)key).ToString(), Response.ToNode(value, options));
+			obj.Add(((int)kvp.Key).ToString(), Response.ToNode(kvp.Value, options));
 		}
 
 		obj.MaybeAdd("default", Response.ToNode(responses.Default, options));
@@ -72,7 +72,7 @@ public class ResponseCollection : Dictionary<HttpStatusCode, Response>, IRefTarg
 		if (keys.Length == 0) return null;
 
 		var first = keys[0];
-		return this.FirstOrDefault(x => ((int)x.Key).ToString() == first).Value?.Resolve(keys[1..]) ??
+		return this.FirstOrDefault(x => ((int)x.Key).ToString() == first).Value?.Resolve(keys.Slice(1)) ??
 		       ExtensionData?.Resolve(keys);
 	}
 

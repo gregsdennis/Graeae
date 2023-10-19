@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
+using Graeae.Models;
 using Microsoft.CodeAnalysis;
+using Yaml2JsonNode;
 
 namespace Graeae.AspNet.Analyzer;
 
@@ -10,7 +12,7 @@ public class RouteVerifier : IIncrementalGenerator
 	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
 		var files = context.AdditionalTextsProvider.Where(static file => file.Path.EndsWith("openapi.yaml"));
-		var namesAndContents = files.Select((file, cancellationToken) => (Name: Path.GetFileNameWithoutExtension(file.Path), Content: file.GetText(cancellationToken)?.ToString(), Path: file.Path));
+		var namesAndContents = files.Select((f, ct) => (Name: Path.GetFileNameWithoutExtension(f.Path), Content: f.GetText(ct)?.ToString(), Path: f.Path));
 		context.RegisterSourceOutput(namesAndContents, AddSource);
 	}
 
@@ -22,6 +24,8 @@ public class RouteVerifier : IIncrementalGenerator
 		{
 			if (file.Content == null)
 				throw new Exception("Failed to read file \"" + file.Path + "\"");
+
+			var doc = YamlSerializer.Deserialize<OpenApiDocument>(file.Content);
 
 			//string sourceCode = .....
 
