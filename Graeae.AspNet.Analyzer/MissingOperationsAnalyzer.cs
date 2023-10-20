@@ -156,7 +156,7 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 
 		public Parameter(string name, ParameterLocation @in)
 		{
-			Name = name;
+			Name = @in == ParameterLocation.Header ? name.ToLowerInvariant() : name;
 			In = @in;
 		}
 	}
