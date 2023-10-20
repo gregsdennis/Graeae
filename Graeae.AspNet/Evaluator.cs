@@ -9,8 +9,18 @@ using Microsoft.AspNetCore.Http.Extensions;
 
 namespace Graeae.AspNet;
 
+/// <summary>
+/// Extensions to evaluate runtime expressions against an HTTP call.
+/// </summary>
 public static class Evaluator
 {
+	/// <summary>
+	/// Resolves a callback key expression.
+	/// </summary>
+	/// <param name="expr">The callback key expression</param>
+	/// <param name="context">The HTTP context</param>
+	/// <param name="pathTemplate">(optional) A path template</param>
+	/// <returns>The resolved expression as a URI</returns>
 	public static Uri Resolve(this CallbackKeyExpression expr, HttpContext context, PathTemplate? pathTemplate = null)
 	{
 		var sb = new StringBuilder(expr.Source);
@@ -24,6 +34,13 @@ public static class Evaluator
 		return new Uri(sb.ToString());
 	}
 
+	/// <summary>
+	/// Resolves a runtime expression.
+	/// </summary>
+	/// <param name="expr">The runtime expression</param>
+	/// <param name="context">The HTTP context</param>
+	/// <param name="pathTemplate">(optional) A path template</param>
+	/// <returns>The resolved expression</returns>
 	public static string? Resolve(this RuntimeExpression expr, HttpContext context, PathTemplate? pathTemplate = null)
 	{
 		switch (expr.ExpressionType)

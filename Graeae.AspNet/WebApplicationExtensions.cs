@@ -7,8 +7,17 @@ using Yaml2JsonNode;
 
 namespace Graeae.AspNet;
 
+/// <summary>
+/// Extends the app builder to scan an Open API document and automatically register methods.
+/// </summary>
 public static class WebApplicationExtensions
 {
+	/// <summary>
+	/// Maps request handlers (see <see cref="RequestHandlerAttribute"/>) contained in the current assembly.
+	/// </summary>
+	/// <param name="app">The application builder</param>
+	/// <param name="openApiFileName">The file name of the Open API document</param>
+	/// <returns>The application builder.</returns>
 	public static async Task<IEndpointRouteBuilder> MapOpenApi(this IEndpointRouteBuilder app, string openApiFileName)
 	{
 		var openApiText = await File.ReadAllTextAsync(openApiFileName);
