@@ -147,7 +147,7 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 		}
 	}
 
-	private static readonly Regex TemplatedSegmentPattern = new(@"^\{(.*)\}$", RegexOptions.Compiled | RegexOptions.ECMAScript);
+	private static readonly Regex TemplatedSegmentPattern = new(@"^\{(?<param>.*)\}$", RegexOptions.Compiled | RegexOptions.ECMAScript);
 
 	private record Parameter
 	{
@@ -165,7 +165,7 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 	{
 		if (op is null) return true;
 
-		// TODO: figure out parameters and body
+		// TODO: body parameters
 		// parameters can be implicitly or explicitly bound
 		//
 		// - path
@@ -177,13 +177,13 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 		// - header
 		//   - explicitly bound with [FromHeader(Name = "name")]
 		// - body
-		//   - implicitly bound by name
+		//   - implicitly bound by model
 
 		var implicitOpenApiParameters = route.Segments.Select(x =>
 		{
 			var match = TemplatedSegmentPattern.Match(x);
 			if (match.Success)
-				return new Parameter(match.Groups[0].Value, ParameterLocation.Path);
+				return new Parameter(match.Groups["param"].Value, ParameterLocation.Path);
 
 			return null;
 		}).Where(x => x is not null);
