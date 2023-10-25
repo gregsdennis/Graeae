@@ -141,7 +141,7 @@ public static class HelloHandler
 	}
 
 	[Test]
-	public async Task FoundGetHello_Body()
+	public async Task FoundGetHello_ImplicitBody()
 	{
 		var openapiContent = @"openapi: 3.1.0
 info:
@@ -178,9 +178,72 @@ namespace Graeae.AspNet.Tests.Host.RequestHandlers;
 [RequestHandler(""/hello"")]
 public static class HelloHandler
 {
-	public static Task<string> Post(HttpContext context, HelloPostBodyModel name)
+	public static Task<string> Post(HttpContext context, HelloPostBodyModel model)
 	{
-		return Task.FromResult($""hello {name ?? ""world""}"");
+		return Task.FromResult($""hello {model.Name}"");
+	}
+}";
+		var model = @"namespace Graeae.AspNet.Tests.Host.RequestHandlers;
+
+public class HelloPostBodyModel
+{
+	public string Name { get; set; }
+}
+";
+
+		await new VerifyCS.Test
+		{
+			TestState =
+			{
+				Sources = { handler, AttributeContent, model },
+				AdditionalFiles = { ("openapi.yaml", openapiContent) },
+				ReferenceAssemblies = PackageHelper.AspNetWeb,
+			}
+		}.RunAsync();
+	}
+
+	[Test]
+	public async Task FoundGetHello_ExplicitBody()
+	{
+		var openapiContent = @"openapi: 3.1.0
+info:
+  title: Graeae Generation Test Host
+  version: 1.0.0
+paths:
+  /hello:
+    post:
+      description: goodbye world
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+                - name
+      responses:
+        '200':
+          description: okay
+          content:
+            application/json:
+              schema:
+                type: string
+";
+		var handler = @"using System.Threading.Tasks;
+using Graeae.AspNet;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Graeae.AspNet.Tests.Host.RequestHandlers;
+
+[RequestHandler(""/hello"")]
+public static class HelloHandler
+{
+	public static Task<string> Post(HttpContext context, [FromBody] HelloPostBodyModel model)
+	{
+		return Task.FromResult($""hello {model.Name}"");
 	}
 }";
 		var model = @"namespace Graeae.AspNet.Tests.Host.RequestHandlers;
