@@ -42,7 +42,7 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 		var classDeclaration = Unsafe.As<ClassDeclarationSyntax>(context.Node);
 		var symbol = context.SemanticModel.GetDeclaredSymbol(context.Node);
 
-		if (symbol is INamedTypeSymbol type &&
+		if (symbol is INamedTypeSymbol &&
 		    TryGetAttribute(classDeclaration, "Graeae.AspNet.RequestHandlerAttribute", context.SemanticModel, token, out var attribute) &&
 		    TryGetStringParameter(attribute!, out var route))
 		{
@@ -151,6 +151,8 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 
 	private record Parameter
 	{
+		public static readonly Parameter Body = new(string.Empty, ParameterLocation.Unspecified);
+
 		public string Name { get; }
 		public ParameterLocation In { get; }
 
@@ -165,7 +167,6 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 	{
 		if (op is null) return true;
 
-		// TODO: body parameters
 		// parameters can be implicitly or explicitly bound
 		//
 		// - path
@@ -182,11 +183,12 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 		var implicitOpenApiParameters = route.Segments.Select(x =>
 		{
 			var match = TemplatedSegmentPattern.Match(x);
-			if (match.Success)
-				return new Parameter(match.Groups["param"].Value, ParameterLocation.Path);
-
-			return null;
+			return match.Success
+				? new Parameter(match.Groups["param"].Value, ParameterLocation.Path)
+				: null;
 		}).Where(x => x is not null);
+		if (op.RequestBody is not null) 
+			implicitOpenApiParameters = implicitOpenApiParameters.Append(Parameter.Body);
 		var explicitOpenapiParameters = op.Parameters?.Select(x => new Parameter(x.Name, x.In)) ?? Enumerable.Empty<Parameter>();
 		var openApiParameters = implicitOpenApiParameters.Union(explicitOpenapiParameters).ToArray();
 		var methodParameterLists = methods.Where(x => string.Equals(x.Identifier.ValueText, opName, StringComparison.InvariantCultureIgnoreCase))
@@ -206,11 +208,18 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 		else if (TryGetAttribute(parameter.AttributeLists, "FromHeader", out attribute) &&
 		         TryGetStringParameter(attribute!, out name))
 			yield return new Parameter(name!, ParameterLocation.Header);
+		else if (TryGetAttribute(parameter.AttributeLists, "FromBody", out _))
+			yield return Parameter.Body;
+		else if (TryGetAttribute(parameter.AttributeLists, "FromServices", out _))
+		{
+		}
 		else
 		{
-			// if no attributes are found then consider both implicit options
+			// if no attributes are found then consider all implicit options
 			yield return new Parameter(parameter.Identifier.ValueText, ParameterLocation.Path);
 			yield return new Parameter(parameter.Identifier.ValueText, ParameterLocation.Query);
+			// TODO: this is catching services and the http context
+			//yield return Parameter.Body;
 		}
 	}
 
