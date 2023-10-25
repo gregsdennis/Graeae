@@ -46,6 +46,6 @@ internal class ModelGenerator : IIncrementalGenerator
 
 	private void GenerateCodeForSchema(SourceProductionContext context, string name, JsonSchema schema)
 	{
-		throw new NotImplementedException();
+		
 	}
 }
