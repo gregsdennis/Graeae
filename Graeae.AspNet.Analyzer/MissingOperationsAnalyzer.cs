@@ -96,6 +96,8 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 
 	private static void AddDiagnostics(SourceProductionContext context, ((string Name, string? Content, string Path) File, ImmutableArray<(string Route, ClassDeclarationSyntax Type)?> Handlers) source)
 	{
+		//context.ReportDiagnostic(Diagnostic.Create(new DiagnosticDescriptor("TEST0001", "this is a diagnostic", "this is the format", "and the category", DiagnosticSeverity.Error, true), Location.None, DiagnosticSeverity.Error));
+
 		try
 		{
 			var file = source.File;
