@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -30,6 +31,8 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 		var namesAndContents = files.Select((f, ct) => (Name: Path.GetFileNameWithoutExtension(f.Path), Content: f.GetText(ct)?.ToString(), Path: f.Path));
 
 		context.RegisterSourceOutput(namesAndContents.Combine(handlerClasses), AddDiagnostics);
+
+		context.RegisterSourceOutput(handlerClasses, (productionContext, array) => { });
 	}
 
 	private static bool HandlerClassPredicate(SyntaxNode node, CancellationToken token)
@@ -42,9 +45,13 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 		var classDeclaration = Unsafe.As<ClassDeclarationSyntax>(context.Node);
 		var symbol = context.SemanticModel.GetDeclaredSymbol(context.Node);
 
+		if (symbol is INamedTypeSymbol)
+		{
+			return ("/hello", classDeclaration);
+		}
 		if (symbol is INamedTypeSymbol &&
-		    TryGetAttribute(classDeclaration, "Graeae.AspNet.RequestHandlerAttribute", context.SemanticModel, token, out var attribute) &&
-		    TryGetStringParameter(attribute!, out var route))
+			TryGetAttribute(classDeclaration, "Graeae.AspNet.RequestHandlerAttribute", context.SemanticModel, token, out var attribute) &&
+			TryGetStringParameter(attribute!, out var route))
 		{
 			return (route!, classDeclaration);
 		}
@@ -96,8 +103,6 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 
 	private static void AddDiagnostics(SourceProductionContext context, ((string Name, string? Content, string Path) File, ImmutableArray<(string Route, ClassDeclarationSyntax Type)?> Handlers) source)
 	{
-		//context.ReportDiagnostic(Diagnostic.Create(new DiagnosticDescriptor("TEST0001", "this is a diagnostic", "this is the format", "and the category", DiagnosticSeverity.Error, true), Location.None, DiagnosticSeverity.Error));
-
 		try
 		{
 			var file = source.File;
@@ -144,7 +149,7 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 		}
 		catch (Exception e)
 		{
-			var errorMessage = $"Error: {e.Message}\n\nStack trace: {e.StackTrace}";
+			var errorMessage = $"Error: {e.Message}\n\nStack trace: {e.StackTrace}\n\nStack trace: {e.InnerException}";
 			context.ReportDiagnostic(Diagnostics.OperationalError(errorMessage));
 		}
 	}
