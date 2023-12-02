@@ -14,6 +14,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Graeae.AspNet.Tests", "Graeae.AspNet.Tests\Graeae.AspNet.Tests.csproj", "{7FD09945-A211-4684-BB5B-85B0CC38B86D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Graeae.AspNet.Analyzer", "Graeae.AspNet.Analyzer\Graeae.AspNet.Analyzer.csproj", "{BDED533C-D538-4E96-B37B-A4C65FA4D504}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B24340A3-0F0B-4E1A-A998-0C0C49718E20} = {B24340A3-0F0B-4E1A-A998-0C0C49718E20}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

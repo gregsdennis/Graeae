@@ -84,7 +84,7 @@ public class OpenApiDocument : IBaseDocument
 
 	Uri IBaseDocument.BaseUri { get; } = GenerateBaseUri();
 
-	private static Uri GenerateBaseUri() => new($"openapi:stj.openapi.models:{Guid.NewGuid().ToString("N").AsSpan(0, 10).ToString()}");
+	private static Uri GenerateBaseUri() => new($"graeae:models:{Guid.NewGuid().ToString("N").AsSpan(0, 10).ToString()}");
 
 	static OpenApiDocument()
 	{

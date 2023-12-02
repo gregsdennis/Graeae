@@ -43,22 +43,15 @@ public static class Evaluator
 	/// <returns>The resolved expression</returns>
 	public static string? Resolve(this RuntimeExpression expr, HttpContext context, PathTemplate? pathTemplate = null)
 	{
-		switch (expr.ExpressionType)
+		return expr.ExpressionType switch
 		{
-			case RuntimeExpressionType.Url:
-				return context.Request.GetEncodedUrl();
-			case RuntimeExpressionType.Method:
-				return context.Request.Method;
-			case RuntimeExpressionType.StatusCode:
-				return context.Response.StatusCode.ToString();
-			case RuntimeExpressionType.Request:
-				return GetFromRequest(expr, context.Request, pathTemplate);
-			case RuntimeExpressionType.Response:
-				return GetFromResponse(expr, context.Response);
-			case RuntimeExpressionType.Unspecified:
-			default:
-				throw new ArgumentOutOfRangeException();
-		}
+			RuntimeExpressionType.Url => context.Request.GetEncodedUrl(),
+			RuntimeExpressionType.Method => context.Request.Method,
+			RuntimeExpressionType.StatusCode => context.Response.StatusCode.ToString(),
+			RuntimeExpressionType.Request => GetFromRequest(expr, context.Request, pathTemplate),
+			RuntimeExpressionType.Response => GetFromResponse(expr, context.Response),
+			_ => throw new ArgumentOutOfRangeException(nameof(expr))
+		};
 	}
 
 	private static string? GetFromRequest(RuntimeExpression expr, HttpRequest request, PathTemplate? pathTemplate)
@@ -82,7 +75,7 @@ public static class Evaluator
 			case null:
 			case RuntimeExpressionSourceType.Unspecified:
 			default:
-				throw new ArgumentOutOfRangeException();
+				throw new ArgumentOutOfRangeException(nameof(expr));
 		}
 	}
 
@@ -102,7 +95,7 @@ public static class Evaluator
 			case null:
 			case RuntimeExpressionSourceType.Unspecified:
 			default:
-				throw new ArgumentOutOfRangeException();
+				throw new ArgumentOutOfRangeException(nameof(expr));
 		}
 	}
 

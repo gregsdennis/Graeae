@@ -14,13 +14,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Graeae.AspNet.Analyzer\Graeae.AspNet.Analyzer.csproj" PrivateAssets="all" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
-    <ProjectReference Include="..\Graeae.AspNet\Graeae.AspNet.csproj" PrivateAssets="all" GeneratePathProperty="true" />
+    <ProjectReference Include="..\Graeae.AspNet\Graeae.AspNet.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <AdditionalFiles Include="openapi.yaml" />
   </ItemGroup>
-
-  
       
 </Project>
