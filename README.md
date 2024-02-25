@@ -1,3 +1,5 @@
+***NOTICE** This library was built as a proof-of-concept to show how _JsonSchema.Net_ could be used to support the more commonly used [_OpenApi.Net_](https://github.com/microsoft/OpenAPI.NET).*
+
 [![Build & Test](https://github.com/gregsdennis/Graeae/actions/workflows/dotnet-core.yml/badge.svg?branch=main&event=push)](https://github.com/gregsdennis/Graeae/actions/workflows/dotnet-core.yml)
 [![Percentage of issues still open](http://isitmaintained.com/badge/open/gregsdennis/Graeae.svg)](http://isitmaintained.com/project/gregsdennis/Graeae "Percentage of issues still open")
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/gregsdennis/Graeae.svg)](http://isitmaintained.com/project/gregsdennis/Graeae "Average time to resolve an issue")
