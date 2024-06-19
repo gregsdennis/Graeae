@@ -179,6 +179,7 @@ public static class Draft4Support
 		SchemaKeywordRegistry.Register<Draft4ExclusiveMinimumKeyword>();
 		SchemaKeywordRegistry.Register<Draft4IdKeyword>();
 		SchemaKeywordRegistry.Register<NullableKeyword>();
+		SchemaKeywordRegistry.Register<Draft4TypeKeyword>();
 
 		SchemaRegistry.Global.Register(Draft4MetaSchema);
 	}
