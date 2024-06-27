@@ -94,7 +94,7 @@ public class OpenApiDocument : IBaseDocument
 		Json.Schema.Formats.Register(Formats.Int64);
 		Json.Schema.Formats.Register(Formats.Password);
 
-		VocabularyRegistry.Global.Register(Vocabularies.OpenApi);
+		VocabularyRegistry.Register(Vocabularies.OpenApi);
 	}
 
 	/// <summary>
