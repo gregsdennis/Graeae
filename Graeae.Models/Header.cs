@@ -113,7 +113,7 @@ public class Header : IRefTargetContainer
 		Explode = obj.MaybeBool("explode", "header");
 		AllowReserved = obj.MaybeBool("allowReserved", "header");
 		Schema = obj.MaybeDeserialize<JsonSchema>("schema");
-		Example = obj.TryGetPropertyValue("example", out var v) ? v ?? JsonNull.SignalNode : null;
+		Example = obj.TryGetPropertyValue("example", out var v) ? v : null;
 		Examples = obj.MaybeMap("examples", Models.Example.FromNode);
 		Content = obj.MaybeMap("content", MediaType.FromNode);
 		ExtensionData = ExtensionData.FromNode(obj);

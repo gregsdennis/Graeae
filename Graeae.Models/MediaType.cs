@@ -49,7 +49,7 @@ public class MediaType : IRefTargetContainer
 		var mediaType = new MediaType
 		{
 			Schema = obj.MaybeDeserialize<JsonSchema>("schema"),
-			Example = obj.TryGetPropertyValue("example", out var v) ? v ?? JsonNull.SignalNode : null,
+			Example = obj.TryGetPropertyValue("example", out var v) ? v : null,
 			Examples = obj.MaybeMap("examples", Models.Example.FromNode),
 			Encoding = obj.MaybeMap("encoding", Models.Encoding.FromNode),
 			ExtensionData = ExtensionData.FromNode(obj)

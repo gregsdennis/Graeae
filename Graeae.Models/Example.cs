@@ -71,7 +71,7 @@ public class Example : IRefTargetContainer
 	{
 		Summary = obj.MaybeString("summary", "example");
 		Description = obj.MaybeString("description", "example");
-		Value = obj.TryGetPropertyValue("value", out var v) ? v ?? JsonNull.SignalNode : null;
+		Value = obj.TryGetPropertyValue("value", out var v) ? v : null;
 		ExternalValue = obj.MaybeString("externalValue", "example");
 		ExtensionData = ExtensionData.FromNode(obj);
 	}
