@@ -44,7 +44,7 @@ public class Draft4TypeKeyword : IJsonSchemaKeyword
 	/// </param>
 	/// <param name="context">The <see cref="T:Json.Schema.EvaluationContext" />.</param>
 	/// <returns>A constraint object.</returns>
-	public KeywordConstraint GetConstraint(SchemaConstraint schemaConstraint, IReadOnlyList<KeywordConstraint> localConstraints, EvaluationContext context)
+	public KeywordConstraint GetConstraint(SchemaConstraint schemaConstraint, ReadOnlySpan<KeywordConstraint> localConstraints, EvaluationContext context)
 	{
 		return context.Options.EvaluateAs == Draft4Support.Draft4Version
 			? _draft4Support.GetConstraint(schemaConstraint, localConstraints, context)

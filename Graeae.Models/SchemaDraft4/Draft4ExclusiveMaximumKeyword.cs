@@ -58,13 +58,13 @@ public class Draft4ExclusiveMaximumKeyword : IJsonSchemaKeyword
 	/// </param>
 	/// <param name="context">The <see cref="T:Json.Schema.EvaluationContext" />.</param>
 	/// <returns>A constraint object.</returns>
-	public KeywordConstraint GetConstraint(SchemaConstraint schemaConstraint, IReadOnlyList<KeywordConstraint> localConstraints, EvaluationContext context)
+	public KeywordConstraint GetConstraint(SchemaConstraint schemaConstraint, ReadOnlySpan<KeywordConstraint> localConstraints, EvaluationContext context)
 	{
 		if (BoolValue.HasValue)
 		{
 			if (!BoolValue.Value) return KeywordConstraint.Skip;
 
-			var maximumConstraint = localConstraints.SingleOrDefault(x => x.Keyword == MaximumKeyword.Name);
+			var maximumConstraint = localConstraints.GetKeywordConstraint<MaximumKeyword>();
 			if (maximumConstraint == null) return KeywordConstraint.Skip;
 
 			var value = schemaConstraint.LocalSchema.GetMaximum()!.Value;
