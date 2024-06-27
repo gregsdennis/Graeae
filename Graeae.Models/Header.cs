@@ -141,7 +141,7 @@ public class Header : IRefTargetContainer
 			obj.MaybeAdd("explode", header.Explode);
 			obj.MaybeAdd("allowReserved", header.AllowReserved);
 			obj.MaybeSerialize("schema", header.Schema, options);
-			obj.MaybeAdd("example", header.Example.Copy());
+			obj.MaybeAdd("example", header.Example.DeepClone());
 			obj.MaybeAddMap("examples", header.Examples, Models.Example.ToNode);
 			obj.MaybeAddMap("content", header.Content, x => MediaType.ToNode(x, options));
 			obj.AddExtensions(header.ExtensionData);

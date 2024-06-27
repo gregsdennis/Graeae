@@ -187,7 +187,7 @@ internal static class SerializationExtensions
 
 		foreach (var (key, value) in extensionData)
 		{
-			obj.Add(key, value.Copy());
+			obj.Add(key, value.DeepClone());
 		}
 	}
 
