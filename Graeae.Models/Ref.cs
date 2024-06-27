@@ -133,7 +133,7 @@ public static class Ref
 
 	internal static JsonPointer ToPointer(this Span<string> segments)
 	{
-		return JsonPointer.Create(segments.ToArray().Select(x => (PointerSegment)x));
+		return JsonPointer.Create(segments.ToArray().Select(x => (PointerSegment)x).ToArray());
 	}
 
 	internal static async Task<bool> Resolve<T>(OpenApiDocument root, Uri targetUri, Func<JsonNode?, bool> import, Action<T> copy)

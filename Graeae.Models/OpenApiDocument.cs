@@ -224,7 +224,7 @@ public class OpenApiDocument : IBaseDocument
 	{
 		if (!_lookup.TryGetValue(pointer, out var val))
 		{
-			var keys = pointer.Segments.Select(x => x.Value).ToArray();
+			var keys = pointer.ToArray();
 
 			val = PerformLookup(keys) as T;
 			if (val != null)
