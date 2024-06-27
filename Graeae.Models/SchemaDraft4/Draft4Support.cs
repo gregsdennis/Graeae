@@ -28,8 +28,12 @@ public static class Draft4Support
 	/// <summary>
 	/// Defines the JSON Schema draft 4 meta-schema.
 	/// </summary>
-	public static readonly JsonSchema Draft4MetaSchema =
-		new JsonSchemaBuilder()
+	public static JsonSchema Draft4MetaSchema => _draft4MetaSchema.Value;
+	private static readonly Lazy<JsonSchema> _draft4MetaSchema = new Lazy<JsonSchema>(InitializeDraft4Schema);
+
+	private static JsonSchema InitializeDraft4Schema()
+	{
+		var draft4MetaSchema = new JsonSchemaBuilder()
 			.OasId(Draft4MetaSchemaUri)
 			.Schema(Draft4MetaSchemaUri)
 			.Description("Core schema meta-schema")
@@ -159,15 +163,15 @@ public static class Draft4Support
 				("exclusiveMaximum", new [] { "maximum" }),
 				("exclusiveMinimum", new [] { "minimum" })
 			)
-			.Default(new JsonObject());
+			.Default(new JsonObject())
+			.Build();
 
-	static Draft4Support()
-	{
-		Draft4MetaSchema.BaseUri = new Uri(Draft4MetaSchemaUri);
+		draft4MetaSchema.BaseUri = new Uri(Draft4MetaSchemaUri);
 		// This is a hack to set the schema.DeclaredVersion property.
 		// It allows draft 4 to be used as a meta-schema.
 		// It's a bit of a hidden feature of JsonSchema.Net.
-		Draft4MetaSchema.Evaluate(new JsonObject(), new EvaluationOptions { EvaluateAs = Draft4Version });
+		draft4MetaSchema.Evaluate(new JsonObject(), new EvaluationOptions { EvaluateAs = Draft4Version });
+		return draft4MetaSchema;
 	}
 
 	/// <summary>
