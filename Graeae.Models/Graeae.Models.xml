@@ -1691,7 +1691,7 @@
             </summary>
             <param name="value">The minimum value.</param>
         </member>
-        <member name="M:Graeae.Models.SchemaDraft4.Draft4ExclusiveMaximumKeyword.GetConstraint(Json.Schema.SchemaConstraint,System.Collections.Generic.IReadOnlyList{Json.Schema.KeywordConstraint},Json.Schema.EvaluationContext)">
+        <member name="M:Graeae.Models.SchemaDraft4.Draft4ExclusiveMaximumKeyword.GetConstraint(Json.Schema.SchemaConstraint,System.ReadOnlySpan{Json.Schema.KeywordConstraint},Json.Schema.EvaluationContext)">
             <summary>Builds a constraint object for a keyword.</summary>
             <param name="schemaConstraint">The <see cref="T:Json.Schema.SchemaConstraint" /> for the schema object that houses this keyword.</param>
             <param name="localConstraints">
@@ -1733,7 +1733,7 @@
             </summary>
             <param name="value">The minimum value.</param>
         </member>
-        <member name="M:Graeae.Models.SchemaDraft4.Draft4ExclusiveMinimumKeyword.GetConstraint(Json.Schema.SchemaConstraint,System.Collections.Generic.IReadOnlyList{Json.Schema.KeywordConstraint},Json.Schema.EvaluationContext)">
+        <member name="M:Graeae.Models.SchemaDraft4.Draft4ExclusiveMinimumKeyword.GetConstraint(Json.Schema.SchemaConstraint,System.ReadOnlySpan{Json.Schema.KeywordConstraint},Json.Schema.EvaluationContext)">
             <summary>Builds a constraint object for a keyword.</summary>
             <param name="schemaConstraint">The <see cref="T:Json.Schema.SchemaConstraint" /> for the schema object that houses this keyword.</param>
             <param name="localConstraints">
@@ -1764,7 +1764,7 @@
             </summary>
             <param name="id">The ID.</param>
         </member>
-        <member name="M:Graeae.Models.SchemaDraft4.Draft4IdKeyword.GetConstraint(Json.Schema.SchemaConstraint,System.Collections.Generic.IReadOnlyList{Json.Schema.KeywordConstraint},Json.Schema.EvaluationContext)">
+        <member name="M:Graeae.Models.SchemaDraft4.Draft4IdKeyword.GetConstraint(Json.Schema.SchemaConstraint,System.ReadOnlySpan{Json.Schema.KeywordConstraint},Json.Schema.EvaluationContext)">
             <summary>Builds a constraint object for a keyword.</summary>
             <param name="schemaConstraint">The <see cref="T:Json.Schema.SchemaConstraint" /> for the schema object that houses this keyword.</param>
             <param name="localConstraints">
@@ -1825,7 +1825,7 @@
             </summary>
             <param name="type">The instance type that is allowed.</param>
         </member>
-        <member name="M:Graeae.Models.SchemaDraft4.Draft4TypeKeyword.GetConstraint(Json.Schema.SchemaConstraint,System.Collections.Generic.IReadOnlyList{Json.Schema.KeywordConstraint},Json.Schema.EvaluationContext)">
+        <member name="M:Graeae.Models.SchemaDraft4.Draft4TypeKeyword.GetConstraint(Json.Schema.SchemaConstraint,System.ReadOnlySpan{Json.Schema.KeywordConstraint},Json.Schema.EvaluationContext)">
             <summary>Builds a constraint object for a keyword.</summary>
             <param name="schemaConstraint">The <see cref="T:Json.Schema.SchemaConstraint" /> for the schema object that houses this keyword.</param>
             <param name="localConstraints">
@@ -1909,7 +1909,7 @@
             </summary>
             <param name="value">Whether the `minimum` value should be considered exclusive.</param>
         </member>
-        <member name="M:Graeae.Models.SchemaDraft4.NullableKeyword.GetConstraint(Json.Schema.SchemaConstraint,System.Collections.Generic.IReadOnlyList{Json.Schema.KeywordConstraint},Json.Schema.EvaluationContext)">
+        <member name="M:Graeae.Models.SchemaDraft4.NullableKeyword.GetConstraint(Json.Schema.SchemaConstraint,System.ReadOnlySpan{Json.Schema.KeywordConstraint},Json.Schema.EvaluationContext)">
             <summary>Builds a constraint object for a keyword.</summary>
             <param name="schemaConstraint">The <see cref="T:Json.Schema.SchemaConstraint" /> for the schema object that houses this keyword.</param>
             <param name="localConstraints">

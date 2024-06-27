@@ -89,7 +89,9 @@ public class Draft4ExclusiveMaximumKeyword : IJsonSchemaKeyword
 		var number = evaluation.LocalInstance!.AsValue().GetNumber();
 
 		if (number >= limit)
-			evaluation.Results.Fail(Name, ErrorMessages.GetExclusiveMaximum(context.Options.Culture), ("received", number), ("limit", BoolValue));
+			evaluation.Results.Fail(Name, ErrorMessages.GetExclusiveMaximum(context.Options.Culture)
+				.ReplaceToken("received", number)
+				.ReplaceToken("limit", BoolValue));
 	}
 }
 
