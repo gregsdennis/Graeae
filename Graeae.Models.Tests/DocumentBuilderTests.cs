@@ -10,6 +10,7 @@ namespace Graeae.Models.Tests;
 // code is simple.
 public class DocumentBuilderTests
 {
+	[Test]
 	public void BuildDocument()
 	{
 		var doc = new OpenApiDocument("3.1.0", new("title", "1.0")
@@ -134,8 +135,10 @@ public class DocumentBuilderTests
 				}
 			}
 		};
+		Console.WriteLine(YamlSerializer.Serialize(doc));
 	}
 
+	[Test]
 	public void PetStoreExample()
 	{
 		var document = new OpenApiDocument("3.0.0",

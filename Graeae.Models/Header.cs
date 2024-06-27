@@ -113,7 +113,7 @@ public class Header : IRefTargetContainer
 		Explode = obj.MaybeBool("explode", "header");
 		AllowReserved = obj.MaybeBool("allowReserved", "header");
 		Schema = obj.MaybeDeserialize<JsonSchema>("schema");
-		Example = obj.TryGetPropertyValue("example", out var v) ? v ?? JsonNull.SignalNode : null;
+		Example = obj.TryGetPropertyValue("example", out var v) ? v : null;
 		Examples = obj.MaybeMap("examples", Models.Example.FromNode);
 		Content = obj.MaybeMap("content", MediaType.FromNode);
 		ExtensionData = ExtensionData.FromNode(obj);
@@ -141,7 +141,7 @@ public class Header : IRefTargetContainer
 			obj.MaybeAdd("explode", header.Explode);
 			obj.MaybeAdd("allowReserved", header.AllowReserved);
 			obj.MaybeSerialize("schema", header.Schema, options);
-			obj.MaybeAdd("example", header.Example.Copy());
+			obj.MaybeAdd("example", header.Example?.DeepClone());
 			obj.MaybeAddMap("examples", header.Examples, Models.Example.ToNode);
 			obj.MaybeAddMap("content", header.Content, x => MediaType.ToNode(x, options));
 			obj.AddExtensions(header.ExtensionData);
@@ -150,7 +150,7 @@ public class Header : IRefTargetContainer
 		return obj;
 	}
 
-	object? IRefTargetContainer.Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(ReadOnlySpan<string> keys)
 	{
 		if (keys.Length == 0) return this;
 

@@ -71,7 +71,7 @@ public class Example : IRefTargetContainer
 	{
 		Summary = obj.MaybeString("summary", "example");
 		Description = obj.MaybeString("description", "example");
-		Value = obj.TryGetPropertyValue("value", out var v) ? v ?? JsonNull.SignalNode : null;
+		Value = obj.TryGetPropertyValue("value", out var v) ? v : null;
 		ExternalValue = obj.MaybeString("externalValue", "example");
 		ExtensionData = ExtensionData.FromNode(obj);
 	}
@@ -92,7 +92,7 @@ public class Example : IRefTargetContainer
 		{
 			obj.MaybeAdd("summary", example.Summary);
 			obj.MaybeAdd("description", example.Description);
-			obj.MaybeAdd("value", example.Value.Copy());
+			obj.MaybeAdd("value", example.Value?.DeepClone());
 			obj.MaybeAdd("externalValue", example.ExternalValue);
 			obj.AddExtensions(example.ExtensionData);
 		}
@@ -100,7 +100,7 @@ public class Example : IRefTargetContainer
 		return obj;
 	}
 
-	object? IRefTargetContainer.Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(ReadOnlySpan<string> keys)
 	{
 		if (keys.Length == 0) return this;
 

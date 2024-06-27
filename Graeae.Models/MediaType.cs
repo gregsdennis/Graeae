@@ -49,7 +49,7 @@ public class MediaType : IRefTargetContainer
 		var mediaType = new MediaType
 		{
 			Schema = obj.MaybeDeserialize<JsonSchema>("schema"),
-			Example = obj.TryGetPropertyValue("example", out var v) ? v ?? JsonNull.SignalNode : null,
+			Example = obj.TryGetPropertyValue("example", out var v) ? v : null,
 			Examples = obj.MaybeMap("examples", Models.Example.FromNode),
 			Encoding = obj.MaybeMap("encoding", Models.Encoding.FromNode),
 			ExtensionData = ExtensionData.FromNode(obj)
@@ -67,7 +67,7 @@ public class MediaType : IRefTargetContainer
 		var obj = new JsonObject();
 
 		obj.MaybeSerialize("schema", mediaType.Schema, options);
-		obj.MaybeAdd("example", mediaType.Example.Copy());
+		obj.MaybeAdd("example", mediaType.Example?.DeepClone());
 		obj.MaybeAddMap("examples", mediaType.Examples, Models.Example.ToNode);
 		obj.MaybeAddMap("encoding", mediaType.Encoding, x => Models.Encoding.ToNode(x, options));
 		obj.AddExtensions(mediaType.ExtensionData);
@@ -75,7 +75,7 @@ public class MediaType : IRefTargetContainer
 		return obj;
 	}
 
-	object? IRefTargetContainer.Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(ReadOnlySpan<string> keys)
 	{
 		if (keys.Length == 0) return this;
 

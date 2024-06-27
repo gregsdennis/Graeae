@@ -116,7 +116,7 @@ public class ComponentCollection : IRefTargetContainer
 		return obj;
 	}
 
-	object? IRefTargetContainer.Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(ReadOnlySpan<string> keys)
 	{
 		if (keys.Length == 0) return this;
 

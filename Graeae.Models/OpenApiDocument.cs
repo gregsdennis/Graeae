@@ -94,7 +94,7 @@ public class OpenApiDocument : IBaseDocument
 		Json.Schema.Formats.Register(Formats.Int64);
 		Json.Schema.Formats.Register(Formats.Password);
 
-		VocabularyRegistry.Global.Register(Vocabularies.OpenApi);
+		VocabularyRegistry.Register(Vocabularies.OpenApi);
 	}
 
 	/// <summary>
@@ -224,7 +224,7 @@ public class OpenApiDocument : IBaseDocument
 	{
 		if (!_lookup.TryGetValue(pointer, out var val))
 		{
-			var keys = pointer.Segments.Select(x => x.Value).ToArray();
+			var keys = pointer.ToArray();
 
 			val = PerformLookup(keys) as T;
 			if (val != null)
@@ -237,7 +237,7 @@ public class OpenApiDocument : IBaseDocument
 		return val as T;
 	}
 
-	private object? PerformLookup(Span<string> keys)
+	private object? PerformLookup(ReadOnlySpan<string> keys)
 	{
 		if (keys.Length == 0) return this;
 

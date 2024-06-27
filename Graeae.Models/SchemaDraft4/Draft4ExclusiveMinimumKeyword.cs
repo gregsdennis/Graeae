@@ -57,19 +57,19 @@ public class Draft4ExclusiveMinimumKeyword : IJsonSchemaKeyword
 	/// </param>
 	/// <param name="context">The <see cref="T:Json.Schema.EvaluationContext" />.</param>
 	/// <returns>A constraint object.</returns>
-	public KeywordConstraint GetConstraint(SchemaConstraint schemaConstraint, IReadOnlyList<KeywordConstraint> localConstraints, EvaluationContext context)
+	public KeywordConstraint GetConstraint(SchemaConstraint schemaConstraint, ReadOnlySpan<KeywordConstraint> localConstraints, EvaluationContext context)
 	{
 		if (BoolValue.HasValue)
 		{
 			if (!BoolValue.Value) return KeywordConstraint.Skip;
 
-			var minimumConstraint = localConstraints.SingleOrDefault(x => x.Keyword == MinimumKeyword.Name);
+			var minimumConstraint = localConstraints.GetKeywordConstraint<MinimumKeyword>();
 			if (minimumConstraint == null) return KeywordConstraint.Skip;
 
 			var value = schemaConstraint.LocalSchema.GetMinimum()!.Value;
 			return new KeywordConstraint(Name, (e, c) => Evaluator(e, c, value))
 			{
-				SiblingDependencies = new[] { minimumConstraint }
+				SiblingDependencies = [minimumConstraint]
 			};
 		}
 
@@ -85,10 +85,11 @@ public class Draft4ExclusiveMinimumKeyword : IJsonSchemaKeyword
 			return;
 		}
 
-		var number = evaluation.LocalInstance!.AsValue().GetNumber();
-
+		var number = evaluation.LocalInstance!.AsValue().GetNumber()!.Value;
 		if (number >= limit)
-			evaluation.Results.Fail(Name, ErrorMessages.GetExclusiveMinimum(context.Options.Culture), ("received", number), ("limit", BoolValue));
+			evaluation.Results.Fail(Name, ErrorMessages.GetExclusiveMinimum(context.Options.Culture)
+				.ReplaceToken("received", number)
+				.ReplaceToken("limit", BoolValue!));
 	}
 }
 
