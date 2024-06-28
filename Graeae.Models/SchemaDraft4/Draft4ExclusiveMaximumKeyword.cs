@@ -88,12 +88,12 @@ public class Draft4ExclusiveMaximumKeyword : IJsonSchemaKeyword
 			return;
 		}
 
-		var number = evaluation.LocalInstance!.AsValue().GetNumber();
+		var number = evaluation.LocalInstance!.AsValue().GetNumber()!.Value;
 
 		if (number >= limit)
 			evaluation.Results.Fail(Name, ErrorMessages.GetExclusiveMaximum(context.Options.Culture)
 				.ReplaceToken("received", number)
-				.ReplaceToken("limit", BoolValue));
+				.ReplaceToken("limit", BoolValue!.Value));
 	}
 }
 
