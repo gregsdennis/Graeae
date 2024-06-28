@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using Json.More;
@@ -25,15 +26,21 @@ public class SpecificationExamples
 
 		try
 		{
-			var document = YamlSerializer.Deserialize<OpenApiDocument>(yaml);
+			var document = YamlSerializer.Deserialize<OpenApiDocument>(yaml, TestEnvironment.SerializerOptions);
 
-			var returnToYaml = YamlSerializer.Serialize(document);
+			var returnToYaml = YamlSerializer.Serialize(document, TestEnvironment.SerializerOptions);
 
 			Console.WriteLine(returnToYaml);
 		}
 		catch (Exception e)
 		{
-			Console.WriteLine($"{JsonSerializer.Serialize(e.Data)}");
+			var data = new Dictionary<string, object?>();
+			foreach (DictionaryEntry entry in e.Data)
+			{
+				data[entry.Key.ToString()!] = entry.Value;
+			}
+
+			Console.WriteLine($"{JsonSerializer.Serialize(data, TestEnvironment.TestOutputSerializerOptions)}");
 			throw;
 		}
 	}
@@ -61,19 +68,22 @@ public class SpecificationExamples
 			var yaml = yamlStream.Documents.First();
 			var json = yaml.ToJsonNode();
 			Console.WriteLine(json);
-			var document = json.Deserialize<OpenApiDocument>();
+			var document = json.Deserialize<OpenApiDocument>(TestEnvironment.SerializerOptions);
 
-			var returnToJson = JsonSerializer.SerializeToNode(document, new JsonSerializerOptions
-			{
-				Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-			})!;
+			var returnToJson = JsonSerializer.SerializeToNode(document, TestEnvironment.TestOutputSerializerOptions)!;
 
 			Console.WriteLine(returnToJson);
 			Assert.That(() => json.IsEquivalentTo(returnToJson));
 		}
 		catch (Exception e)
 		{
-			Console.WriteLine($"{JsonSerializer.Serialize(e.Data)}");
+			var data = new Dictionary<string, object?>();
+			foreach (DictionaryEntry entry in e.Data)
+			{
+				data[entry.Key.ToString()!] = entry.Value;
+			}
+
+			Console.WriteLine($"{JsonSerializer.Serialize(data, TestEnvironment.TestOutputSerializerOptions)}");
 			throw;
 		}
 	}

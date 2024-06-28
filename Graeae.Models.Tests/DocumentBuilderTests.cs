@@ -20,7 +20,7 @@ public class DocumentBuilderTests
 				Email = "me@you.com",
 				Name = "me you",
 				Url = new Uri("https://you.com"),
-				ExtensionData = new() { ["key"] = new JsonArray { 1, 2, 3 } }
+				ExtensionData = new() { ["key"] = new JsonArray(1, 2, 3) }
 			},
 			Description = "this is an api",
 			License = new("generic license")
@@ -135,7 +135,7 @@ public class DocumentBuilderTests
 				}
 			}
 		};
-		Console.WriteLine(YamlSerializer.Serialize(doc));
+		Console.WriteLine(YamlSerializer.Serialize(doc, TestEnvironment.TestOutputSerializerOptions));
 	}
 
 	[Test]
@@ -302,6 +302,6 @@ public class DocumentBuilderTests
 			}
 		};
 
-		Console.WriteLine(YamlSerializer.Serialize(document));
+		Console.WriteLine(YamlSerializer.Serialize(document, TestEnvironment.TestOutputSerializerOptions));
 	}
 }

@@ -80,7 +80,7 @@ public class Operation : IRefTargetContainer
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	internal static Operation FromNode(JsonNode? node)
+	internal static Operation FromNode(JsonNode? node, JsonSerializerOptions? options)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -92,10 +92,10 @@ public class Operation : IRefTargetContainer
 			Description = obj.MaybeString("description", "operation"),
 			ExternalDocs = obj.Maybe("externalDocs", ExternalDocumentation.FromNode),
 			OperationId = obj.MaybeString("operationId", "operation"),
-			Parameters = obj.MaybeArray("parameters", Parameter.FromNode),
-			RequestBody = obj.Maybe("requestBody", RequestBody.FromNode),
-			Responses = obj.Maybe("responses", ResponseCollection.FromNode),
-			Callbacks = obj.MaybeMap("callbacks", Callback.FromNode),
+			Parameters = obj.MaybeArray("parameters", x => Parameter.FromNode(x, options)),
+			RequestBody = obj.Maybe("requestBody", x => RequestBody.FromNode(x, options)),
+			Responses = obj.Maybe("responses", x => ResponseCollection.FromNode(x, options)),
+			Callbacks = obj.MaybeMap("callbacks", x => Callback.FromNode(x, options)),
 			Deprecated = obj.MaybeBool("deprecated", "operation"),
 			Security = obj.MaybeArray("security", SecurityRequirement.FromNode),
 			Servers = obj.MaybeArray("servers", Server.FromNode),
@@ -197,7 +197,7 @@ internal class OperationJsonConverter : JsonConverter<Operation>
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");
 
-		return Operation.FromNode(obj);
+		return Operation.FromNode(obj, options);
 	}
 
 	public override void Write(Utf8JsonWriter writer, Operation value, JsonSerializerOptions options)

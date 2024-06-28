@@ -113,7 +113,7 @@ public class OpenApiDocument : IBaseDocument
 		return Find<JsonSchema>(pointer);
 	}
 
-	internal static OpenApiDocument FromNode(JsonNode? node)
+	internal static OpenApiDocument FromNode(JsonNode? node, JsonSerializerOptions? options)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -128,9 +128,9 @@ public class OpenApiDocument : IBaseDocument
 		{
 			JsonSchemaDialect = obj.MaybeUri("jsonSchemaDialect", "open api document"),
 			Servers = obj.MaybeArray("servers", Server.FromNode),
-			Paths = obj.Maybe("paths", PathCollection.FromNode),
-			Webhooks = obj.MaybeMap("webhooks", PathItem.FromNode),
-			Components = obj.Maybe("components", ComponentCollection.FromNode),
+			Paths = obj.Maybe("paths", x => PathCollection.FromNode(x, options)),
+			Webhooks = obj.MaybeMap("webhooks", x=> PathItem.FromNode(x, options)),
+			Components = obj.Maybe("components", x=> ComponentCollection.FromNode(x, options)),
 			Security = obj.MaybeArray("security", SecurityRequirement.FromNode),
 			Tags = obj.MaybeArray("tags", Tag.FromNode),
 			ExternalDocs = obj.Maybe("externalDocs", ExternalDocumentation.FromNode),
@@ -168,9 +168,10 @@ public class OpenApiDocument : IBaseDocument
 	/// <summary>
 	/// Initializes the document model.
 	/// </summary>
-	/// <param name="schemaRegistry"></param>
+	/// <param name="schemaRegistry">(optional) A schema registry.</param>
+	/// <param name="options">(optional) Serializer options</param>
 	/// <exception cref="RefResolutionException">Thrown if a reference cannot be resolved.</exception>
-	public async Task Initialize(SchemaRegistry? schemaRegistry = null)
+	public async Task Initialize(SchemaRegistry? schemaRegistry = null, JsonSerializerOptions? options = null)
 	{
 		schemaRegistry ??= SchemaRegistry.Global;
 
@@ -180,7 +181,7 @@ public class OpenApiDocument : IBaseDocument
 		RegisterSchemas(schemaRegistry);
 
 		// find and attempt to resolve all reference objects
-		await TryResolveRefs();
+		await TryResolveRefs(options);
 	}
 
 	private void RegisterSchemas(SchemaRegistry schemaRegistry)
@@ -202,7 +203,7 @@ public class OpenApiDocument : IBaseDocument
 		}
 	}
 
-	private async Task TryResolveRefs()
+	private async Task TryResolveRefs(JsonSerializerOptions? options)
 	{
 		var allRefs = GeneralHelpers.Collect(
 			Paths?.FindRefs(),
@@ -210,7 +211,7 @@ public class OpenApiDocument : IBaseDocument
 			Components?.FindRefs()
 		);
 
-		await Task.WhenAll(allRefs.Select(x => x.Resolve(this)));
+		await Task.WhenAll(allRefs.Select(x => x.Resolve(this, options)));
 	}
 
 	/// <summary>
@@ -280,14 +281,14 @@ public class OpenApiDocument : IBaseDocument
 	}
 }
 
-internal class OpenApiDocumentJsonConverter : JsonConverter<OpenApiDocument>
+public class OpenApiDocumentJsonConverter : JsonConverter<OpenApiDocument>
 {
 	public override OpenApiDocument Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");
 
-		return OpenApiDocument.FromNode(obj);
+		return OpenApiDocument.FromNode(obj, options);
 	}
 
 	public override void Write(Utf8JsonWriter writer, OpenApiDocument value, JsonSerializerOptions options)

@@ -53,20 +53,18 @@ public class NullableKeyword : IJsonSchemaKeyword
 	}
 }
 
-internal class NullableKeywordJsonConverter : JsonConverter<NullableKeyword>
+public class NullableKeywordJsonConverter : JsonConverter<NullableKeyword>
 {
 	public override NullableKeyword Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
 		if (reader.TokenType is not (JsonTokenType.True or JsonTokenType.False))
-		{
 			throw new JsonException("Expected boolean");
-		}
 
 		return new NullableKeyword(reader.GetBoolean());
 	}
 
 	public override void Write(Utf8JsonWriter writer, NullableKeyword value, JsonSerializerOptions options)
 	{
-		writer.WriteBoolean(NullableKeyword.Name, value.Value);
+		writer.WriteBooleanValue(value.Value);
 	}
 }

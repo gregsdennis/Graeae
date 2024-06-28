@@ -6,7 +6,7 @@ namespace Graeae.Models;
 
 internal static class SerializationExtensions
 {
-	public static T? MaybeDeserialize<T>(this JsonObject obj, string propertyName, JsonSerializerOptions? options = null)
+	public static T? MaybeDeserialize<T>(this JsonObject obj, string propertyName, JsonSerializerOptions? options)
 		where T : class
 	{
 		if (!obj.TryGetPropertyValue(propertyName, out var value)) return null;
@@ -160,18 +160,12 @@ internal static class SerializationExtensions
 		return e;
 	}
 
-	public static T? MaybeEnum<T>(this JsonObject obj, string propertyName, string objectType)
+	public static T? MaybeEnum<T>(this JsonObject obj, string propertyName, JsonSerializerOptions? options)
 		where T : struct, Enum
 	{
 		if (!obj.TryGetPropertyValue(propertyName, out var n)) return null;			
-		//string? s = null;
-		//if (n is not JsonValue v || !v.TryGetValue(out s) || !Enum.TryParse(s, true, out T e))
-		//	throw new JsonException($"`{propertyName}` in {objectType} object must be one of the predefined string values")
-		//	{
-		//		Data = { ["Value"] = s }
-		//	};
 
-		return n.Deserialize<T>();
+		return n.Deserialize<T>(options);
 	}
 
 	public static void MaybeAdd(this JsonObject obj, string propertyName, JsonNode? value)
@@ -213,12 +207,12 @@ internal static class SerializationExtensions
 		obj.Add(propertyName, newObj);
 	}
 
-	public static void MaybeAddEnum<T>(this JsonObject obj, string propertyName, T? value)
+	public static void MaybeAddEnum<T>(this JsonObject obj, string propertyName, T? value, JsonSerializerOptions? options)
 		where T : struct, Enum
 	{
 		if (value == null) return;
 
-		obj.Add(propertyName, JsonSerializer.SerializeToNode(value)!.GetValue<string>());
+		obj.Add(propertyName, JsonSerializer.SerializeToNode(value, options)!.GetValue<string>());
 	}
 
 	public static void MaybeSerialize<T>(this JsonObject obj, string propertyName, T? value, JsonSerializerOptions? options)

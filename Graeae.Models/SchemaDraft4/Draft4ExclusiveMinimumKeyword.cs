@@ -93,7 +93,7 @@ public class Draft4ExclusiveMinimumKeyword : IJsonSchemaKeyword
 	}
 }
 
-internal class Draft4ExclusiveMinimumKeywordJsonConverter : JsonConverter<Draft4ExclusiveMinimumKeyword>
+public class Draft4ExclusiveMinimumKeywordJsonConverter : WeaklyTypedJsonConverter<Draft4ExclusiveMinimumKeyword>
 {
 	public override Draft4ExclusiveMinimumKeyword Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
@@ -108,8 +108,8 @@ internal class Draft4ExclusiveMinimumKeywordJsonConverter : JsonConverter<Draft4
 	public override void Write(Utf8JsonWriter writer, Draft4ExclusiveMinimumKeyword value, JsonSerializerOptions options)
 	{
 		if (value.BoolValue.HasValue)
-			writer.WriteBoolean(Draft4ExclusiveMinimumKeyword.Name, value.BoolValue.Value);
+			writer.WriteBooleanValue(value.BoolValue.Value);
 		else
-			writer.WriteNumber(Draft4ExclusiveMinimumKeyword.Name, value.NumberValue!.Value);
+			writer.WriteNumberValue(value.NumberValue!.Value);
 	}
 }

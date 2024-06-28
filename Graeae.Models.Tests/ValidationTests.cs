@@ -1,4 +1,3 @@
-using System.Text.Encodings.Web;
 using System.Text.Json;
 using Json.Schema;
 using Yaml2JsonNode;
@@ -21,7 +20,7 @@ public class ValidationTests
 		var yaml = File.ReadAllText(fullFileName);
 		var instance = YamlSerializer.Parse(yaml).First().ToJsonNode();
 		var schemaFileName = GetFile("openapi-schema-3.0.json");
-		var schema = JsonSchema.FromFile(schemaFileName);
+		var schema = JsonSchema.FromFile(schemaFileName, TestEnvironment.SerializerOptions);
 
 		var results = schema.Evaluate(instance, new EvaluationOptions
 		{
@@ -29,11 +28,7 @@ public class ValidationTests
 			EvaluateAs = SchemaDraft4.Draft4Support.Draft4Version
 		});
 
-		Console.WriteLine(JsonSerializer.Serialize(results, new JsonSerializerOptions
-		{
-			WriteIndented = true,
-			Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-		}));
+		Console.WriteLine(JsonSerializer.Serialize(results, TestEnvironment.TestOutputSerializerOptions));
 
 		Assert.IsTrue(results.IsValid);
 	}
@@ -47,18 +42,14 @@ public class ValidationTests
 		var yaml = File.ReadAllText(fullFileName);
 		var instance = YamlSerializer.Parse(yaml).First().ToJsonNode();
 		var schemaFileName = GetFile("openapi-schema-3.1.json");
-		var schema = JsonSchema.FromFile(schemaFileName);
+		var schema = JsonSchema.FromFile(schemaFileName, TestEnvironment.SerializerOptions);
 
 		var results = schema.Evaluate(instance, new EvaluationOptions
 		{
 			OutputFormat = OutputFormat.List
 		});
 
-		Console.WriteLine(JsonSerializer.Serialize(results, new JsonSerializerOptions
-		{
-			WriteIndented = true,
-			Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-		}));
+		Console.WriteLine(JsonSerializer.Serialize(results, TestEnvironment.TestOutputSerializerOptions));
 
 		Assert.IsTrue(results.IsValid);
 	}

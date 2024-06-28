@@ -94,7 +94,7 @@ public class Draft4ExclusiveMaximumKeyword : IJsonSchemaKeyword
 	}
 }
 
-internal class Draft4ExclusiveMaximumKeywordJsonConverter : JsonConverter<Draft4ExclusiveMaximumKeyword>
+public class Draft4ExclusiveMaximumKeywordJsonConverter : WeaklyTypedJsonConverter<Draft4ExclusiveMaximumKeyword>
 {
 	public override Draft4ExclusiveMaximumKeyword Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
@@ -109,12 +109,8 @@ internal class Draft4ExclusiveMaximumKeywordJsonConverter : JsonConverter<Draft4
 	public override void Write(Utf8JsonWriter writer, Draft4ExclusiveMaximumKeyword value, JsonSerializerOptions options)
 	{
 		if (value.BoolValue.HasValue)
-		{
-			writer.WriteBoolean(Draft4ExclusiveMaximumKeyword.Name, value.BoolValue.Value);
-		}
+			writer.WriteBooleanValue(value.BoolValue.Value);
 		else
-		{
-			writer.WriteNumber(Draft4ExclusiveMaximumKeyword.Name, value.NumberValue!.Value);
-		}
+			writer.WriteNumberValue(value.NumberValue!.Value);
 	}
 }

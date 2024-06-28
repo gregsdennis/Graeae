@@ -80,7 +80,7 @@ public class PathItem : IRefTargetContainer
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	internal static PathItem FromNode(JsonNode? node)
+	internal static PathItem FromNode(JsonNode? node, JsonSerializerOptions? options)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -96,34 +96,34 @@ public class PathItem : IRefTargetContainer
 
 			// PathItem is different from the other $ref-able objects in that the $ref is
 			// integrated and the $ref'd values can be overridden.
-			item.Import(obj);
+			item.Import(obj, options);
 
 			obj.ValidateReferenceKeys();
 		}
 		else
 		{
 			item = new PathItem();
-			item.Import(obj);
+			item.Import(obj, options);
 
 			obj.ValidateNoExtraKeys(KnownKeys, item.ExtensionData?.Keys);
 		}
 		return item;
 	}
 
-	private protected void Import(JsonObject obj)
+	private protected void Import(JsonObject obj, JsonSerializerOptions? options)
 	{
 		Summary = obj.MaybeString("summary", "pathItem");
 		Description = obj.MaybeString("description", "pathItem");
-		Get = obj.TryGetPropertyValue("get", out var get) ? Operation.FromNode(get) : null;
-		Put = obj.TryGetPropertyValue("put", out var put) ? Operation.FromNode(put) : null;
-		Post = obj.TryGetPropertyValue("post", out var post) ? Operation.FromNode(post) : null;
-		Delete = obj.TryGetPropertyValue("delete", out var delete) ? Operation.FromNode(delete) : null;
-		Options = obj.TryGetPropertyValue("options", out var option) ? Operation.FromNode(option) : null;
-		Head = obj.TryGetPropertyValue("head", out var head) ? Operation.FromNode(head) : null;
-		Patch = obj.TryGetPropertyValue("patch", out var patch) ? Operation.FromNode(patch) : null;
-		Trace = obj.TryGetPropertyValue("trace", out var trace) ? Operation.FromNode(trace) : null;
+		Get = obj.TryGetPropertyValue("get", out var get) ? Operation.FromNode(get, options) : null;
+		Put = obj.TryGetPropertyValue("put", out var put) ? Operation.FromNode(put, options) : null;
+		Post = obj.TryGetPropertyValue("post", out var post) ? Operation.FromNode(post, options) : null;
+		Delete = obj.TryGetPropertyValue("delete", out var delete) ? Operation.FromNode(delete, options) : null;
+		Options = obj.TryGetPropertyValue("options", out var option) ? Operation.FromNode(option, options) : null;
+		Head = obj.TryGetPropertyValue("head", out var head) ? Operation.FromNode(head, options) : null;
+		Patch = obj.TryGetPropertyValue("patch", out var patch) ? Operation.FromNode(patch, options) : null;
+		Trace = obj.TryGetPropertyValue("trace", out var trace) ? Operation.FromNode(trace, options) : null;
 		Servers = obj.MaybeArray("servers", Server.FromNode);
-		Parameters = obj.MaybeArray("parameters", Parameter.FromNode);
+		Parameters = obj.MaybeArray("parameters", x => Parameter.FromNode(x, options));
 		ExtensionData = ExtensionData.FromNode(obj);
 	}
 
@@ -292,13 +292,13 @@ public class PathItemRef : PathItem, IComponentRef
 		Ref = new Uri(reference ?? throw new ArgumentNullException(nameof(reference)), UriKind.RelativeOrAbsolute);
 	}
 
-	async Task IComponentRef.Resolve(OpenApiDocument root)
+	async Task IComponentRef.Resolve(OpenApiDocument root, JsonSerializerOptions? options)
 	{
 		bool import(JsonNode? node)
 		{
 			if (node is not JsonObject obj) return false;
 
-			Import(obj);
+			Import(obj, options);
 			return true;
 		}
 
@@ -332,7 +332,7 @@ internal class PathItemJsonConverter : JsonConverter<PathItem>
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");
 
-		return PathItem.FromNode(obj);
+		return PathItem.FromNode(obj, options);
 	}
 
 	public override void Write(Utf8JsonWriter writer, PathItem value, JsonSerializerOptions options)

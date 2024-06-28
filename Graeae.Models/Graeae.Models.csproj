@@ -3,9 +3,10 @@
   <PropertyGroup>
     <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <PackageId>Graeae.Models</PackageId>
-    <LangVersion>latest</LangVersion>
+    <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">true</IsAotCompatible>
 
     <Authors>Greg Dennis</Authors>
     <Description>Models for OpenAPI v3.x built on System.Text.Json and JsonSchema.Net</Description>
@@ -45,7 +46,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="JsonSchema.Net" Version="7.1.0" />
+    <PackageReference Include="JsonSchema.Net" Version="7.1.1" />
     <PackageReference Include="JsonSchema.Net.OpenApi" Version="3.1.0" />
     <PackageReference Include="Yaml2JsonNode" Version="2.1.0" />
   </ItemGroup>

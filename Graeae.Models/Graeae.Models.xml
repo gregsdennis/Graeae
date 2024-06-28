@@ -343,6 +343,110 @@
             Validates that a string is a password.
             </summary>
         </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.OpenApiDocument">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.ParameterLocation">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.NullableParameterLocation">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.ParameterStyle">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.NullableParameterStyle">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.Draft4ExclusiveMaximumKeyword">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.Draft4ExclusiveMinimumKeyword">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.Draft4IdKeyword">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.Draft4TypeKeyword">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.NullableKeyword">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.SecuritySchemeLocation">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.NullableSecuritySchemeLocation">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.EvaluationResults">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.JsonSchema">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.SchemaValueType">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.JsonNode">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.JsonObject">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.Default">
+            <summary>
+            The default <see cref="T:System.Text.Json.Serialization.JsonSerializerContext"/> associated with a default <see cref="T:System.Text.Json.JsonSerializerOptions"/> instance.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.GeneratedSerializerOptions">
+            <summary>
+            The source-generated options associated with this context.
+            </summary>
+        </member>
+        <member name="M:Graeae.Models.GraeaeSerializerContext.#ctor">
+            <inheritdoc/>
+        </member>
+        <member name="M:Graeae.Models.GraeaeSerializerContext.#ctor(System.Text.Json.JsonSerializerOptions)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Graeae.Models.GraeaeSerializerContext.GetTypeInfo(System.Type)">
+            <inheritdoc/>
+        </member>
         <member name="T:Graeae.Models.Header">
             <summary>
             Models a header.
@@ -470,11 +574,12 @@
             Gets whether the reference has been resolved.
             </summary>
         </member>
-        <member name="M:Graeae.Models.IComponentRef.Resolve(Graeae.Models.OpenApiDocument)">
+        <member name="M:Graeae.Models.IComponentRef.Resolve(Graeae.Models.OpenApiDocument,System.Text.Json.JsonSerializerOptions)">
             <summary>
             Resolves the reference.
             </summary>
             <param name="root">The document root.</param>
+            <param name="options">Serializer options</param>
             <returns>A task.</returns>
         </member>
         <member name="T:Graeae.Models.LicenseInfo">
@@ -750,11 +855,12 @@
             <param name="openApi">The OpenAPI version</param>
             <param name="info">The API information</param>
         </member>
-        <member name="M:Graeae.Models.OpenApiDocument.Initialize(Json.Schema.SchemaRegistry)">
+        <member name="M:Graeae.Models.OpenApiDocument.Initialize(Json.Schema.SchemaRegistry,System.Text.Json.JsonSerializerOptions)">
             <summary>
             Initializes the document model.
             </summary>
-            <param name="schemaRegistry"></param>
+            <param name="schemaRegistry">(optional) A schema registry.</param>
+            <param name="options">(optional) Serializer options</param>
             <exception cref="T:Graeae.Models.RefResolutionException">Thrown if a reference cannot be resolved.</exception>
         </member>
         <member name="M:Graeae.Models.OpenApiDocument.Find``1(Json.Pointer.JsonPointer)">

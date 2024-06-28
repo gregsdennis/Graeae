@@ -180,7 +180,7 @@ public static class Draft4Support
 		// This is a hack to set the schema.DeclaredVersion property.
 		// It allows draft 4 to be used as a meta-schema.
 		// It's a bit of a hidden feature of JsonSchema.Net.
-		//Draft4MetaSchema.Evaluate(new JsonObject(), new EvaluationOptions { EvaluateAs = Draft4Version });
+		SchemaRegistry.RegisterNewSpecVersion(Draft4MetaSchema.BaseUri, Draft4Version);
 
 		SchemaRegistry.Global.Register(Draft4MetaSchema);
 	}

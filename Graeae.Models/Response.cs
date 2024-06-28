@@ -52,7 +52,7 @@ public class Response : IRefTargetContainer
 	private protected Response(){}
 #pragma warning restore CS8618
 
-	internal static Response FromNode(JsonNode? node)
+	internal static Response FromNode(JsonNode? node, JsonSerializerOptions? options)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -71,17 +71,17 @@ public class Response : IRefTargetContainer
 		else
 		{
 			response = new Response(obj.ExpectString("description", "response"));
-			response.Import(obj);
+			response.Import(obj, options);
 
 			obj.ValidateNoExtraKeys(KnownKeys, response.ExtensionData?.Keys);
 		}
 		return response;
 	}
 
-	private protected void Import(JsonObject obj)
+	private protected void Import(JsonObject obj, JsonSerializerOptions? options)
 	{
-		Headers = obj.MaybeMap("headers", Header.FromNode);
-		Content = obj.MaybeMap("content", MediaType.FromNode);
+		Headers = obj.MaybeMap("headers", x => Header.FromNode(x, options));
+		Content = obj.MaybeMap("content", x => MediaType.FromNode(x, options));
 		Links = obj.MaybeMap("links", Link.FromNode);
 		ExtensionData = ExtensionData.FromNode(obj);
 	}
@@ -209,14 +209,14 @@ public class ResponseRef : Response, IComponentRef
 		Ref = new Uri(reference ?? throw new ArgumentNullException(nameof(reference)), UriKind.RelativeOrAbsolute);
 	}
 
-	async Task IComponentRef.Resolve(OpenApiDocument root)
+	async Task IComponentRef.Resolve(OpenApiDocument root, JsonSerializerOptions? options)
 	{
 		bool import(JsonNode? node)
 		{
 			if (node is not JsonObject obj) return false;
 
 			base.Description = obj.ExpectString("description", "response");
-			Import(obj);
+			Import(obj, options);
 			return true;
 		}
 
@@ -240,7 +240,7 @@ internal class ResponseJsonConverter : JsonConverter<Response>
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");
 
-		return Response.FromNode(obj);
+		return Response.FromNode(obj, options);
 	}
 
 	public override void Write(Utf8JsonWriter writer, Response value, JsonSerializerOptions options)

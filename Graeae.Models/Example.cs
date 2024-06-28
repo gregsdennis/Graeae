@@ -164,7 +164,7 @@ public class ExampleRef : Example, IComponentRef
 		Ref = new Uri(reference ?? throw new ArgumentNullException(nameof(reference)), UriKind.RelativeOrAbsolute);
 	}
 
-	async Task IComponentRef.Resolve(OpenApiDocument root)
+	async Task IComponentRef.Resolve(OpenApiDocument root, JsonSerializerOptions? options)
 	{
 		bool import(JsonNode? node)
 		{

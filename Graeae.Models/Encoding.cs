@@ -45,7 +45,7 @@ public class Encoding : IRefTargetContainer
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	internal static Encoding FromNode(JsonNode? node)
+	internal static Encoding FromNode(JsonNode? node, JsonSerializerOptions? options)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -53,8 +53,8 @@ public class Encoding : IRefTargetContainer
 		var encoding = new Encoding
 		{
 			ContentType = obj.MaybeString("contentType", "encoding"),
-			Headers = obj.MaybeMap("headers", Header.FromNode),
-			Style = obj.MaybeEnum<ParameterStyle>("style", "encoding"),
+			Headers = obj.MaybeMap("headers", x => Header.FromNode(x, options)),
+			Style = obj.MaybeEnum<ParameterStyle>("style", options),
 			Explode = obj.MaybeBool("explode", "encoding"),
 			AllowReserved = obj.MaybeBool("allowReserved", "encoding"),
 			ExtensionData = ExtensionData.FromNode(obj)
@@ -73,7 +73,7 @@ public class Encoding : IRefTargetContainer
 
 		obj.MaybeAdd("contentType", encoding.ContentType);
 		obj.MaybeAddMap("headers", encoding.Headers, x => Header.ToNode(x, options));
-		obj.MaybeAddEnum("style", encoding.Style);
+		obj.MaybeAddEnum("style", encoding.Style, options);
 		obj.MaybeAdd("explode", encoding.Explode);
 		obj.MaybeAdd("allowReserved", encoding.AllowReserved);
 		obj.AddExtensions(encoding.ExtensionData);
@@ -114,7 +114,7 @@ internal class EncodingJsonConverter : JsonConverter<Encoding>
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");
 
-		return Encoding.FromNode(obj);
+		return Encoding.FromNode(obj, options);
 	}
 
 	public override void Write(Utf8JsonWriter writer, Encoding value, JsonSerializerOptions options)

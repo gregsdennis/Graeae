@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Json.More;
 using Json.Schema;
 
 namespace Graeae.Models.SchemaDraft4;
@@ -52,17 +53,16 @@ public class Draft4TypeKeyword : IJsonSchemaKeyword
 	}
 }
 
-internal class Draft4TypeKeywordConverter : JsonConverter<Draft4TypeKeyword>
+public class Draft4TypeKeywordConverter : WeaklyTypedJsonConverter<Draft4TypeKeyword>
 {
 	public override Draft4TypeKeyword Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
-		var type = JsonSerializer.Deserialize<SchemaValueType>(ref reader, options);
+		var type = options.Read(ref reader, GraeaeSerializerContext.Default.SchemaValueType);
 
 		return new Draft4TypeKeyword(type);
 	}
 	public override void Write(Utf8JsonWriter writer, Draft4TypeKeyword value, JsonSerializerOptions options)
 	{
-		writer.WritePropertyName(Draft4TypeKeyword.Name);
-		JsonSerializer.Serialize(writer, value.Type, options);
+		options.Write(writer, value.Type, GraeaeSerializerContext.Default.SchemaValueType);
 	}
 }
