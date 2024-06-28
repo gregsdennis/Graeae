@@ -1794,7 +1794,7 @@
             Defines the JSON Schema draft 4 meta-schema URI.
             </summary>
         </member>
-        <member name="F:Graeae.Models.SchemaDraft4.Draft4Support.Draft4MetaSchema">
+        <member name="P:Graeae.Models.SchemaDraft4.Draft4Support.Draft4MetaSchema">
             <summary>
             Defines the JSON Schema draft 4 meta-schema.
             </summary>
