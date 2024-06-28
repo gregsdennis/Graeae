@@ -70,6 +70,6 @@ internal class NullableKeywordJsonConverter : WeaklyTypedJsonConverter<NullableK
 
 	public override void Write(Utf8JsonWriter writer, NullableKeyword value, JsonSerializerOptions options)
 	{
-		writer.WriteBoolean(NullableKeyword.Name, value.Value);
+		writer.WriteBooleanValue(value.Value);
 	}
 }
