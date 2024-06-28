@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 using Json.More;
 using Json.Schema;
+using Vocabularies = Json.Schema.OpenApi.Vocabularies;
 
 namespace Graeae.Models.SchemaDraft4;
 
@@ -11,6 +12,7 @@ namespace Graeae.Models.SchemaDraft4;
 [SchemaKeyword(Name)]
 [SchemaSpecVersion(Draft4Support.Draft4Version)]
 [SchemaSpecVersion(SpecVersion.Draft202012)]
+[Vocabulary(Vocabularies.OpenApiId)]
 [JsonConverter(typeof(Draft4TypeKeywordConverter))]
 public class Draft4TypeKeyword : IJsonSchemaKeyword
 {
