@@ -175,11 +175,11 @@ public static class Draft4Support
 	/// </summary>
 	public static void Enable()
 	{
-		SchemaKeywordRegistry.Register<Draft4ExclusiveMaximumKeyword>();
-		SchemaKeywordRegistry.Register<Draft4ExclusiveMinimumKeyword>();
-		SchemaKeywordRegistry.Register<Draft4IdKeyword>();
-		SchemaKeywordRegistry.Register<NullableKeyword>();
-		SchemaKeywordRegistry.Register<Draft4TypeKeyword>();
+		SchemaKeywordRegistry.Register<Draft4ExclusiveMaximumKeyword>(Draft4SchemaSerializerContext.Default);
+		SchemaKeywordRegistry.Register<Draft4ExclusiveMinimumKeyword>(Draft4SchemaSerializerContext.Default);
+		SchemaKeywordRegistry.Register<Draft4IdKeyword>(Draft4SchemaSerializerContext.Default);
+		SchemaKeywordRegistry.Register<NullableKeyword>(Draft4SchemaSerializerContext.Default);
+		SchemaKeywordRegistry.Register<Draft4TypeKeyword>(Draft4SchemaSerializerContext.Default);
 
 		SchemaRegistry.RegisterNewSpecVersion(Draft4MetaSchema.BaseUri, Draft4Version);
 		// This is a hack to set the schema.DeclaredVersion property.

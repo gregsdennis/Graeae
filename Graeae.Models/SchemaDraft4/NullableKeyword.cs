@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Json.More;
 using Json.Schema;
 
 namespace Graeae.Models.SchemaDraft4;
@@ -53,7 +54,7 @@ public class NullableKeyword : IJsonSchemaKeyword
 	}
 }
 
-internal class NullableKeywordJsonConverter : JsonConverter<NullableKeyword>
+internal class NullableKeywordJsonConverter : WeaklyTypedJsonConverter<NullableKeyword>
 {
 	public override NullableKeyword Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{

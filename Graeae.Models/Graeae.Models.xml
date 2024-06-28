@@ -1774,6 +1774,50 @@
             <param name="context">The <see cref="T:Json.Schema.EvaluationContext" />.</param>
             <returns>A constraint object.</returns>
         </member>
+        <member name="P:Graeae.Models.SchemaDraft4.Draft4SchemaSerializerContext.Draft4ExclusiveMaximumKeyword">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.SchemaDraft4.Draft4SchemaSerializerContext.Draft4ExclusiveMinimumKeyword">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.SchemaDraft4.Draft4SchemaSerializerContext.Draft4IdKeyword">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.SchemaDraft4.Draft4SchemaSerializerContext.Draft4TypeKeyword">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.SchemaDraft4.Draft4SchemaSerializerContext.NullableKeyword">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.SchemaDraft4.Draft4SchemaSerializerContext.Default">
+            <summary>
+            The default <see cref="T:System.Text.Json.Serialization.JsonSerializerContext"/> associated with a default <see cref="T:System.Text.Json.JsonSerializerOptions"/> instance.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.SchemaDraft4.Draft4SchemaSerializerContext.GeneratedSerializerOptions">
+            <summary>
+            The source-generated options associated with this context.
+            </summary>
+        </member>
+        <member name="M:Graeae.Models.SchemaDraft4.Draft4SchemaSerializerContext.#ctor">
+            <inheritdoc/>
+        </member>
+        <member name="M:Graeae.Models.SchemaDraft4.Draft4SchemaSerializerContext.#ctor(System.Text.Json.JsonSerializerOptions)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Graeae.Models.SchemaDraft4.Draft4SchemaSerializerContext.GetTypeInfo(System.Type)">
+            <inheritdoc/>
+        </member>
         <member name="T:Graeae.Models.SchemaDraft4.Draft4Support">
             <summary>
             Provides additional functionality for JSON Schema draft 4 support.

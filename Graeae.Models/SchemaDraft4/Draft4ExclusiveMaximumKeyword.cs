@@ -95,7 +95,7 @@ public class Draft4ExclusiveMaximumKeyword : IJsonSchemaKeyword
 	}
 }
 
-internal class Draft4ExclusiveMaximumKeywordJsonConverter : JsonConverter<Draft4ExclusiveMaximumKeyword>
+internal class Draft4ExclusiveMaximumKeywordJsonConverter : WeaklyTypedJsonConverter<Draft4ExclusiveMaximumKeyword>
 {
 	public override Draft4ExclusiveMaximumKeyword Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{

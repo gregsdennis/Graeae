@@ -94,7 +94,7 @@ public class Draft4ExclusiveMinimumKeyword : IJsonSchemaKeyword
 	}
 }
 
-internal class Draft4ExclusiveMinimumKeywordJsonConverter : JsonConverter<Draft4ExclusiveMinimumKeyword>
+internal class Draft4ExclusiveMinimumKeywordJsonConverter : WeaklyTypedJsonConverter<Draft4ExclusiveMinimumKeyword>
 {
 	public override Draft4ExclusiveMinimumKeyword Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
