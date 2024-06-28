@@ -33,7 +33,7 @@ public static class Draft4Support
 
 	private static JsonSchema InitializeDraft4Schema()
 	{
-		var draft4MetaSchema = new JsonSchemaBuilder()
+		JsonSchema draft4MetaSchema = new JsonSchemaBuilder()
 			.OasId(Draft4MetaSchemaUri)
 			.Schema(Draft4MetaSchemaUri)
 			.Description("Core schema meta-schema")
@@ -163,8 +163,7 @@ public static class Draft4Support
 				("exclusiveMaximum", new [] { "maximum" }),
 				("exclusiveMinimum", new [] { "minimum" })
 			)
-			.Default(new JsonObject())
-			.Build();
+			.Default(new JsonObject());
 
 		draft4MetaSchema.BaseUri = new Uri(Draft4MetaSchemaUri);
 		SchemaRegistry.RegisterNewSpecVersion(draft4MetaSchema.BaseUri, Draft4Version);
