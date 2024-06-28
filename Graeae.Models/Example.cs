@@ -92,7 +92,7 @@ public class Example : IRefTargetContainer
 		{
 			obj.MaybeAdd("summary", example.Summary);
 			obj.MaybeAdd("description", example.Description);
-			obj.MaybeAdd("value", example.Value.DeepClone());
+			obj.MaybeAdd("value", example.Value?.DeepClone());
 			obj.MaybeAdd("externalValue", example.ExternalValue);
 			obj.AddExtensions(example.ExtensionData);
 		}

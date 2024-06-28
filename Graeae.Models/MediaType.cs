@@ -67,7 +67,7 @@ public class MediaType : IRefTargetContainer
 		var obj = new JsonObject();
 
 		obj.MaybeSerialize("schema", mediaType.Schema, options);
-		obj.MaybeAdd("example", mediaType.Example.DeepClone());
+		obj.MaybeAdd("example", mediaType.Example?.DeepClone());
 		obj.MaybeAddMap("examples", mediaType.Examples, Models.Example.ToNode);
 		obj.MaybeAddMap("encoding", mediaType.Encoding, x => Models.Encoding.ToNode(x, options));
 		obj.AddExtensions(mediaType.ExtensionData);

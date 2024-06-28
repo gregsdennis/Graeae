@@ -168,7 +168,7 @@ public class Parameter : IRefTargetContainer
 			obj.MaybeAdd("explode", parameter.Explode);
 			obj.MaybeAdd("allowReserved", parameter.AllowReserved);
 			obj.MaybeSerialize("schema", parameter.Schema, options);
-			obj.MaybeAdd("example", parameter.Example.DeepClone());
+			obj.MaybeAdd("example", parameter.Example?.DeepClone());
 			obj.MaybeAddMap("examples", parameter.Examples, Models.Example.ToNode);
 			obj.MaybeAddMap("content", parameter.Content, x => MediaType.ToNode(x, options));
 			obj.AddExtensions(parameter.ExtensionData);
