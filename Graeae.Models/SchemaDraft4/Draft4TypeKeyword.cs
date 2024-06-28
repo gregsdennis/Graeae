@@ -57,13 +57,13 @@ internal class Draft4TypeKeywordConverter : WeaklyTypedJsonConverter<Draft4TypeK
 {
 	public override Draft4TypeKeyword Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
-		var type = JsonSerializer.Deserialize<SchemaValueType>(ref reader, options);
+		var type = options.Read(ref reader, Draft4SchemaSerializerContext.Default.SchemaValueType);
 
 		return new Draft4TypeKeyword(type);
 	}
+
 	public override void Write(Utf8JsonWriter writer, Draft4TypeKeyword value, JsonSerializerOptions options)
 	{
-		writer.WritePropertyName(Draft4TypeKeyword.Name);
-		JsonSerializer.Serialize(writer, value.Type, options);
+		options.Write(writer, value.Type, Draft4SchemaSerializerContext.Default.SchemaValueType);
 	}
 }

@@ -1799,6 +1799,11 @@
             Defines the source generated JSON serialization contract metadata for a given type.
             </summary>
         </member>
+        <member name="P:Graeae.Models.SchemaDraft4.Draft4SchemaSerializerContext.SchemaValueType">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
         <member name="P:Graeae.Models.SchemaDraft4.Draft4SchemaSerializerContext.Default">
             <summary>
             The default <see cref="T:System.Text.Json.Serialization.JsonSerializerContext"/> associated with a default <see cref="T:System.Text.Json.JsonSerializerOptions"/> instance.
