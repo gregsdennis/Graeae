@@ -167,10 +167,6 @@ public static class Draft4Support
 			.Build();
 
 		draft4MetaSchema.BaseUri = new Uri(Draft4MetaSchemaUri);
-		// This is a hack to set the schema.DeclaredVersion property.
-		// It allows draft 4 to be used as a meta-schema.
-		// It's a bit of a hidden feature of JsonSchema.Net.
-		draft4MetaSchema.Evaluate(new JsonObject(), new EvaluationOptions { EvaluateAs = Draft4Version });
 		return draft4MetaSchema;
 	}
 
@@ -185,6 +181,10 @@ public static class Draft4Support
 		SchemaKeywordRegistry.Register<NullableKeyword>();
 		SchemaKeywordRegistry.Register<Draft4TypeKeyword>();
 
-		SchemaRegistry.Global.Register(Draft4MetaSchema);
+		SchemaRegistry.RegisterNewSpecVersion(Draft4MetaSchema.BaseUri, Draft4Version);
+		// This is a hack to set the schema.DeclaredVersion property.
+		// It allows draft 4 to be used as a meta-schema.
+		// It's a bit of a hidden feature of JsonSchema.Net.
+		Draft4MetaSchema.Evaluate(new JsonObject(), new EvaluationOptions { EvaluateAs = Draft4Version });
 	}
 }

@@ -45,7 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="JsonSchema.Net" Version="7.1.0" />
+    <PackageReference Include="JsonSchema.Net" Version="7.1.1" />
     <PackageReference Include="JsonSchema.Net.OpenApi" Version="3.1.0" />
     <PackageReference Include="Yaml2JsonNode" Version="2.1.0" />
   </ItemGroup>
