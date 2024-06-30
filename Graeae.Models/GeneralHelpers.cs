@@ -7,7 +7,7 @@ internal static class GeneralHelpers
 		return collections.Where(x => x != null).SelectMany(x => x!);
 	}
 
-	public static object? Resolve(this IRefTargetContainer container, Span<string> keys)
+	public static object? Resolve(this IRefTargetContainer container, ReadOnlySpan<string> keys)
 	{
 		return container.Resolve(keys);
 	}

@@ -15,7 +15,7 @@ public class RefResolutionTests
 		var file = "api-with-examples.yaml";
 		var fullFileName = GetFile(file);
 
-		var document = YamlSerializer.Deserialize<OpenApiDocument>(File.ReadAllText(fullFileName));
+		var document = YamlSerializer.Deserialize<OpenApiDocument>(File.ReadAllText(fullFileName), TestEnvironment.SerializerOptions);
 
 		var pathItem = document!.Find<PathItem>(JsonPointer.Parse("/paths/~1v2"));
 
@@ -28,7 +28,7 @@ public class RefResolutionTests
 		var file = "api-with-examples.yaml";
 		var fullFileName = GetFile(file);
 
-		var document = YamlSerializer.Deserialize<OpenApiDocument>(File.ReadAllText(fullFileName));
+		var document = YamlSerializer.Deserialize<OpenApiDocument>(File.ReadAllText(fullFileName), TestEnvironment.SerializerOptions);
 
 		var example = document!.Find<Example>(JsonPointer.Parse("/paths/~1v2/get/responses/203/content/application~1json/examples/foo"));
 

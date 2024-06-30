@@ -124,16 +124,17 @@ public static class Ref
 		return map?.FirstOrDefault(x => x.Key.Equals(key)).Value;
 	}
 
-	internal static object? GetFromNode(this JsonNode? node, Span<string> keys)
+	internal static object? GetFromNode(this JsonNode? node, ReadOnlySpan<string> keys)
 	{
 		return keys.ToPointer().TryEvaluate(node, out var target)
 			? target
 			: null;
 	}
 
-	internal static JsonPointer ToPointer(this Span<string> segments)
+	internal static JsonPointer ToPointer(this ReadOnlySpan<string> segments)
 	{
-		return JsonPointer.Create(segments.ToArray().Select(x => (PointerSegment)x));
+		// TODO: this is horrible.
+		return JsonPointer.Create(segments.ToArray().Select(x => (PointerSegment)x).ToArray());
 	}
 
 	internal static async Task<bool> Resolve<T>(OpenApiDocument root, Uri targetUri, Func<JsonNode?, bool> import, Action<T> copy)

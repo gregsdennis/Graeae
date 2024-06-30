@@ -70,23 +70,23 @@ public class ComponentCollection : IRefTargetContainer
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	internal static ComponentCollection FromNode(JsonNode? node)
+	internal static ComponentCollection FromNode(JsonNode? node, JsonSerializerOptions? options)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
 
 		var components = new ComponentCollection
 		{
-			Schemas = obj.MaybeDeserialize<Dictionary<string, JsonSchema>>("schemas"),
-			Responses = obj.MaybeMap("responses", Response.FromNode),
-			Parameters = obj.MaybeMap("parameters", Parameter.FromNode),
+			Schemas = obj.MaybeDeserialize<Dictionary<string, JsonSchema>>("schemas", options),
+			Responses = obj.MaybeMap("responses", x => Response.FromNode(x, options)),
+			Parameters = obj.MaybeMap("parameters", x => Parameter.FromNode(x, options)),
 			Examples = obj.MaybeMap("examples", Example.FromNode),
-			RequestBodies = obj.MaybeMap("requestBodies", RequestBody.FromNode),
-			Headers = obj.MaybeMap("headers", Header.FromNode),
-			SecuritySchemes = obj.MaybeMap("securitySchemes", SecurityScheme.FromNode),
+			RequestBodies = obj.MaybeMap("requestBodies", x => RequestBody.FromNode(x, options)),
+			Headers = obj.MaybeMap("headers", x => Header.FromNode(x, options)),
+			SecuritySchemes = obj.MaybeMap("securitySchemes", x => SecurityScheme.FromNode(x, options)),
 			Links = obj.MaybeMap("links", Link.FromNode),
-			Callbacks = obj.MaybeMap("callbacks", Callback.FromNode),
-			PathItems = obj.MaybeMap("pathItems", PathItem.FromNode),
+			Callbacks = obj.MaybeMap("callbacks", x => Callback.FromNode(x, options)),
+			PathItems = obj.MaybeMap("pathItems", x => PathItem.FromNode(x, options)),
 			ExtensionData = ExtensionData.FromNode(obj)
 		};
 
@@ -107,7 +107,7 @@ public class ComponentCollection : IRefTargetContainer
 		obj.MaybeAddMap("examples", components.Examples, Example.ToNode);
 		obj.MaybeAddMap("requestBodies", components.RequestBodies, x => RequestBody.ToNode(x, options));
 		obj.MaybeAddMap("headers", components.Headers, x => Header.ToNode(x, options));
-		obj.MaybeAddMap("securitySchemes", components.SecuritySchemes, SecurityScheme.ToNode);
+		obj.MaybeAddMap("securitySchemes", components.SecuritySchemes, x => SecurityScheme.ToNode(x, options));
 		obj.MaybeAddMap("links", components.Links, Link.ToNode);
 		obj.MaybeAddMap("callbacks", components.Callbacks, x => Callback.ToNode(x, options));
 		obj.MaybeAddMap("pathItems", components.PathItems, x => PathItem.ToNode(x, options));
@@ -116,7 +116,7 @@ public class ComponentCollection : IRefTargetContainer
 		return obj;
 	}
 
-	object? IRefTargetContainer.Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(ReadOnlySpan<string> keys)
 	{
 		if (keys.Length == 0) return this;
 
@@ -206,7 +206,7 @@ internal class ComponentCollectionJsonConverter : JsonConverter<ComponentCollect
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");
 
-		return ComponentCollection.FromNode(obj);
+		return ComponentCollection.FromNode(obj, options);
 	}
 
 	public override void Write(Utf8JsonWriter writer, ComponentCollection value, JsonSerializerOptions options)

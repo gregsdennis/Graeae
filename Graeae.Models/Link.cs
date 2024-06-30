@@ -112,7 +112,7 @@ public class Link : IRefTargetContainer
 		return obj;
 	}
 
-	object? IRefTargetContainer.Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(ReadOnlySpan<string> keys)
 	{
 		if (keys.Length == 0) return this;
 
@@ -175,7 +175,7 @@ public class LinkRef : Link, IComponentRef
 		Ref = new Uri(reference ?? throw new ArgumentNullException(nameof(reference)), UriKind.RelativeOrAbsolute);
 	}
 
-	async Task IComponentRef.Resolve(OpenApiDocument root)
+	async Task IComponentRef.Resolve(OpenApiDocument root, JsonSerializerOptions? options)
 	{
 		bool import(JsonNode? node)
 		{

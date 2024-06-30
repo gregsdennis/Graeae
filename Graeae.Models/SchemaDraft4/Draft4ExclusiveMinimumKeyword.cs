@@ -57,19 +57,19 @@ public class Draft4ExclusiveMinimumKeyword : IJsonSchemaKeyword
 	/// </param>
 	/// <param name="context">The <see cref="T:Json.Schema.EvaluationContext" />.</param>
 	/// <returns>A constraint object.</returns>
-	public KeywordConstraint GetConstraint(SchemaConstraint schemaConstraint, IReadOnlyList<KeywordConstraint> localConstraints, EvaluationContext context)
+	public KeywordConstraint GetConstraint(SchemaConstraint schemaConstraint, ReadOnlySpan<KeywordConstraint> localConstraints, EvaluationContext context)
 	{
 		if (BoolValue.HasValue)
 		{
 			if (!BoolValue.Value) return KeywordConstraint.Skip;
 
-			var minimumConstraint = localConstraints.SingleOrDefault(x => x.Keyword == MinimumKeyword.Name);
+			var minimumConstraint = localConstraints.GetKeywordConstraint<MinimumKeyword>();
 			if (minimumConstraint == null) return KeywordConstraint.Skip;
 
 			var value = schemaConstraint.LocalSchema.GetMinimum()!.Value;
 			return new KeywordConstraint(Name, (e, c) => Evaluator(e, c, value))
 			{
-				SiblingDependencies = new[] { minimumConstraint }
+				SiblingDependencies = [minimumConstraint]
 			};
 		}
 
@@ -85,15 +85,24 @@ public class Draft4ExclusiveMinimumKeyword : IJsonSchemaKeyword
 			return;
 		}
 
-		var number = evaluation.LocalInstance!.AsValue().GetNumber();
-
+		var number = evaluation.LocalInstance!.AsValue().GetNumber()!.Value;
 		if (number >= limit)
-			evaluation.Results.Fail(Name, ErrorMessages.GetExclusiveMinimum(context.Options.Culture), ("received", number), ("limit", BoolValue));
+			evaluation.Results.Fail(Name, ErrorMessages.GetExclusiveMinimum(context.Options.Culture)
+				.ReplaceToken("received", number)
+				.ReplaceToken("limit", BoolValue!));
 	}
 }
 
-internal class Draft4ExclusiveMinimumKeywordJsonConverter : JsonConverter<Draft4ExclusiveMinimumKeyword>
+/// <summary>
+/// JSON converter for <see cref="Draft4ExclusiveMinimumKeyword"/>
+/// </summary>
+public class Draft4ExclusiveMinimumKeywordJsonConverter : WeaklyTypedJsonConverter<Draft4ExclusiveMinimumKeyword>
 {
+	/// <summary>Reads and converts the JSON to type <typeparamref name="T" />.</summary>
+	/// <param name="reader">The reader.</param>
+	/// <param name="typeToConvert">The type to convert.</param>
+	/// <param name="options">An object that specifies serialization options to use.</param>
+	/// <returns>The converted value.</returns>
 	public override Draft4ExclusiveMinimumKeyword Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
 		return reader.TokenType switch
@@ -104,11 +113,15 @@ internal class Draft4ExclusiveMinimumKeywordJsonConverter : JsonConverter<Draft4
 		};
 	}
 
+	/// <summary>Writes a specified value as JSON.</summary>
+	/// <param name="writer">The writer to write to.</param>
+	/// <param name="value">The value to convert to JSON.</param>
+	/// <param name="options">An object that specifies serialization options to use.</param>
 	public override void Write(Utf8JsonWriter writer, Draft4ExclusiveMinimumKeyword value, JsonSerializerOptions options)
 	{
 		if (value.BoolValue.HasValue)
-			writer.WriteBoolean(Draft4ExclusiveMinimumKeyword.Name, value.BoolValue.Value);
+			writer.WriteBooleanValue(value.BoolValue.Value);
 		else
-			writer.WriteNumber(Draft4ExclusiveMinimumKeyword.Name, value.NumberValue!.Value);
+			writer.WriteNumberValue(value.NumberValue!.Value);
 	}
 }

@@ -32,7 +32,7 @@ public class PathTemplate : IEquatable<PathTemplate>, IEquatable<string>
 	{
 		var asPointer = JsonPointer.Parse(source);
 
-		return new PathTemplate(asPointer.Segments.Select(x => x.Value).ToArray());
+		return new PathTemplate(asPointer.ToArray());
 	}
 
 	/// <summary>
@@ -45,7 +45,7 @@ public class PathTemplate : IEquatable<PathTemplate>, IEquatable<string>
 	{
 		var asPointer = JsonPointer.Parse(source);
 
-		template = new PathTemplate(asPointer.Segments.Select(x => x.Value).ToArray());
+		template = new PathTemplate(asPointer.ToArray());
 
 		return true;
 	}

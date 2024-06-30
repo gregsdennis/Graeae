@@ -41,17 +41,17 @@ public class MediaType : IRefTargetContainer
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	internal static MediaType FromNode(JsonNode? node)
+	internal static MediaType FromNode(JsonNode? node, JsonSerializerOptions? options)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
 
 		var mediaType = new MediaType
 		{
-			Schema = obj.MaybeDeserialize<JsonSchema>("schema"),
-			Example = obj.TryGetPropertyValue("example", out var v) ? v ?? JsonNull.SignalNode : null,
+			Schema = obj.MaybeDeserialize<JsonSchema>("schema", options),
+			Example = obj.TryGetPropertyValue("example", out var v) ? v : null,
 			Examples = obj.MaybeMap("examples", Models.Example.FromNode),
-			Encoding = obj.MaybeMap("encoding", Models.Encoding.FromNode),
+			Encoding = obj.MaybeMap("encoding", x => Models.Encoding.FromNode(x, options)),
 			ExtensionData = ExtensionData.FromNode(obj)
 		};
 
@@ -67,7 +67,7 @@ public class MediaType : IRefTargetContainer
 		var obj = new JsonObject();
 
 		obj.MaybeSerialize("schema", mediaType.Schema, options);
-		obj.MaybeAdd("example", mediaType.Example.Copy());
+		obj.MaybeAdd("example", mediaType.Example?.DeepClone());
 		obj.MaybeAddMap("examples", mediaType.Examples, Models.Example.ToNode);
 		obj.MaybeAddMap("encoding", mediaType.Encoding, x => Models.Encoding.ToNode(x, options));
 		obj.AddExtensions(mediaType.ExtensionData);
@@ -75,7 +75,7 @@ public class MediaType : IRefTargetContainer
 		return obj;
 	}
 
-	object? IRefTargetContainer.Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(ReadOnlySpan<string> keys)
 	{
 		if (keys.Length == 0) return this;
 
@@ -136,7 +136,7 @@ internal class MediaTypeJsonConverter : JsonConverter<MediaType>
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");
 
-		return MediaType.FromNode(obj);
+		return MediaType.FromNode(obj, options);
 	}
 
 	public override void Write(Utf8JsonWriter writer, MediaType value, JsonSerializerOptions options)

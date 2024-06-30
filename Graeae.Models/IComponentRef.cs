@@ -1,4 +1,6 @@
-﻿namespace Graeae.Models;
+﻿using System.Text.Json;
+
+namespace Graeae.Models;
 
 /// <summary>
 /// Indicates that the item is a reference to another object rather than being the object itself.
@@ -26,6 +28,7 @@ internal interface IComponentRef
 	/// Resolves the reference.
 	/// </summary>
 	/// <param name="root">The document root.</param>
+	/// <param name="options">Serializer options</param>
 	/// <returns>A task.</returns>
-	Task Resolve(OpenApiDocument root);
+	Task Resolve(OpenApiDocument root, JsonSerializerOptions? options);
 }

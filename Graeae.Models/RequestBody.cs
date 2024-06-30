@@ -47,7 +47,7 @@ public class RequestBody : IRefTargetContainer
 	private protected RequestBody(){}
 #pragma warning restore CS8618
 
-	internal static RequestBody FromNode(JsonNode? node)
+	internal static RequestBody FromNode(JsonNode? node, JsonSerializerOptions? options)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -65,7 +65,7 @@ public class RequestBody : IRefTargetContainer
 		}
 		else
 		{
-			body = new RequestBody(obj.ExpectMap("content", "request body", MediaType.FromNode));
+			body = new RequestBody(obj.ExpectMap("content", "request body", x => MediaType.FromNode(x, options)));
 			body.Import(obj);
 
 			obj.ValidateNoExtraKeys(KnownKeys, body.ExtensionData?.Keys);
@@ -103,7 +103,7 @@ public class RequestBody : IRefTargetContainer
 		return obj;
 	}
 
-	object? IRefTargetContainer.Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(ReadOnlySpan<string> keys)
 	{
 		if (keys.Length == 0) return this;
 
@@ -179,13 +179,13 @@ public class RequestBodyRef : RequestBody, IComponentRef
 		Ref = new Uri(reference ?? throw new ArgumentNullException(nameof(reference)), UriKind.RelativeOrAbsolute);
 	}
 
-	async Task IComponentRef.Resolve(OpenApiDocument root)
+	async Task IComponentRef.Resolve(OpenApiDocument root, JsonSerializerOptions? options)
 	{
 		bool import(JsonNode? node)
 		{
 			if (node is not JsonObject obj) return false;
 
-			Content = obj.ExpectMap("content", "request body", MediaType.FromNode);
+			Content = obj.ExpectMap("content", "request body", x => MediaType.FromNode(x, options));
 			Import(obj);
 			return true;
 		}
@@ -209,7 +209,7 @@ internal class RequestBodyJsonConverter : JsonConverter<RequestBody>
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");
 
-		return RequestBody.FromNode(obj);
+		return RequestBody.FromNode(obj, options);
 	}
 
 	public override void Write(Utf8JsonWriter writer, RequestBody value, JsonSerializerOptions options)

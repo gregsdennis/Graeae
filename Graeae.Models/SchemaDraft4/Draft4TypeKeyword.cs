@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Json.More;
 using Json.Schema;
 
 namespace Graeae.Models.SchemaDraft4;
@@ -44,7 +45,7 @@ public class Draft4TypeKeyword : IJsonSchemaKeyword
 	/// </param>
 	/// <param name="context">The <see cref="T:Json.Schema.EvaluationContext" />.</param>
 	/// <returns>A constraint object.</returns>
-	public KeywordConstraint GetConstraint(SchemaConstraint schemaConstraint, IReadOnlyList<KeywordConstraint> localConstraints, EvaluationContext context)
+	public KeywordConstraint GetConstraint(SchemaConstraint schemaConstraint, ReadOnlySpan<KeywordConstraint> localConstraints, EvaluationContext context)
 	{
 		return context.Options.EvaluateAs == Draft4Support.Draft4Version
 			? _draft4Support.GetConstraint(schemaConstraint, localConstraints, context)
@@ -52,17 +53,29 @@ public class Draft4TypeKeyword : IJsonSchemaKeyword
 	}
 }
 
-internal class Draft4TypeKeywordConverter : JsonConverter<Draft4TypeKeyword>
+/// <summary>
+/// JSON converter for <see cref="Draft4TypeKeyword"/>
+/// </summary>
+public class Draft4TypeKeywordConverter : WeaklyTypedJsonConverter<Draft4TypeKeyword>
 {
+	/// <summary>Reads and converts the JSON to type <typeparamref name="T" />.</summary>
+	/// <param name="reader">The reader.</param>
+	/// <param name="typeToConvert">The type to convert.</param>
+	/// <param name="options">An object that specifies serialization options to use.</param>
+	/// <returns>The converted value.</returns>
 	public override Draft4TypeKeyword Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
-		var type = JsonSerializer.Deserialize<SchemaValueType>(ref reader, options);
+		var type = options.Read(ref reader, GraeaeSerializerContext.Default.SchemaValueType);
 
 		return new Draft4TypeKeyword(type);
 	}
+
+	/// <summary>Writes a specified value as JSON.</summary>
+	/// <param name="writer">The writer to write to.</param>
+	/// <param name="value">The value to convert to JSON.</param>
+	/// <param name="options">An object that specifies serialization options to use.</param>
 	public override void Write(Utf8JsonWriter writer, Draft4TypeKeyword value, JsonSerializerOptions options)
 	{
-		writer.WritePropertyName(Draft4TypeKeyword.Name);
-		JsonSerializer.Serialize(writer, value.Type, options);
+		options.Write(writer, value.Type, GraeaeSerializerContext.Default.SchemaValueType);
 	}
 }

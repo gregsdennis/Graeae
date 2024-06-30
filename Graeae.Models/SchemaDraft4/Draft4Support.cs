@@ -28,8 +28,24 @@ public static class Draft4Support
 	/// <summary>
 	/// Defines the JSON Schema draft 4 meta-schema.
 	/// </summary>
-	public static readonly JsonSchema Draft4MetaSchema =
-		new JsonSchemaBuilder()
+	/// <remarks>
+	/// This property is initialized by the <see cref="Enable"/> method and
+	/// will be null if accessed before that method is called.
+	/// </remarks>
+	public static JsonSchema Draft4MetaSchema { get; private set; } = null!;
+
+	/// <summary>
+	/// Enables support for OpenAPI v3.0 and JSON Schema draft 4.
+	/// </summary>
+	public static void Enable()
+	{
+		SchemaKeywordRegistry.Register<Draft4ExclusiveMaximumKeyword>(GraeaeSerializerContext.Default);
+		SchemaKeywordRegistry.Register<Draft4ExclusiveMinimumKeyword>(GraeaeSerializerContext.Default);
+		SchemaKeywordRegistry.Register<Draft4IdKeyword>(GraeaeSerializerContext.Default);
+		SchemaKeywordRegistry.Register<NullableKeyword>(GraeaeSerializerContext.Default);
+		SchemaKeywordRegistry.Register<Draft4TypeKeyword>(GraeaeSerializerContext.Default);
+
+		Draft4MetaSchema = new JsonSchemaBuilder()
 			.OasId(Draft4MetaSchemaUri)
 			.Schema(Draft4MetaSchemaUri)
 			.Description("Core schema meta-schema")
@@ -156,30 +172,13 @@ public static class Draft4Support
 				("not", JsonSchemaBuilder.RefRoot())
 			)
 			.Dependencies(
-				("exclusiveMaximum", new [] { "maximum" }),
-				("exclusiveMinimum", new [] { "minimum" })
+				("exclusiveMaximum", new[] { "maximum" }),
+				("exclusiveMinimum", new[] { "minimum" })
 			)
 			.Default(new JsonObject());
-
-	static Draft4Support()
-	{
 		Draft4MetaSchema.BaseUri = new Uri(Draft4MetaSchemaUri);
-		// This is a hack to set the schema.DeclaredVersion property.
-		// It allows draft 4 to be used as a meta-schema.
-		// It's a bit of a hidden feature of JsonSchema.Net.
-		Draft4MetaSchema.Evaluate(new JsonObject(), new EvaluationOptions { EvaluateAs = Draft4Version });
-	}
-
-	/// <summary>
-	/// Enables support for OpenAPI v3.0 and JSON Schema draft 4.
-	/// </summary>
-	public static void Enable()
-	{
-		SchemaKeywordRegistry.Register<Draft4ExclusiveMaximumKeyword>();
-		SchemaKeywordRegistry.Register<Draft4ExclusiveMinimumKeyword>();
-		SchemaKeywordRegistry.Register<Draft4IdKeyword>();
-		SchemaKeywordRegistry.Register<NullableKeyword>();
-		SchemaKeywordRegistry.Register<Draft4TypeKeyword>();
+		// This allows draft 4 to be used as a meta-schema.
+		SchemaRegistry.RegisterNewSpecVersion(Draft4MetaSchema.BaseUri, Draft4Version);
 
 		SchemaRegistry.Global.Register(Draft4MetaSchema);
 	}

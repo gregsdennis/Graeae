@@ -10,6 +10,7 @@ namespace Graeae.Models.Tests;
 // code is simple.
 public class DocumentBuilderTests
 {
+	[Test]
 	public void BuildDocument()
 	{
 		var doc = new OpenApiDocument("3.1.0", new("title", "1.0")
@@ -19,7 +20,7 @@ public class DocumentBuilderTests
 				Email = "me@you.com",
 				Name = "me you",
 				Url = new Uri("https://you.com"),
-				ExtensionData = new() { ["key"] = new JsonArray { 1, 2, 3 } }
+				ExtensionData = new() { ["key"] = new JsonArray(1, 2, 3) }
 			},
 			Description = "this is an api",
 			License = new("generic license")
@@ -134,8 +135,10 @@ public class DocumentBuilderTests
 				}
 			}
 		};
+		Console.WriteLine(YamlSerializer.Serialize(doc, TestEnvironment.TestOutputSerializerOptions));
 	}
 
+	[Test]
 	public void PetStoreExample()
 	{
 		var document = new OpenApiDocument("3.0.0",
@@ -299,6 +302,6 @@ public class DocumentBuilderTests
 			}
 		};
 
-		Console.WriteLine(YamlSerializer.Serialize(document));
+		Console.WriteLine(YamlSerializer.Serialize(document, TestEnvironment.TestOutputSerializerOptions));
 	}
 }

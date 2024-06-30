@@ -343,6 +343,110 @@
             Validates that a string is a password.
             </summary>
         </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.OpenApiDocument">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.ParameterLocation">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.NullableParameterLocation">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.ParameterStyle">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.NullableParameterStyle">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.Draft4ExclusiveMaximumKeyword">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.Draft4ExclusiveMinimumKeyword">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.Draft4IdKeyword">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.Draft4TypeKeyword">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.NullableKeyword">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.SecuritySchemeLocation">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.NullableSecuritySchemeLocation">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.EvaluationResults">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.JsonSchema">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.SchemaValueType">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.JsonNode">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.JsonObject">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.Default">
+            <summary>
+            The default <see cref="T:System.Text.Json.Serialization.JsonSerializerContext"/> associated with a default <see cref="T:System.Text.Json.JsonSerializerOptions"/> instance.
+            </summary>
+        </member>
+        <member name="P:Graeae.Models.GraeaeSerializerContext.GeneratedSerializerOptions">
+            <summary>
+            The source-generated options associated with this context.
+            </summary>
+        </member>
+        <member name="M:Graeae.Models.GraeaeSerializerContext.#ctor">
+            <inheritdoc/>
+        </member>
+        <member name="M:Graeae.Models.GraeaeSerializerContext.#ctor(System.Text.Json.JsonSerializerOptions)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Graeae.Models.GraeaeSerializerContext.GetTypeInfo(System.Type)">
+            <inheritdoc/>
+        </member>
         <member name="T:Graeae.Models.Header">
             <summary>
             Models a header.
@@ -470,11 +574,12 @@
             Gets whether the reference has been resolved.
             </summary>
         </member>
-        <member name="M:Graeae.Models.IComponentRef.Resolve(Graeae.Models.OpenApiDocument)">
+        <member name="M:Graeae.Models.IComponentRef.Resolve(Graeae.Models.OpenApiDocument,System.Text.Json.JsonSerializerOptions)">
             <summary>
             Resolves the reference.
             </summary>
             <param name="root">The document root.</param>
+            <param name="options">Serializer options</param>
             <returns>A task.</returns>
         </member>
         <member name="T:Graeae.Models.LicenseInfo">
@@ -750,11 +855,12 @@
             <param name="openApi">The OpenAPI version</param>
             <param name="info">The API information</param>
         </member>
-        <member name="M:Graeae.Models.OpenApiDocument.Initialize(Json.Schema.SchemaRegistry)">
+        <member name="M:Graeae.Models.OpenApiDocument.Initialize(Json.Schema.SchemaRegistry,System.Text.Json.JsonSerializerOptions)">
             <summary>
             Initializes the document model.
             </summary>
-            <param name="schemaRegistry"></param>
+            <param name="schemaRegistry">(optional) A schema registry.</param>
+            <param name="options">(optional) Serializer options</param>
             <exception cref="T:Graeae.Models.RefResolutionException">Thrown if a reference cannot be resolved.</exception>
         </member>
         <member name="M:Graeae.Models.OpenApiDocument.Find``1(Json.Pointer.JsonPointer)">
@@ -1691,7 +1797,7 @@
             </summary>
             <param name="value">The minimum value.</param>
         </member>
-        <member name="M:Graeae.Models.SchemaDraft4.Draft4ExclusiveMaximumKeyword.GetConstraint(Json.Schema.SchemaConstraint,System.Collections.Generic.IReadOnlyList{Json.Schema.KeywordConstraint},Json.Schema.EvaluationContext)">
+        <member name="M:Graeae.Models.SchemaDraft4.Draft4ExclusiveMaximumKeyword.GetConstraint(Json.Schema.SchemaConstraint,System.ReadOnlySpan{Json.Schema.KeywordConstraint},Json.Schema.EvaluationContext)">
             <summary>Builds a constraint object for a keyword.</summary>
             <param name="schemaConstraint">The <see cref="T:Json.Schema.SchemaConstraint" /> for the schema object that houses this keyword.</param>
             <param name="localConstraints">
@@ -1700,6 +1806,24 @@
             </param>
             <param name="context">The <see cref="T:Json.Schema.EvaluationContext" />.</param>
             <returns>A constraint object.</returns>
+        </member>
+        <member name="T:Graeae.Models.SchemaDraft4.Draft4ExclusiveMaximumKeywordJsonConverter">
+            <summary>
+            JSON converter for <see cref="T:Graeae.Models.SchemaDraft4.Draft4ExclusiveMaximumKeyword"/>
+            </summary>
+        </member>
+        <member name="M:Graeae.Models.SchemaDraft4.Draft4ExclusiveMaximumKeywordJsonConverter.Read(System.Text.Json.Utf8JsonReader@,System.Type,System.Text.Json.JsonSerializerOptions)">
+            <summary>Reads and converts the JSON to type <typeparamref name="T" />.</summary>
+            <param name="reader">The reader.</param>
+            <param name="typeToConvert">The type to convert.</param>
+            <param name="options">An object that specifies serialization options to use.</param>
+            <returns>The converted value.</returns>
+        </member>
+        <member name="M:Graeae.Models.SchemaDraft4.Draft4ExclusiveMaximumKeywordJsonConverter.Write(System.Text.Json.Utf8JsonWriter,Graeae.Models.SchemaDraft4.Draft4ExclusiveMaximumKeyword,System.Text.Json.JsonSerializerOptions)">
+            <summary>Writes a specified value as JSON.</summary>
+            <param name="writer">The writer to write to.</param>
+            <param name="value">The value to convert to JSON.</param>
+            <param name="options">An object that specifies serialization options to use.</param>
         </member>
         <member name="T:Graeae.Models.SchemaDraft4.Draft4ExclusiveMinimumKeyword">
             <summary>
@@ -1733,7 +1857,7 @@
             </summary>
             <param name="value">The minimum value.</param>
         </member>
-        <member name="M:Graeae.Models.SchemaDraft4.Draft4ExclusiveMinimumKeyword.GetConstraint(Json.Schema.SchemaConstraint,System.Collections.Generic.IReadOnlyList{Json.Schema.KeywordConstraint},Json.Schema.EvaluationContext)">
+        <member name="M:Graeae.Models.SchemaDraft4.Draft4ExclusiveMinimumKeyword.GetConstraint(Json.Schema.SchemaConstraint,System.ReadOnlySpan{Json.Schema.KeywordConstraint},Json.Schema.EvaluationContext)">
             <summary>Builds a constraint object for a keyword.</summary>
             <param name="schemaConstraint">The <see cref="T:Json.Schema.SchemaConstraint" /> for the schema object that houses this keyword.</param>
             <param name="localConstraints">
@@ -1742,6 +1866,24 @@
             </param>
             <param name="context">The <see cref="T:Json.Schema.EvaluationContext" />.</param>
             <returns>A constraint object.</returns>
+        </member>
+        <member name="T:Graeae.Models.SchemaDraft4.Draft4ExclusiveMinimumKeywordJsonConverter">
+            <summary>
+            JSON converter for <see cref="T:Graeae.Models.SchemaDraft4.Draft4ExclusiveMinimumKeyword"/>
+            </summary>
+        </member>
+        <member name="M:Graeae.Models.SchemaDraft4.Draft4ExclusiveMinimumKeywordJsonConverter.Read(System.Text.Json.Utf8JsonReader@,System.Type,System.Text.Json.JsonSerializerOptions)">
+            <summary>Reads and converts the JSON to type <typeparamref name="T" />.</summary>
+            <param name="reader">The reader.</param>
+            <param name="typeToConvert">The type to convert.</param>
+            <param name="options">An object that specifies serialization options to use.</param>
+            <returns>The converted value.</returns>
+        </member>
+        <member name="M:Graeae.Models.SchemaDraft4.Draft4ExclusiveMinimumKeywordJsonConverter.Write(System.Text.Json.Utf8JsonWriter,Graeae.Models.SchemaDraft4.Draft4ExclusiveMinimumKeyword,System.Text.Json.JsonSerializerOptions)">
+            <summary>Writes a specified value as JSON.</summary>
+            <param name="writer">The writer to write to.</param>
+            <param name="value">The value to convert to JSON.</param>
+            <param name="options">An object that specifies serialization options to use.</param>
         </member>
         <member name="T:Graeae.Models.SchemaDraft4.Draft4IdKeyword">
             <summary>
@@ -1764,7 +1906,7 @@
             </summary>
             <param name="id">The ID.</param>
         </member>
-        <member name="M:Graeae.Models.SchemaDraft4.Draft4IdKeyword.GetConstraint(Json.Schema.SchemaConstraint,System.Collections.Generic.IReadOnlyList{Json.Schema.KeywordConstraint},Json.Schema.EvaluationContext)">
+        <member name="M:Graeae.Models.SchemaDraft4.Draft4IdKeyword.GetConstraint(Json.Schema.SchemaConstraint,System.ReadOnlySpan{Json.Schema.KeywordConstraint},Json.Schema.EvaluationContext)">
             <summary>Builds a constraint object for a keyword.</summary>
             <param name="schemaConstraint">The <see cref="T:Json.Schema.SchemaConstraint" /> for the schema object that houses this keyword.</param>
             <param name="localConstraints">
@@ -1773,6 +1915,24 @@
             </param>
             <param name="context">The <see cref="T:Json.Schema.EvaluationContext" />.</param>
             <returns>A constraint object.</returns>
+        </member>
+        <member name="T:Graeae.Models.SchemaDraft4.Draft4IdKeywordJsonConverter">
+            <summary>
+            JSON converter for <see cref="T:Graeae.Models.SchemaDraft4.Draft4IdKeyword"/>
+            </summary>
+        </member>
+        <member name="M:Graeae.Models.SchemaDraft4.Draft4IdKeywordJsonConverter.Read(System.Text.Json.Utf8JsonReader@,System.Type,System.Text.Json.JsonSerializerOptions)">
+            <summary>Reads and converts the JSON to type <typeparamref name="T" />.</summary>
+            <param name="reader">The reader.</param>
+            <param name="typeToConvert">The type to convert.</param>
+            <param name="options">An object that specifies serialization options to use.</param>
+            <returns>The converted value.</returns>
+        </member>
+        <member name="M:Graeae.Models.SchemaDraft4.Draft4IdKeywordJsonConverter.Write(System.Text.Json.Utf8JsonWriter,Graeae.Models.SchemaDraft4.Draft4IdKeyword,System.Text.Json.JsonSerializerOptions)">
+            <summary>Writes a specified value as JSON.</summary>
+            <param name="writer">The writer to write to.</param>
+            <param name="value">The value to convert to JSON.</param>
+            <param name="options">An object that specifies serialization options to use.</param>
         </member>
         <member name="T:Graeae.Models.SchemaDraft4.Draft4Support">
             <summary>
@@ -1794,10 +1954,14 @@
             Defines the JSON Schema draft 4 meta-schema URI.
             </summary>
         </member>
-        <member name="F:Graeae.Models.SchemaDraft4.Draft4Support.Draft4MetaSchema">
+        <member name="P:Graeae.Models.SchemaDraft4.Draft4Support.Draft4MetaSchema">
             <summary>
             Defines the JSON Schema draft 4 meta-schema.
             </summary>
+            <remarks>
+            This property is initialized by the <see cref="M:Graeae.Models.SchemaDraft4.Draft4Support.Enable"/> method and
+            will be null if accessed before that method is called.
+            </remarks>
         </member>
         <member name="M:Graeae.Models.SchemaDraft4.Draft4Support.Enable">
             <summary>
@@ -1825,7 +1989,7 @@
             </summary>
             <param name="type">The instance type that is allowed.</param>
         </member>
-        <member name="M:Graeae.Models.SchemaDraft4.Draft4TypeKeyword.GetConstraint(Json.Schema.SchemaConstraint,System.Collections.Generic.IReadOnlyList{Json.Schema.KeywordConstraint},Json.Schema.EvaluationContext)">
+        <member name="M:Graeae.Models.SchemaDraft4.Draft4TypeKeyword.GetConstraint(Json.Schema.SchemaConstraint,System.ReadOnlySpan{Json.Schema.KeywordConstraint},Json.Schema.EvaluationContext)">
             <summary>Builds a constraint object for a keyword.</summary>
             <param name="schemaConstraint">The <see cref="T:Json.Schema.SchemaConstraint" /> for the schema object that houses this keyword.</param>
             <param name="localConstraints">
@@ -1834,6 +1998,24 @@
             </param>
             <param name="context">The <see cref="T:Json.Schema.EvaluationContext" />.</param>
             <returns>A constraint object.</returns>
+        </member>
+        <member name="T:Graeae.Models.SchemaDraft4.Draft4TypeKeywordConverter">
+            <summary>
+            JSON converter for <see cref="T:Graeae.Models.SchemaDraft4.Draft4TypeKeyword"/>
+            </summary>
+        </member>
+        <member name="M:Graeae.Models.SchemaDraft4.Draft4TypeKeywordConverter.Read(System.Text.Json.Utf8JsonReader@,System.Type,System.Text.Json.JsonSerializerOptions)">
+            <summary>Reads and converts the JSON to type <typeparamref name="T" />.</summary>
+            <param name="reader">The reader.</param>
+            <param name="typeToConvert">The type to convert.</param>
+            <param name="options">An object that specifies serialization options to use.</param>
+            <returns>The converted value.</returns>
+        </member>
+        <member name="M:Graeae.Models.SchemaDraft4.Draft4TypeKeywordConverter.Write(System.Text.Json.Utf8JsonWriter,Graeae.Models.SchemaDraft4.Draft4TypeKeyword,System.Text.Json.JsonSerializerOptions)">
+            <summary>Writes a specified value as JSON.</summary>
+            <param name="writer">The writer to write to.</param>
+            <param name="value">The value to convert to JSON.</param>
+            <param name="options">An object that specifies serialization options to use.</param>
         </member>
         <member name="T:Graeae.Models.SchemaDraft4.JsonSchemaKeywordExtensions">
             <summary>
@@ -1909,7 +2091,7 @@
             </summary>
             <param name="value">Whether the `minimum` value should be considered exclusive.</param>
         </member>
-        <member name="M:Graeae.Models.SchemaDraft4.NullableKeyword.GetConstraint(Json.Schema.SchemaConstraint,System.Collections.Generic.IReadOnlyList{Json.Schema.KeywordConstraint},Json.Schema.EvaluationContext)">
+        <member name="M:Graeae.Models.SchemaDraft4.NullableKeyword.GetConstraint(Json.Schema.SchemaConstraint,System.ReadOnlySpan{Json.Schema.KeywordConstraint},Json.Schema.EvaluationContext)">
             <summary>Builds a constraint object for a keyword.</summary>
             <param name="schemaConstraint">The <see cref="T:Json.Schema.SchemaConstraint" /> for the schema object that houses this keyword.</param>
             <param name="localConstraints">
@@ -1918,6 +2100,24 @@
             </param>
             <param name="context">The <see cref="T:Json.Schema.EvaluationContext" />.</param>
             <returns>A constraint object.</returns>
+        </member>
+        <member name="T:Graeae.Models.SchemaDraft4.NullableKeywordJsonConverter">
+            <summary>
+            JSON converter for <see cref="T:Graeae.Models.SchemaDraft4.NullableKeyword"/>
+            </summary>
+        </member>
+        <member name="M:Graeae.Models.SchemaDraft4.NullableKeywordJsonConverter.Read(System.Text.Json.Utf8JsonReader@,System.Type,System.Text.Json.JsonSerializerOptions)">
+            <summary>Reads and converts the JSON to type <typeparamref name="T" />.</summary>
+            <param name="reader">The reader.</param>
+            <param name="typeToConvert">The type to convert.</param>
+            <param name="options">An object that specifies serialization options to use.</param>
+            <returns>The converted value.</returns>
+        </member>
+        <member name="M:Graeae.Models.SchemaDraft4.NullableKeywordJsonConverter.Write(System.Text.Json.Utf8JsonWriter,Graeae.Models.SchemaDraft4.NullableKeyword,System.Text.Json.JsonSerializerOptions)">
+            <summary>Writes a specified value as JSON.</summary>
+            <param name="writer">The writer to write to.</param>
+            <param name="value">The value to convert to JSON.</param>
+            <param name="options">An object that specifies serialization options to use.</param>
         </member>
         <member name="T:Graeae.Models.SecurityRequirement">
             <summary>

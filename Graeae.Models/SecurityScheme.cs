@@ -71,7 +71,7 @@ public class SecurityScheme : IRefTargetContainer
 	private protected SecurityScheme(){}
 #pragma warning restore CS8618
 
-	internal static SecurityScheme FromNode(JsonNode? node)
+	internal static SecurityScheme FromNode(JsonNode? node, JsonSerializerOptions? options)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -90,18 +90,18 @@ public class SecurityScheme : IRefTargetContainer
 		else
 		{
 			scheme = new SecurityScheme(obj.ExpectString("type", "securityScheme"));
-			scheme.Import(obj);
+			scheme.Import(obj, options);
 
 			obj.ValidateNoExtraKeys(KnownKeys, scheme.ExtensionData?.Keys);
 		}
 		return scheme;
 	}
 
-	private protected void Import(JsonObject obj)
+	private protected void Import(JsonObject obj, JsonSerializerOptions? options)
 	{
 		Description = obj.MaybeString("description", "response");
 		Name = obj.MaybeString("name", "securityScheme");
-		In = obj.MaybeEnum<SecuritySchemeLocation>("in", "securityScheme");
+		In = obj.MaybeEnum<SecuritySchemeLocation>("in", options);
 		Scheme = obj.MaybeString("scheme", "securityScheme");
 		BearerFormat = obj.MaybeString("bearerFormat", "securityScheme");
 		Flows = obj.TryGetPropertyValue("flows", out var v) ? OAuthFlowCollection.FromNode(v) : null;
@@ -109,7 +109,7 @@ public class SecurityScheme : IRefTargetContainer
 		ExtensionData = ExtensionData.FromNode(obj);
 	}
 
-	internal static JsonNode? ToNode(SecurityScheme? scheme)
+	internal static JsonNode? ToNode(SecurityScheme? scheme, JsonSerializerOptions? options)
 	{
 		if (scheme == null) return null;
 
@@ -126,7 +126,7 @@ public class SecurityScheme : IRefTargetContainer
 			obj.MaybeAdd("type", scheme.Type);
 			obj.MaybeAdd("description", scheme.Description);
 			obj.MaybeAdd("name", scheme.Name);
-			obj.MaybeAddEnum("in", scheme.In);
+			obj.MaybeAddEnum("in", scheme.In, options);
 			obj.MaybeAdd("scheme", scheme.Scheme);
 			obj.MaybeAdd("bearerFormat", scheme.BearerFormat);
 			obj.MaybeAdd("flows", OAuthFlowCollection.ToNode(scheme.Flows));
@@ -137,7 +137,7 @@ public class SecurityScheme : IRefTargetContainer
 		return obj;
 	}
 
-	object? IRefTargetContainer.Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(ReadOnlySpan<string> keys)
 	{
 		if (keys.Length == 0) return this;
 
@@ -200,14 +200,14 @@ public class SecuritySchemeRef : SecurityScheme, IComponentRef
 		Ref = new Uri(reference ?? throw new ArgumentNullException(nameof(reference)), UriKind.RelativeOrAbsolute);
 	}
 
-	async Task IComponentRef.Resolve(OpenApiDocument root)
+	async Task IComponentRef.Resolve(OpenApiDocument root, JsonSerializerOptions? options)
 	{
 		bool import(JsonNode? node)
 		{
 			if (node is not JsonObject obj) return false;
 
 			Type = obj.ExpectString("type", "securityScheme");
-			Import(obj);
+			Import(obj, options);
 			return true;
 		}
 
@@ -235,12 +235,12 @@ internal class SecuritySchemeJsonConverter : JsonConverter<SecurityScheme>
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");
 
-		return SecurityScheme.FromNode(obj);
+		return SecurityScheme.FromNode(obj, options);
 	}
 
 	public override void Write(Utf8JsonWriter writer, SecurityScheme value, JsonSerializerOptions options)
 	{
-		var json = SecurityScheme.ToNode(value);
+		var json = SecurityScheme.ToNode(value, options);
 
 		JsonSerializer.Serialize(writer, json, options);
 	}

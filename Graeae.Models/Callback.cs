@@ -16,7 +16,7 @@ public class Callback : Dictionary<CallbackKeyExpression, PathItem>, IRefTargetC
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	internal static Callback FromNode(JsonNode? node)
+	internal static Callback FromNode(JsonNode? node, JsonSerializerOptions? options)
 	{
 		if (node is not JsonObject obj)
 			throw new JsonException("Expected an object");
@@ -35,19 +35,19 @@ public class Callback : Dictionary<CallbackKeyExpression, PathItem>, IRefTargetC
 		else
 		{
 			callback = new Callback();
-			callback.Import(obj);
+			callback.Import(obj, options);
 		}
 		return callback;
 	}
 
-	private protected void Import(JsonObject obj)
+	private protected void Import(JsonObject obj, JsonSerializerOptions? options)
 	{
 		ExtensionData = ExtensionData.FromNode(obj);
 
 		foreach (var (key, value) in obj)
 		{
 			if (key.StartsWith("x-")) continue;
-			Add(CallbackKeyExpression.Parse(key), PathItem.FromNode(value));
+			Add(CallbackKeyExpression.Parse(key), PathItem.FromNode(value, options));
 		}
 	}
 
@@ -75,7 +75,7 @@ public class Callback : Dictionary<CallbackKeyExpression, PathItem>, IRefTargetC
 		return obj;
 	}
 
-	object? IRefTargetContainer.Resolve(Span<string> keys)
+	object? IRefTargetContainer.Resolve(ReadOnlySpan<string> keys)
 	{
 		if (keys.Length == 0) return null;
 
@@ -145,13 +145,13 @@ public class CallbackRef : Callback, IComponentRef
 		Ref = new Uri(reference ?? throw new ArgumentNullException(nameof(reference)), UriKind.RelativeOrAbsolute);
 	}
 
-	async Task IComponentRef.Resolve(OpenApiDocument root)
+	async Task IComponentRef.Resolve(OpenApiDocument root, JsonSerializerOptions? options)
 	{
 		bool import(JsonNode? node)
 		{
 			if (node is not JsonObject obj) return false;
 
-			Import(obj);
+			Import(obj, options);
 			return true;
 		}
 
@@ -175,7 +175,7 @@ internal class CallbackJsonConverter : JsonConverter<Callback>
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
 		          throw new JsonException("Expected an object");
 
-		return Callback.FromNode(obj);
+		return Callback.FromNode(obj, options);
 	}
 
 	public override void Write(Utf8JsonWriter writer, Callback value, JsonSerializerOptions options)

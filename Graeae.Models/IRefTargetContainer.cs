@@ -2,5 +2,5 @@
 
 internal interface IRefTargetContainer
 {
-	object? Resolve(Span<string> keys);
+	object? Resolve(ReadOnlySpan<string> keys);
 }

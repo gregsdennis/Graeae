@@ -58,19 +58,19 @@ public class Draft4ExclusiveMaximumKeyword : IJsonSchemaKeyword
 	/// </param>
 	/// <param name="context">The <see cref="T:Json.Schema.EvaluationContext" />.</param>
 	/// <returns>A constraint object.</returns>
-	public KeywordConstraint GetConstraint(SchemaConstraint schemaConstraint, IReadOnlyList<KeywordConstraint> localConstraints, EvaluationContext context)
+	public KeywordConstraint GetConstraint(SchemaConstraint schemaConstraint, ReadOnlySpan<KeywordConstraint> localConstraints, EvaluationContext context)
 	{
 		if (BoolValue.HasValue)
 		{
 			if (!BoolValue.Value) return KeywordConstraint.Skip;
 
-			var maximumConstraint = localConstraints.SingleOrDefault(x => x.Keyword == MaximumKeyword.Name);
+			var maximumConstraint = localConstraints.GetKeywordConstraint<MaximumKeyword>();
 			if (maximumConstraint == null) return KeywordConstraint.Skip;
 
 			var value = schemaConstraint.LocalSchema.GetMaximum()!.Value;
 			return new KeywordConstraint(Name, (e, c) => Evaluator(e, c, value))
 			{
-				SiblingDependencies = new[] { maximumConstraint }
+				SiblingDependencies = [maximumConstraint]
 			};
 		}
 
@@ -86,15 +86,24 @@ public class Draft4ExclusiveMaximumKeyword : IJsonSchemaKeyword
 			return;
 		}
 
-		var number = evaluation.LocalInstance!.AsValue().GetNumber();
-
+		var number = evaluation.LocalInstance!.AsValue().GetNumber()!.Value;
 		if (number >= limit)
-			evaluation.Results.Fail(Name, ErrorMessages.GetExclusiveMaximum(context.Options.Culture), ("received", number), ("limit", BoolValue));
+			evaluation.Results.Fail(Name, ErrorMessages.GetExclusiveMaximum(context.Options.Culture)
+				.ReplaceToken("received", number)
+				.ReplaceToken("limit", BoolValue!));
 	}
 }
 
-internal class Draft4ExclusiveMaximumKeywordJsonConverter : JsonConverter<Draft4ExclusiveMaximumKeyword>
+/// <summary>
+/// JSON converter for <see cref="Draft4ExclusiveMaximumKeyword"/>
+/// </summary>
+public class Draft4ExclusiveMaximumKeywordJsonConverter : WeaklyTypedJsonConverter<Draft4ExclusiveMaximumKeyword>
 {
+	/// <summary>Reads and converts the JSON to type <typeparamref name="T" />.</summary>
+	/// <param name="reader">The reader.</param>
+	/// <param name="typeToConvert">The type to convert.</param>
+	/// <param name="options">An object that specifies serialization options to use.</param>
+	/// <returns>The converted value.</returns>
 	public override Draft4ExclusiveMaximumKeyword Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
 		return reader.TokenType switch
@@ -105,15 +114,15 @@ internal class Draft4ExclusiveMaximumKeywordJsonConverter : JsonConverter<Draft4
 		};
 	}
 
+	/// <summary>Writes a specified value as JSON.</summary>
+	/// <param name="writer">The writer to write to.</param>
+	/// <param name="value">The value to convert to JSON.</param>
+	/// <param name="options">An object that specifies serialization options to use.</param>
 	public override void Write(Utf8JsonWriter writer, Draft4ExclusiveMaximumKeyword value, JsonSerializerOptions options)
 	{
 		if (value.BoolValue.HasValue)
-		{
-			writer.WriteBoolean(Draft4ExclusiveMaximumKeyword.Name, value.BoolValue.Value);
-		}
+			writer.WriteBooleanValue(value.BoolValue.Value);
 		else
-		{
-			writer.WriteNumber(Draft4ExclusiveMaximumKeyword.Name, value.NumberValue!.Value);
-		}
+			writer.WriteNumberValue(value.NumberValue!.Value);
 	}
 }
