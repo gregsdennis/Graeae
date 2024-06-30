@@ -6,6 +6,7 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <PackageId>Graeae.Models</PackageId>
+    <NoWarn>IDE0290</NoWarn>
     <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">true</IsAotCompatible>
 
     <Authors>Greg Dennis</Authors>
@@ -46,6 +47,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="JsonPointer.Net" Version="5.0.1" />
     <PackageReference Include="JsonSchema.Net" Version="7.1.1" />
     <PackageReference Include="JsonSchema.Net.OpenApi" Version="3.1.0" />
     <PackageReference Include="Yaml2JsonNode" Version="2.1.0" />

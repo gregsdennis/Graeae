@@ -1807,6 +1807,24 @@
             <param name="context">The <see cref="T:Json.Schema.EvaluationContext" />.</param>
             <returns>A constraint object.</returns>
         </member>
+        <member name="T:Graeae.Models.SchemaDraft4.Draft4ExclusiveMaximumKeywordJsonConverter">
+            <summary>
+            JSON converter for <see cref="T:Graeae.Models.SchemaDraft4.Draft4ExclusiveMaximumKeyword"/>
+            </summary>
+        </member>
+        <member name="M:Graeae.Models.SchemaDraft4.Draft4ExclusiveMaximumKeywordJsonConverter.Read(System.Text.Json.Utf8JsonReader@,System.Type,System.Text.Json.JsonSerializerOptions)">
+            <summary>Reads and converts the JSON to type <typeparamref name="T" />.</summary>
+            <param name="reader">The reader.</param>
+            <param name="typeToConvert">The type to convert.</param>
+            <param name="options">An object that specifies serialization options to use.</param>
+            <returns>The converted value.</returns>
+        </member>
+        <member name="M:Graeae.Models.SchemaDraft4.Draft4ExclusiveMaximumKeywordJsonConverter.Write(System.Text.Json.Utf8JsonWriter,Graeae.Models.SchemaDraft4.Draft4ExclusiveMaximumKeyword,System.Text.Json.JsonSerializerOptions)">
+            <summary>Writes a specified value as JSON.</summary>
+            <param name="writer">The writer to write to.</param>
+            <param name="value">The value to convert to JSON.</param>
+            <param name="options">An object that specifies serialization options to use.</param>
+        </member>
         <member name="T:Graeae.Models.SchemaDraft4.Draft4ExclusiveMinimumKeyword">
             <summary>
             Overrides the JSON Schema <see cref="T:Json.Schema.ExclusiveMinimumKeyword"/> to support draft 4 boolean values.
@@ -1849,6 +1867,24 @@
             <param name="context">The <see cref="T:Json.Schema.EvaluationContext" />.</param>
             <returns>A constraint object.</returns>
         </member>
+        <member name="T:Graeae.Models.SchemaDraft4.Draft4ExclusiveMinimumKeywordJsonConverter">
+            <summary>
+            JSON converter for <see cref="T:Graeae.Models.SchemaDraft4.Draft4ExclusiveMinimumKeyword"/>
+            </summary>
+        </member>
+        <member name="M:Graeae.Models.SchemaDraft4.Draft4ExclusiveMinimumKeywordJsonConverter.Read(System.Text.Json.Utf8JsonReader@,System.Type,System.Text.Json.JsonSerializerOptions)">
+            <summary>Reads and converts the JSON to type <typeparamref name="T" />.</summary>
+            <param name="reader">The reader.</param>
+            <param name="typeToConvert">The type to convert.</param>
+            <param name="options">An object that specifies serialization options to use.</param>
+            <returns>The converted value.</returns>
+        </member>
+        <member name="M:Graeae.Models.SchemaDraft4.Draft4ExclusiveMinimumKeywordJsonConverter.Write(System.Text.Json.Utf8JsonWriter,Graeae.Models.SchemaDraft4.Draft4ExclusiveMinimumKeyword,System.Text.Json.JsonSerializerOptions)">
+            <summary>Writes a specified value as JSON.</summary>
+            <param name="writer">The writer to write to.</param>
+            <param name="value">The value to convert to JSON.</param>
+            <param name="options">An object that specifies serialization options to use.</param>
+        </member>
         <member name="T:Graeae.Models.SchemaDraft4.Draft4IdKeyword">
             <summary>
             Represents the JSON Schema draft 4 `id` keyword.
@@ -1879,6 +1915,24 @@
             </param>
             <param name="context">The <see cref="T:Json.Schema.EvaluationContext" />.</param>
             <returns>A constraint object.</returns>
+        </member>
+        <member name="T:Graeae.Models.SchemaDraft4.Draft4IdKeywordJsonConverter">
+            <summary>
+            JSON converter for <see cref="T:Graeae.Models.SchemaDraft4.Draft4IdKeyword"/>
+            </summary>
+        </member>
+        <member name="M:Graeae.Models.SchemaDraft4.Draft4IdKeywordJsonConverter.Read(System.Text.Json.Utf8JsonReader@,System.Type,System.Text.Json.JsonSerializerOptions)">
+            <summary>Reads and converts the JSON to type <typeparamref name="T" />.</summary>
+            <param name="reader">The reader.</param>
+            <param name="typeToConvert">The type to convert.</param>
+            <param name="options">An object that specifies serialization options to use.</param>
+            <returns>The converted value.</returns>
+        </member>
+        <member name="M:Graeae.Models.SchemaDraft4.Draft4IdKeywordJsonConverter.Write(System.Text.Json.Utf8JsonWriter,Graeae.Models.SchemaDraft4.Draft4IdKeyword,System.Text.Json.JsonSerializerOptions)">
+            <summary>Writes a specified value as JSON.</summary>
+            <param name="writer">The writer to write to.</param>
+            <param name="value">The value to convert to JSON.</param>
+            <param name="options">An object that specifies serialization options to use.</param>
         </member>
         <member name="T:Graeae.Models.SchemaDraft4.Draft4Support">
             <summary>
@@ -1944,6 +1998,24 @@
             </param>
             <param name="context">The <see cref="T:Json.Schema.EvaluationContext" />.</param>
             <returns>A constraint object.</returns>
+        </member>
+        <member name="T:Graeae.Models.SchemaDraft4.Draft4TypeKeywordConverter">
+            <summary>
+            JSON converter for <see cref="T:Graeae.Models.SchemaDraft4.Draft4TypeKeyword"/>
+            </summary>
+        </member>
+        <member name="M:Graeae.Models.SchemaDraft4.Draft4TypeKeywordConverter.Read(System.Text.Json.Utf8JsonReader@,System.Type,System.Text.Json.JsonSerializerOptions)">
+            <summary>Reads and converts the JSON to type <typeparamref name="T" />.</summary>
+            <param name="reader">The reader.</param>
+            <param name="typeToConvert">The type to convert.</param>
+            <param name="options">An object that specifies serialization options to use.</param>
+            <returns>The converted value.</returns>
+        </member>
+        <member name="M:Graeae.Models.SchemaDraft4.Draft4TypeKeywordConverter.Write(System.Text.Json.Utf8JsonWriter,Graeae.Models.SchemaDraft4.Draft4TypeKeyword,System.Text.Json.JsonSerializerOptions)">
+            <summary>Writes a specified value as JSON.</summary>
+            <param name="writer">The writer to write to.</param>
+            <param name="value">The value to convert to JSON.</param>
+            <param name="options">An object that specifies serialization options to use.</param>
         </member>
         <member name="T:Graeae.Models.SchemaDraft4.JsonSchemaKeywordExtensions">
             <summary>
@@ -2028,6 +2100,24 @@
             </param>
             <param name="context">The <see cref="T:Json.Schema.EvaluationContext" />.</param>
             <returns>A constraint object.</returns>
+        </member>
+        <member name="T:Graeae.Models.SchemaDraft4.NullableKeywordJsonConverter">
+            <summary>
+            JSON converter for <see cref="T:Graeae.Models.SchemaDraft4.NullableKeyword"/>
+            </summary>
+        </member>
+        <member name="M:Graeae.Models.SchemaDraft4.NullableKeywordJsonConverter.Read(System.Text.Json.Utf8JsonReader@,System.Type,System.Text.Json.JsonSerializerOptions)">
+            <summary>Reads and converts the JSON to type <typeparamref name="T" />.</summary>
+            <param name="reader">The reader.</param>
+            <param name="typeToConvert">The type to convert.</param>
+            <param name="options">An object that specifies serialization options to use.</param>
+            <returns>The converted value.</returns>
+        </member>
+        <member name="M:Graeae.Models.SchemaDraft4.NullableKeywordJsonConverter.Write(System.Text.Json.Utf8JsonWriter,Graeae.Models.SchemaDraft4.NullableKeyword,System.Text.Json.JsonSerializerOptions)">
+            <summary>Writes a specified value as JSON.</summary>
+            <param name="writer">The writer to write to.</param>
+            <param name="value">The value to convert to JSON.</param>
+            <param name="options">An object that specifies serialization options to use.</param>
         </member>
         <member name="T:Graeae.Models.SecurityRequirement">
             <summary>
