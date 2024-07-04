@@ -16,11 +16,11 @@
     <PackageIcon>openapi.png</PackageIcon>
     <RepositoryUrl>https://github.com/gregsdennis/Graeae</RepositoryUrl>
     <PackageTags>openapi json schema models</PackageTags>
-    <PackageReleaseNotes>Edit Release notes in file RELEASE_NOTES.md in the repo root.</PackageReleaseNotes>
+    <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/../RELEASE_NOTES.md"))</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <DocumentationFile>Graeae.Models.xml</DocumentationFile>
-    <Version>0.3.1</Version>
-    <FileVersion>0.3.1.0</FileVersion>
+    <Version>0.3.1.1</Version>
+    <FileVersion>0.3.1.1</FileVersion>
     <AssemblyVersion>0.3.0.0</AssemblyVersion>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
@@ -40,6 +40,7 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+    <None Include="..\RELEASE_NOTES.md" Link="RELEASE_NOTES.md" />
     <None Include="..\Resources\openapi.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
@@ -52,13 +53,4 @@
     <PackageReference Include="JsonSchema.Net.OpenApi" Version="3.1.0" />
     <PackageReference Include="Yaml2JsonNode" Version="2.1.0" />
   </ItemGroup>
-
-  <Target Name="PreparePackageReleaseNotesFromFile" BeforeTargets="GenerateNuspec">
-    <ReadLinesFromFile File="../RELEASE-NOTES.md" >
-      <Output TaskParameter="Lines" ItemName="ReleaseNoteLines"/>
-    </ReadLinesFromFile>
-    <PropertyGroup>
-      <PackageReleaseNotes>@(ReleaseNoteLines, '%0a')</PackageReleaseNotes>
-    </PropertyGroup>
-  </Target>
 </Project>

@@ -1,5 +1,7 @@
 [0.3.1](https://github.com/gregsdennis/Graeae/pull/10)
 
+_v0.3.1.1 is a re-publish to include these release notes._
+
 - Added `.EvaluatePayload()` extension on `OpenApiDocument`.
 - Updated array members from `IEnumerable<T>` to `IReadOnlyList<T>` to enable indexer access.
 
