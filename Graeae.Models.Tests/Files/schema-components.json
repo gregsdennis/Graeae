@@ -1,5 +1,10 @@
 {
-  "components": {
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Doc for payload validation",
+    "version": "1.0.0"
+  },
+ "components": {
     "schemas": {
       "outer": {
         "type": "object",
