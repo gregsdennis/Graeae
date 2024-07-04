@@ -871,6 +871,41 @@
             <param name="pointer">The expected location</param>
             <returns>The object, if an object of that type exists at that location; otherwise null.</returns>
         </member>
+        <member name="T:Graeae.Models.OpenApiExtensions">
+            <summary>
+            Provides extensions on various OpenAPI types.
+            </summary>
+        </member>
+        <member name="M:Graeae.Models.OpenApiExtensions.EvaluatePayload(Graeae.Models.OpenApiDocument,System.Text.Json.Nodes.JsonNode,Json.Pointer.JsonPointer,Json.Schema.EvaluationOptions)">
+            <summary>
+            Validates a payload against the schema at the indicated location.
+            </summary>
+            <param name="openApiDocument">The OpenAPI document.</param>
+            <param name="payload">The payload to validate.</param>
+            <param name="schemaLocation">The location within the document where the schema can be found.</param>
+            <param name="options">The evaluation options.  This should be the same options object used to initialize the OpenAPI document.</param>
+            <returns>The evaluation options if the schema was found; otherwise null.</returns>
+        </member>
+        <member name="M:Graeae.Models.OpenApiExtensions.EvaluatePayload(Graeae.Models.OpenApiDocument,System.Text.Json.JsonDocument,Json.Pointer.JsonPointer,Json.Schema.EvaluationOptions)">
+            <summary>
+            Validates a payload against the schema at the indicated location.
+            </summary>
+            <param name="openApiDocument">The OpenAPI document.</param>
+            <param name="payload">The payload to validate.</param>
+            <param name="schemaLocation">The location within the document where the schema can be found.</param>
+            <param name="options">The evaluation options.  This should be the same options object used to initialize the OpenAPI document.</param>
+            <returns>The evaluation options if the schema was found; otherwise null.</returns>
+        </member>
+        <member name="M:Graeae.Models.OpenApiExtensions.EvaluatePayload(Graeae.Models.OpenApiDocument,System.Text.Json.JsonElement,Json.Pointer.JsonPointer,Json.Schema.EvaluationOptions)">
+            <summary>
+            Validates a payload against the schema at the indicated location.
+            </summary>
+            <param name="openApiDocument">The OpenAPI document.</param>
+            <param name="payload">The payload to validate.</param>
+            <param name="schemaLocation">The location within the document where the schema can be found.</param>
+            <param name="options">The evaluation options.  This should be the same options object used to initialize the OpenAPI document.</param>
+            <returns>The evaluation options if the schema was found; otherwise null.</returns>
+        </member>
         <member name="T:Graeae.Models.OpenApiInfo">
             <summary>
             Models the info object.

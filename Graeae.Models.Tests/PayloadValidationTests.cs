@@ -22,13 +22,11 @@ public class PayloadValidationTests
 		await openApiDoc!.Initialize(options.SchemaRegistry);
 
 		var componentRef = JsonPointer.Parse("#/components/schemas/outer");
-		var schema = openApiDoc.Find<JsonSchema>(componentRef);
-
 		var fullFileName = GetFile(fileName);
 		var payloadJson = File.ReadAllText(fullFileName);
 		var document = JsonDocument.Parse(payloadJson);
 
-		var results = schema!.Evaluate(document, options);
+		var results = openApiDoc.EvaluatePayload(document, componentRef, options);
 		Assert.True(results.IsValid);
 	}
 
@@ -51,13 +49,12 @@ public class PayloadValidationTests
 		await openApiDoc!.Initialize(options.SchemaRegistry);
 
 		var componentRef = JsonPointer.Parse("#/components/schemas/outer");
-		var schema = openApiDoc.Find<JsonSchema>(componentRef);
 
 		var fullFileName = GetFile(fileName);
 		var payloadJson = File.ReadAllText(fullFileName);
 		var document = JsonDocument.Parse(payloadJson);
 
-		var results = schema.Evaluate(document, options);
+		var results = openApiDoc.EvaluatePayload(document, componentRef, options);
 		Assert.False(results.IsValid);
 	}
 }
