@@ -1,4 +1,7 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
+using Graeae.Models.SchemaDraft4;
+using Json.Pointer;
 using Json.Schema;
 using Yaml2JsonNode;
 
@@ -52,5 +55,59 @@ public class ValidationTests
 		Console.WriteLine(JsonSerializer.Serialize(results, TestEnvironment.TestOutputSerializerOptions));
 
 		Assert.IsTrue(results.IsValid);
+	}
+
+	[Test]
+	[TestCase("payload-valid.json")]
+	public void ReferencesValid(string fileName)
+	{
+		var schemaFileName = GetFile("schema-components.json");
+		IBaseDocument schema = JsonSchema.FromFile(schemaFileName);
+		SchemaRegistry.Global.Register(schema);
+
+		var componentRef = "#/components/schemas/outer";
+
+		var fullFileName = GetFile(fileName);
+		var payloadJson = File.ReadAllText(fullFileName);
+		var document = JsonDocument.Parse(payloadJson);
+		var options = new EvaluationOptions
+		{
+			EvaluateAs = Draft4Support.Draft4Version,
+		};
+
+		JsonSchema validateSchema = new JsonSchemaBuilder()
+			.Ref(new Uri(schema.BaseUri, componentRef));
+
+		var results = validateSchema.Evaluate(document, options);
+		Assert.True(results.IsValid);
+	}
+
+
+	[Test]
+	[TestCase("payload-invalid1.json")]
+	[TestCase("payload-invalid2.json")]
+	[TestCase("payload-invalid3.json")]
+	[TestCase("payload-invalid4.json")]
+	public void ReferencesInvalid(string fileName)
+	{
+		var schemaFileName = GetFile("schema-components.json");
+		IBaseDocument schema = JsonSchema.FromFile(schemaFileName);
+		SchemaRegistry.Global.Register(schema);
+
+		var componentRef = "#/components/schemas/outer";
+
+		var fullFileName = GetFile(fileName);
+		var payloadJson = File.ReadAllText(fullFileName);
+		var document = JsonDocument.Parse(payloadJson);
+		var options = new EvaluationOptions
+		{
+			EvaluateAs = Draft4Support.Draft4Version,
+		};
+
+		JsonSchema validateSchema = new JsonSchemaBuilder()
+			.Ref(new Uri(schema.BaseUri, componentRef));
+
+		var results = validateSchema.Evaluate(document, options);
+		Assert.False(results.IsValid);
 	}
 }

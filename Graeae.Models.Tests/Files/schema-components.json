@@ -1,0 +1,30 @@
+{
+  "components": {
+    "schemas": {
+      "outer": {
+        "type": "object",
+        "properties": {
+          "inner": {
+            "$ref": "#/components/schemas/inner"
+          }
+        },
+        "required": [
+          "inner"
+        ],
+        "additionalProperties": false
+      },
+      "inner": {
+        "type": "object",
+        "properties": {
+          "a": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "a"
+        ],
+        "additionalProperties": false
+      }
+    }
+  }
+}
