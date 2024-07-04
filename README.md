@@ -43,6 +43,29 @@ var asText = YamlSerializer.Serialize(openApiDoc);
 
 During initialization, if the document contains references that cannot be resolved, a `RefResolutionException` will be thrown.
 
+### Payload Validation
+
+To validate a payload against a JSON Schema within your OpenAPI document, use the `.EvaluatePayload()` extension method.
+
+```c#
+var payload = JsonNode.Parse("<content from HttpRequest or elsewhere>");
+var schemaComponentLocation = JsonPointer.Parse("/pointer/to/schema");
+var results = openApiDoc.EvaluatePayload(payload, schemaComponentLocation);
+```
+
+If your schema is under the `paths` section in the OpenAPI document, it may be easier and more readable to get the pointer using the `JsonPointer.Create()` method and passing the individual segments.  This avoids having to escape forward slashes `/`.
+
+```c#
+var schemaInPathLocation = JsonPointer.Create("paths", "/pets/{petId}", "get", "parameters", 0 , "schema");
+```
+
+Of course, if the path is well-known at dev time, you can also just access it directly:
+
+```c#
+var schemaInPath = openApiDoc.Paths["/pets/{petId}"].Get.Parameters[0].Schema;
+var results = schemaInPath.Evaluate(payload);
+```
+
 ### OpenAPI 3.0.x and JSON Schema Draft 4
 
 To support OpenAPI v3.0.x, you'll need to enable JSON Schema draft 4 support first.  To do that, add this to your app initialization:

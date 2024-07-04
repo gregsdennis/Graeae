@@ -16,11 +16,11 @@
     <PackageIcon>openapi.png</PackageIcon>
     <RepositoryUrl>https://github.com/gregsdennis/Graeae</RepositoryUrl>
     <PackageTags>openapi json schema models</PackageTags>
-    <PackageReleaseNotes>Release notes can be found at https://github.com/gregsdennis/Graeae</PackageReleaseNotes>
+    <PackageReleaseNotes>Edit Release notes in file RELEASE_NOTES.md in the repo root.</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <DocumentationFile>Graeae.Models.xml</DocumentationFile>
-    <Version>0.3.0</Version>
-    <FileVersion>0.3.0.0</FileVersion>
+    <Version>0.3.1</Version>
+    <FileVersion>0.3.1.0</FileVersion>
     <AssemblyVersion>0.3.0.0</AssemblyVersion>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
@@ -53,4 +53,12 @@
     <PackageReference Include="Yaml2JsonNode" Version="2.1.0" />
   </ItemGroup>
 
+  <Target Name="PreparePackageReleaseNotesFromFile" BeforeTargets="GenerateNuspec">
+    <ReadLinesFromFile File="../RELEASE-NOTES.md" >
+      <Output TaskParameter="Lines" ItemName="ReleaseNoteLines"/>
+    </ReadLinesFromFile>
+    <PropertyGroup>
+      <PackageReleaseNotes>@(ReleaseNoteLines, '%0a')</PackageReleaseNotes>
+    </PropertyGroup>
+  </Target>
 </Project>

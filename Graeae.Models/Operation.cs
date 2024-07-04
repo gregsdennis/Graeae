@@ -30,7 +30,7 @@ public class Operation : IRefTargetContainer
 	/// <summary>
 	/// Gets or sets the tags.
 	/// </summary>
-	public IEnumerable<string>? Tags { get; set; }
+	public IReadOnlyList<string>? Tags { get; set; }
 	/// <summary>
 	/// Gets or sets the summary.
 	/// </summary>
@@ -50,7 +50,7 @@ public class Operation : IRefTargetContainer
 	/// <summary>
 	/// Gets or sets the parameters.
 	/// </summary>
-	public IEnumerable<Parameter>? Parameters { get; set; }
+	public IReadOnlyList<Parameter>? Parameters { get; set; }
 	/// <summary>
 	/// Gets or sets the request body.
 	/// </summary>
@@ -70,11 +70,11 @@ public class Operation : IRefTargetContainer
 	/// <summary>
 	/// Gets or sets the security requirements.
 	/// </summary>
-	public IEnumerable<SecurityRequirement>? Security { get; set; }
+	public IReadOnlyList<SecurityRequirement>? Security { get; set; }
 	/// <summary>
 	/// Gets or sets the server collection.
 	/// </summary>
-	public IEnumerable<Server>? Servers { get; set; }
+	public IReadOnlyList<Server>? Servers { get; set; }
 	/// <summary>
 	/// Gets or set extension data.
 	/// </summary>

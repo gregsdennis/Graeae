@@ -70,11 +70,11 @@ public class PathItem : IRefTargetContainer
 	/// <summary>
 	/// Gets or sets the collection of servers.
 	/// </summary>
-	public IEnumerable<Server>? Servers { get; set; }
+	public IReadOnlyList<Server>? Servers { get; set; }
 	/// <summary>
 	/// Gets or sets the collection of parameters.
 	/// </summary>
-	public IEnumerable<Parameter>? Parameters { get; set; }
+	public IReadOnlyList<Parameter>? Parameters { get; set; }
 	/// <summary>
 	/// Gets or set extension data.
 	/// </summary>
