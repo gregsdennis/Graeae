@@ -52,7 +52,7 @@ public class OpenApiDocument : IBaseDocument
 	/// <summary>
 	/// Gets or sets the server collection.
 	/// </summary>
-	public IEnumerable<Server>? Servers { get; set; }
+	public IReadOnlyList<Server>? Servers { get; set; }
 	/// <summary>
 	/// Gets or sets the paths collection.
 	/// </summary>
@@ -68,11 +68,11 @@ public class OpenApiDocument : IBaseDocument
 	/// <summary>
 	/// Gets or sets the security requirements collection.
 	/// </summary>
-	public IEnumerable<SecurityRequirement>? Security { get; set; }
+	public IReadOnlyList<SecurityRequirement>? Security { get; set; }
 	/// <summary>
 	/// Gets or sets the tags.
 	/// </summary>
-	public IEnumerable<Tag>? Tags { get; set; }
+	public IReadOnlyList<Tag>? Tags { get; set; }
 	/// <summary>
 	/// Gets or sets external documentation.
 	/// </summary>

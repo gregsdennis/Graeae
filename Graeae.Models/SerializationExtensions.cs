@@ -28,7 +28,7 @@ internal static class SerializationExtensions
 		return factory(value);
 	}
 
-	public static IEnumerable<T>? MaybeArray<T>(this JsonObject obj, string propertyName, Func<JsonNode?, T> factory)
+	public static IReadOnlyList<T>? MaybeArray<T>(this JsonObject obj, string propertyName, Func<JsonNode?, T> factory)
 	{
 		if (!obj.TryGetPropertyValue(propertyName, out var array)) return null;
 		if (array is not JsonArray map)

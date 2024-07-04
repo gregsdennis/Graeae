@@ -20,7 +20,7 @@ public class ServerVariable : IRefTargetContainer
 	/// <summary>
 	/// Gets or sets an enumeration of string values to be used if the substitution options are from a limited set.
 	/// </summary>
-	public IEnumerable<string>? Enum { get; set; }
+	public IReadOnlyList<string>? Enum { get; set; }
 	/// <summary>
 	/// Gets the default value to use for substitution.
 	/// </summary>
