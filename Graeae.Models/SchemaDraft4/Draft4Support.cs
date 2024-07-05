@@ -32,20 +32,12 @@ public static class Draft4Support
 	/// This property is initialized by the <see cref="Enable"/> method and
 	/// will be null if accessed before that method is called.
 	/// </remarks>
-	public static JsonSchema Draft4MetaSchema { get; private set; } = null!;
+	public static JsonSchema Draft4MetaSchema => _draft4MetaSchema.Value;
+	private static readonly Lazy<JsonSchema> _draft4MetaSchema = new Lazy<JsonSchema>(InitializeDraft4Schema);
 
-	/// <summary>
-	/// Enables support for OpenAPI v3.0 and JSON Schema draft 4.
-	/// </summary>
-	public static void Enable()
+	private static JsonSchema InitializeDraft4Schema()
 	{
-		SchemaKeywordRegistry.Register<Draft4ExclusiveMaximumKeyword>(GraeaeSerializerContext.Default);
-		SchemaKeywordRegistry.Register<Draft4ExclusiveMinimumKeyword>(GraeaeSerializerContext.Default);
-		SchemaKeywordRegistry.Register<Draft4IdKeyword>(GraeaeSerializerContext.Default);
-		SchemaKeywordRegistry.Register<NullableKeyword>(GraeaeSerializerContext.Default);
-		SchemaKeywordRegistry.Register<Draft4TypeKeyword>(GraeaeSerializerContext.Default);
-
-		Draft4MetaSchema = new JsonSchemaBuilder()
+		JsonSchema draft4MetaSchema = new JsonSchemaBuilder()
 			.OasId(Draft4MetaSchemaUri)
 			.Schema(Draft4MetaSchemaUri)
 			.Description("Core schema meta-schema")
@@ -172,13 +164,27 @@ public static class Draft4Support
 				("not", JsonSchemaBuilder.RefRoot())
 			)
 			.Dependencies(
-				("exclusiveMaximum", new[] { "maximum" }),
-				("exclusiveMinimum", new[] { "minimum" })
+				("exclusiveMaximum", new [] { "maximum" }),
+				("exclusiveMinimum", new [] { "minimum" })
 			)
 			.Default(new JsonObject());
-		Draft4MetaSchema.BaseUri = new Uri(Draft4MetaSchemaUri);
+
+		draft4MetaSchema.BaseUri = new Uri(Draft4MetaSchemaUri);
 		// This allows draft 4 to be used as a meta-schema.
-		SchemaRegistry.RegisterNewSpecVersion(Draft4MetaSchema.BaseUri, Draft4Version);
+		SchemaRegistry.RegisterNewSpecVersion(draft4MetaSchema.BaseUri, Draft4Version);
+		return draft4MetaSchema;
+	}
+
+	/// <summary>
+	/// Enables support for OpenAPI v3.0 and JSON Schema draft 4.
+	/// </summary>
+	public static void Enable()
+	{
+		SchemaKeywordRegistry.Register<Draft4ExclusiveMaximumKeyword>(GraeaeSerializerContext.Default);
+		SchemaKeywordRegistry.Register<Draft4ExclusiveMinimumKeyword>(GraeaeSerializerContext.Default);
+		SchemaKeywordRegistry.Register<Draft4IdKeyword>(GraeaeSerializerContext.Default);
+		SchemaKeywordRegistry.Register<NullableKeyword>(GraeaeSerializerContext.Default);
+		SchemaKeywordRegistry.Register<Draft4TypeKeyword>(GraeaeSerializerContext.Default);
 
 		SchemaRegistry.Global.Register(Draft4MetaSchema);
 	}
