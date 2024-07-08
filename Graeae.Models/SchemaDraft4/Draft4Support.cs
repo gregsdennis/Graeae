@@ -8,6 +8,8 @@ namespace Graeae.Models.SchemaDraft4;
 /// </summary>
 public static class Draft4Support
 {
+	private static JsonSchema _draft4MetaSchema;
+
 	/// <summary>
 	/// Defines a JSON Schema draft 4 spec version.
 	/// </summary>
@@ -32,7 +34,6 @@ public static class Draft4Support
 	/// This property is initialized by the <see cref="Enable"/> method and
 	/// will be null if accessed before that method is called.
 	/// </remarks>
-	private static readonly JsonSchema _draft4MetaSchema; // move this to the top of the class
 	public static JsonSchema Draft4MetaSchema => _draft4MetaSchema ??= InitializeDraf4MetaSchema();
 
 	private static JsonSchema InitializeDraft4Schema()
