@@ -1993,10 +1993,6 @@
             <summary>
             Defines the JSON Schema draft 4 meta-schema.
             </summary>
-            <remarks>
-            This property is initialized by the <see cref="M:Graeae.Models.SchemaDraft4.Draft4Support.Enable"/> method and
-            will be null if accessed before that method is called.
-            </remarks>
         </member>
         <member name="M:Graeae.Models.SchemaDraft4.Draft4Support.Enable">
             <summary>

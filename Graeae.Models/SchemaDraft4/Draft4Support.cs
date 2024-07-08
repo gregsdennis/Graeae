@@ -30,13 +30,9 @@ public static class Draft4Support
 	/// <summary>
 	/// Defines the JSON Schema draft 4 meta-schema.
 	/// </summary>
-	/// <remarks>
-	/// This property is initialized by the <see cref="Enable"/> method and
-	/// will be null if accessed before that method is called.
-	/// </remarks>
-	public static JsonSchema Draft4MetaSchema => _draft4MetaSchema ??= InitializeDraf4MetaSchema();
+	public static JsonSchema Draft4MetaSchema => _draft4MetaSchema ??= InitializeDraft4MetaSchema();
 
-	private static JsonSchema InitializeDraft4Schema()
+	private static JsonSchema InitializeDraft4MetaSchema()
 	{
 		JsonSchema draft4MetaSchema = new JsonSchemaBuilder()
 			.OasId(Draft4MetaSchemaUri)
