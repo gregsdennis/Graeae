@@ -1,3 +1,7 @@
+[0.3.2](https://github.com/gregsdennis/Graeae/pull/11)
+
+- Fixed a bug that Draft4Support.Enable() crashed when called multiple times.
+
 [0.3.1](https://github.com/gregsdennis/Graeae/pull/10)
 
 _v0.3.1.1 is a re-publish to include these release notes._

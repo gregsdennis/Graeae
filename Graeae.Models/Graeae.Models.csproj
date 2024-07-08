@@ -19,9 +19,9 @@
     <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/../RELEASE_NOTES.md"))</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <DocumentationFile>Graeae.Models.xml</DocumentationFile>
-    <Version>0.3.1.2</Version>
-    <FileVersion>0.3.1.2</FileVersion>
-    <AssemblyVersion>0.3.0.0</AssemblyVersion>
+    <Version>0.3.2</Version>
+    <FileVersion>0.3.2</FileVersion>
+    <AssemblyVersion>0.3.2.0</AssemblyVersion>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
