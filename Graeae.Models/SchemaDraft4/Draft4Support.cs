@@ -8,7 +8,7 @@ namespace Graeae.Models.SchemaDraft4;
 /// </summary>
 public static class Draft4Support
 {
-	private static JsonSchema _draft4MetaSchema;
+	private static JsonSchema? _draft4MetaSchema;
 
 	/// <summary>
 	/// Defines a JSON Schema draft 4 spec version.
