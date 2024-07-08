@@ -32,8 +32,8 @@ public static class Draft4Support
 	/// This property is initialized by the <see cref="Enable"/> method and
 	/// will be null if accessed before that method is called.
 	/// </remarks>
-	public static JsonSchema Draft4MetaSchema => _draft4MetaSchema.Value;
-	private static readonly Lazy<JsonSchema> _draft4MetaSchema = new Lazy<JsonSchema>(InitializeDraft4Schema);
+	private static readonly JsonSchema _draft4MetaSchema; // move this to the top of the class
+	public static JsonSchema Draft4MetaSchema => _draft4MetaSchema ??= InitializeDraf4MetaSchema();
 
 	private static JsonSchema InitializeDraft4Schema()
 	{
