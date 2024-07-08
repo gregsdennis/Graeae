@@ -164,8 +164,8 @@ public static class Draft4Support
 				("not", JsonSchemaBuilder.RefRoot())
 			)
 			.Dependencies(
-				("exclusiveMaximum", new [] { "maximum" }),
-				("exclusiveMinimum", new [] { "minimum" })
+				("exclusiveMaximum", new[] { "maximum" }),
+				("exclusiveMinimum", new[] { "minimum" })
 			)
 			.Default(new JsonObject());
 
