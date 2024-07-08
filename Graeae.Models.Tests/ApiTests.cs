@@ -5,12 +5,8 @@ namespace Graeae.Models.Tests;
 public class ApiTests
 {
     [Test]
-    public void MultipleEnableDoesNotThrow()
+    public void InitializingAgainDoesNotThrow()
     {
-        Assert.DoesNotThrow(() =>
-        {
-            Draft4Support.Enable();
-            Draft4Support.Enable();
-        });
+        Draft4Support.Enable();
     }
 }
