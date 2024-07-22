@@ -181,7 +181,7 @@ internal static class SerializationExtensions
 
 		foreach (var kvp in extensionData)
 		{
-			obj.Add(key, value?.DeepClone());
+			obj.Add(kvp.Key, kvp.Value?.DeepClone());
 		}
 	}
 

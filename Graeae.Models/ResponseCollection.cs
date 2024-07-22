@@ -41,7 +41,7 @@ public class ResponseCollection : Dictionary<HttpStatusCode, Response>, IRefTarg
 			if (Enum.GetName(typeof(HttpStatusCode), code) == null)
 				throw new JsonException($"`{kvp.Key}` is not a known status code");
 
-			collection.Add((HttpStatusCode)code, Response.FromNode(value, options));
+			collection.Add((HttpStatusCode)code, Response.FromNode(kvp.Value, options));
 		}
 
 		// Validating extra keys is done in the loop.

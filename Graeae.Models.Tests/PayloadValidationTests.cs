@@ -27,7 +27,7 @@ public class PayloadValidationTests
 		var document = JsonDocument.Parse(payloadJson);
 
 		var results = openApiDoc.EvaluatePayload(document, componentRef, options);
-		Assert.True(results!.IsValid);
+		Assert.That(results!.IsValid, Is.True);
 	}
 
 
@@ -55,6 +55,6 @@ public class PayloadValidationTests
 		var document = JsonDocument.Parse(payloadJson);
 
 		var results = openApiDoc.EvaluatePayload(document, componentRef, options);
-		Assert.False(results!.IsValid);
+		Assert.That(results!.IsValid, Is.False);
 	}
 }
