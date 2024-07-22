@@ -32,7 +32,7 @@ public class PathCollection : Dictionary<PathTemplate, PathItem>, IRefTargetCont
 			if (!PathTemplate.TryParse(kvp.Key, out var template))
 				throw new JsonException($"`{kvp.Key}` is not a valid path template");
 
-			collection.Add(template, PathItem.FromNode(value, options));
+			collection.Add(template, PathItem.FromNode(kvp.Value, options));
 		}
 
 		// Validating extra keys is done in the loop.

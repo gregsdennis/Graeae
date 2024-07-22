@@ -80,6 +80,6 @@ public class RuntimeExpressionResolutionTests
 		var expr = RuntimeExpression.Parse(runtimeExpression);
 		var actual = expr.Resolve(_context, _pathTemplate);
 
-		Assert.AreEqual(expected, actual);
+		Assert.That(actual, Is.EqualTo(expected));
 	}
 }

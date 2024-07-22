@@ -64,7 +64,7 @@ public class RefResolutionTests
 
 		var validation = start!.Evaluate(instance, options);
 
-		Assert.IsTrue(validation.IsValid);
+		Assert.That(validation.IsValid, Is.True);
 	}
 
 	[Test]

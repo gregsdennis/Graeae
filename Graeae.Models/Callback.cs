@@ -46,8 +46,8 @@ public class Callback : Dictionary<CallbackKeyExpression, PathItem>, IRefTargetC
 
 		foreach (var kvp in obj)
 		{
-			if (key.StartsWith("x-")) continue;
-			Add(CallbackKeyExpression.Parse(key), PathItem.FromNode(value, options));
+			if (kvp.Key.StartsWith("x-")) continue;
+			Add(CallbackKeyExpression.Parse(kvp.Key), PathItem.FromNode(kvp.Value, options));
 		}
 	}
 
