@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Graeae.Models;
@@ -23,15 +23,12 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
 		var handlerClasses = context.SyntaxProvider.CreateSyntaxProvider(HandlerClassPredicate, HandlerClassTransform)
-			.Where(x => x is not null)
-			.Collect();
+			.Where(x => x is not null);
 
 		var files = context.AdditionalTextsProvider.Where(static file => file.Path.EndsWith("openapi.yaml"));
 		var namesAndContents = files.Select((f, ct) => (Name: Path.GetFileNameWithoutExtension(f.Path), Content: f.GetText(ct)?.ToString(), Path: f.Path));
 
-		context.RegisterSourceOutput(namesAndContents.Combine(handlerClasses), AddDiagnostics);
-
-		context.RegisterSourceOutput(handlerClasses, (productionContext, array) => { });
+		context.RegisterSourceOutput(namesAndContents.Combine(handlerClasses.Collect()), AddDiagnostics);
 	}
 
 	private static bool HandlerClassPredicate(SyntaxNode node, CancellationToken token)
@@ -41,7 +38,7 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 
 	private static (string, ClassDeclarationSyntax)? HandlerClassTransform(GeneratorSyntaxContext context, CancellationToken token)
 	{
-		var classDeclaration = Unsafe.As<ClassDeclarationSyntax>(context.Node);
+		var classDeclaration = (ClassDeclarationSyntax)context.Node;
 		var symbol = context.SemanticModel.GetDeclaredSymbol(context.Node);
 
 		if (symbol is INamedTypeSymbol)
@@ -148,7 +145,10 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 		}
 		catch (Exception e)
 		{
-			var errorMessage = $"Error: {e.Message}\n\nStack trace: {e.StackTrace}\n\nStack trace: {e.InnerException}";
+#if DEBUG
+			if (!Debugger.IsAttached) Debugger.Launch(); else Debugger.Break();
+#endif
+			var errorMessage = $"Error: {e.Message}\n\nStack trace: {e.StackTrace}\n\nStack trace: {e.InnerException?.StackTrace}";
 			context.ReportDiagnostic(Diagnostics.OperationalError(errorMessage));
 		}
 	}
@@ -195,7 +195,7 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 		}).Where(x => x is not null);
 		if (op.RequestBody is not null) 
 			implicitOpenApiParameters = implicitOpenApiParameters.Append(Parameter.Body);
-		var explicitOpenapiParameters = op.Parameters?.Select(x => new Parameter(x.Name, x.In)) ?? Enumerable.Empty<Parameter>();
+		var explicitOpenapiParameters = op.Parameters?.Select(x => new Parameter(x.Name, x.In)) ?? [];
 		var openApiParameters = implicitOpenApiParameters.Union(explicitOpenapiParameters).ToArray();
 		var methodParameterLists = methods.Where(x => string.Equals(x.Identifier.ValueText, opName, StringComparison.InvariantCultureIgnoreCase))
 			.Select(x => x.ParameterList.Parameters.SelectMany(GetParameters));

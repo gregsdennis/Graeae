@@ -111,20 +111,15 @@ public class OpenApiInfo : IRefTargetContainer
 	{
 		if (keys.Length == 0) return this;
 
-		int keysConsumed = 1;
-		IRefTargetContainer? target = null;
-		switch (keys[0])
+		IRefTargetContainer? target = keys[0] switch
 		{
-			case "contact":
-				target = Contact;
-				break;
-			case "license":
-				target = License;
-				break;
-		}
+			"contact" => Contact,
+			"license" => License,
+			_ => null
+		};
 
 		return target != null
-			? target.Resolve(keys.Slice(keysConsumed))
+			? target.Resolve(keys[1..])
 			: ExtensionData?.Resolve(keys);
 	}
 }

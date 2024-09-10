@@ -25,16 +25,43 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="8.0.4" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Json.More.Net" Version="2.0.2" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="JsonPointer.Net" Version="5.0.2" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="JsonSchema.Net" Version="7.1.2" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="JsonSchema.Net.OpenApi" Version="3.1.0" PrivateAssets="all" GeneratePathProperty="true" />
+
+    <PackageReference Include="YamlDotNet" Version="15.1.4" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="Yaml2JsonNode" Version="2.1.1" PrivateAssets="all" GeneratePathProperty="true" />
+    
+    <PackageReference Include="Graeae.Models" Version="0.3.3" PrivateAssets="all" GeneratePathProperty="true" />
+
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" PrivateAssets="all" GeneratePathProperty="true" />
+
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.10.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
     <PackageReference Include="PolySharp" Version="1.14.1" PrivateAssets="all" />
-</ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Graeae.Models\Graeae.Models.csproj" PrivateAssets="all" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetDependencyTargetPaths</GetTargetPathDependsOn>
+  </PropertyGroup>
+
+  <Target Name="GetDependencyTargetPaths">
+    <ItemGroup>
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Text_Json)\lib\netstandard2.0\System.Text.Json.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGJson_More_Net)\lib\netstandard2.0\Json.More.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGJsonPointer_Net)\lib\netstandard2.0\JsonPointer.Net.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGJsonSchema_Net)\lib\netstandard2.0\JsonSchema.Net.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGJsonSchema_Net_OpenApi)\lib\netstandard2.0\JsonSchema.Net.OpenApi.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGYamlDotNet)\lib\netstandard2.0\YamlDotNet.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGYaml2JsonNode)\lib\netstandard2.0\Yaml2JsonNode.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGGraeae_Models)\lib\netstandard2.0\Graeae.Models.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_Bcl_AsyncInterfaces)\lib\netstandard2.0\Microsoft.Bcl.AsyncInterfaces.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Text_Encodings_Web)\lib\netstandard2.0\System.Text.Encodings.Web.dll" IncludeRuntimeDependency="false" />
+    </ItemGroup>
+  </Target>
 
 </Project>

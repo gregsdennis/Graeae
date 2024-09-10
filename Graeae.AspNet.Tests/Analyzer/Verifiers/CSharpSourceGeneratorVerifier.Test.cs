@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
 using Microsoft.CodeAnalysis.Testing.Verifiers;
+#pragma warning disable CS0618 // Type or member is obsolete
 
 namespace Graeae.AspNet.Tests.Analyzer.Verifiers;
 

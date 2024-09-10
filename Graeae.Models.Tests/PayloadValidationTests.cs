@@ -12,7 +12,7 @@ public class PayloadValidationTests
 	public async Task ReferencesValid(string fileName)
 	{
 		var schemaFileName = GetFile("schema-components.json");
-		var fileText = File.ReadAllText(schemaFileName);
+		var fileText = await File.ReadAllTextAsync(schemaFileName);
 		var openApiDoc = JsonSerializer.Deserialize(fileText, TestSerializerContext.Default.OpenApiDocument);
 
 		var options = new EvaluationOptions
@@ -23,7 +23,7 @@ public class PayloadValidationTests
 
 		var componentRef = JsonPointer.Parse("#/components/schemas/outer");
 		var fullFileName = GetFile(fileName);
-		var payloadJson = File.ReadAllText(fullFileName);
+		var payloadJson = await File.ReadAllTextAsync(fullFileName);
 		var document = JsonDocument.Parse(payloadJson);
 
 		var results = openApiDoc.EvaluatePayload(document, componentRef, options);
@@ -39,7 +39,7 @@ public class PayloadValidationTests
 	{
 		var schemaFileName = GetFile("schema-components.json");
 
-		var fileText = File.ReadAllText(schemaFileName);
+		var fileText = await File.ReadAllTextAsync(schemaFileName);
 		var openApiDoc = JsonSerializer.Deserialize(fileText, TestSerializerContext.Default.OpenApiDocument);
 
 		var options = new EvaluationOptions
@@ -51,7 +51,7 @@ public class PayloadValidationTests
 		var componentRef = JsonPointer.Parse("#/components/schemas/outer");
 
 		var fullFileName = GetFile(fileName);
-		var payloadJson = File.ReadAllText(fullFileName);
+		var payloadJson = await File.ReadAllTextAsync(fullFileName);
 		var document = JsonDocument.Parse(payloadJson);
 
 		var results = openApiDoc.EvaluatePayload(document, componentRef, options);

@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Json.Schema;
@@ -201,6 +202,8 @@ public class ComponentCollection : IRefTargetContainer
 
 internal class ComponentCollectionJsonConverter : JsonConverter<ComponentCollection>
 {
+	[RequiresUnreferencedCode("Calls System.Text.Json.JsonSerializer.Deserialize<TValue>(ref Utf8JsonReader, JsonSerializerOptions)")]
+	[UnconditionalSuppressMessage("AOT", "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.", Justification = "<Pending>")]
 	public override ComponentCollection Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
@@ -209,6 +212,8 @@ internal class ComponentCollectionJsonConverter : JsonConverter<ComponentCollect
 		return ComponentCollection.FromNode(obj, options);
 	}
 
+	[RequiresUnreferencedCode("Calls System.Text.Json.JsonSerializer.Deserialize<TValue>(ref Utf8JsonReader, JsonSerializerOptions)")]
+	[UnconditionalSuppressMessage("AOT", "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.", Justification = "<Pending>")]
 	public override void Write(Utf8JsonWriter writer, ComponentCollection value, JsonSerializerOptions options)
 	{
 		var json = ComponentCollection.ToNode(value, options);
