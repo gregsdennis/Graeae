@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Graeae.Models;
+using Json.Schema;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -15,10 +17,10 @@ using Yaml2JsonNode;
 namespace Graeae.AspNet.Analyzer;
 
 /// <summary>
-/// Outputs diagnostics when the OAI description defines routes and operations that aren't implemented.
+/// Outputs diagnostics for handlers that handle routes or operations that are not listed in the OAI description.
 /// </summary>
 [Generator(LanguageNames.CSharp)]
-internal class MissingOperationsAnalyzer : IIncrementalGenerator
+internal class AdditionalOperationsAnalyzer : IIncrementalGenerator
 {
 	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
@@ -28,7 +30,7 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 		var files = context.AdditionalTextsProvider.Where(static file => file.Path.EndsWith("openapi.yaml"));
 		var namesAndContents = files.Select((f, ct) => (Name: Path.GetFileNameWithoutExtension(f.Path), Content: f.GetText(ct)?.ToString(), Path: f.Path));
 
-		context.RegisterSourceOutput(namesAndContents.Combine(handlerClasses.Collect()), AddDiagnostics);
+		context.RegisterSourceOutput(handlerClasses.Combine(namesAndContents.Collect()), AddDiagnostics);
 	}
 
 	private static bool HandlerClassPredicate(SyntaxNode node, CancellationToken token)
@@ -93,61 +95,64 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 		return false;
 	}
 
-	private static void AddDiagnostics(SourceProductionContext context, ((string Name, string? Content, string Path) File, ImmutableArray<(string Route, ClassDeclarationSyntax Type)?> Handlers) source)
+	private static void AddDiagnostics(SourceProductionContext context, ((string Route, ClassDeclarationSyntax Type)? Handler, ImmutableArray<(string Name, string? Content, string Path)> Files) source)
 	{
 		try
 		{
-			var file = source.File;
-			if (file.Content == null)
-				throw new Exception("Failed to read file \"" + file.Path + "\"");
-
-			var doc = YamlSerializer.Deserialize<OpenApiDocument>(file.Content);
-			doc!.Initialize().Wait();
-
-			if (doc.Paths == null)
+			// TODO: cache this somehow; don't want to do this for every handler
+			var docs = source.Files.Select(file =>
 			{
-				context.ReportDiagnostic(Diagnostics.NoPaths(file.Path));
+				if (file.Content == null)
+					throw new Exception("Failed to read file \"" + file.Path + "\"");
+				var doc = YamlSerializer.Deserialize<OpenApiDocument>(file.Content);
+				doc!.Initialize().Wait();
+
+				return doc;
+			}).ToArray();
+
+			var handler = source.Handler!.Value;
+
+			var allPaths = docs.SelectMany(x => x.Paths).ToList();
+			var path = allPaths.FirstOrDefault(x => x.Key.ToString() == handler.Route);
+			if (path.Key is null)
+			{
+				context.ReportDiagnostic(Diagnostics.AdditionalRouteHandler(handler.Route));
 				return;
 			}
 
-			foreach (var entry in doc.Paths)
+			var route = path.Key;
+			var pathItem = path.Value;
+
+			// need to invert this loop and check the collection of paths against each method
+
+			var methods = handler.Type.Members.OfType<MethodDeclarationSyntax>().ToArray();
+
+			foreach (var method in methods)
 			{
-				var route = entry.Key.ToString();
-				var handlerType = source.Handlers.FirstOrDefault(x => x?.Route == route)?.Type;
-
-				if (handlerType is null)
-				{
-					context.ReportDiagnostic(Diagnostics.MissingRouteHandler(route));
-					continue;
-				}
-
-				var methods = handlerType.Members.OfType<MethodDeclarationSyntax>().ToArray();
-
-				if (!MethodExists(entry.Key, entry.Value.Get, nameof(PathItem.Get), methods))
-					context.ReportDiagnostic(Diagnostics.MissingRouteOperationHandler(route, nameof(PathItem.Get)));
-				if (!MethodExists(entry.Key, entry.Value.Post, nameof(PathItem.Post), methods))
-					context.ReportDiagnostic(Diagnostics.MissingRouteOperationHandler(route, nameof(PathItem.Post)));
-				if (!MethodExists(entry.Key, entry.Value.Put, nameof(PathItem.Put), methods))
-					context.ReportDiagnostic(Diagnostics.MissingRouteOperationHandler(route, nameof(PathItem.Put)));
-				if (!MethodExists(entry.Key, entry.Value.Delete, nameof(PathItem.Delete), methods))
-					context.ReportDiagnostic(Diagnostics.MissingRouteOperationHandler(route, nameof(PathItem.Delete)));
-				if (!MethodExists(entry.Key, entry.Value.Trace, nameof(PathItem.Trace), methods))
-					context.ReportDiagnostic(Diagnostics.MissingRouteOperationHandler(route, nameof(PathItem.Trace)));
-				if (!MethodExists(entry.Key, entry.Value.Options, nameof(PathItem.Options), methods))
-					context.ReportDiagnostic(Diagnostics.MissingRouteOperationHandler(route, nameof(PathItem.Options)));
-				if (!MethodExists(entry.Key, entry.Value.Head, nameof(PathItem.Head), methods))
-					context.ReportDiagnostic(Diagnostics.MissingRouteOperationHandler(route, nameof(PathItem.Head)));
+				var (op, name) = GetMatchingOperation(method, pathItem);
+				if (!OperationExists(route, op, method))
+					context.ReportDiagnostic(Diagnostics.AdditionalRouteOperationHandler(route.ToString(), name!));
 			}
 		}
 		catch (Exception e)
 		{
-#if DEBUG
-			if (!Debugger.IsAttached) Debugger.Launch(); else Debugger.Break();
-#endif
 			var errorMessage = $"Error: {e.Message}\n\nStack trace: {e.StackTrace}\n\nStack trace: {e.InnerException?.StackTrace}";
 			context.ReportDiagnostic(Diagnostics.OperationalError(errorMessage));
 		}
 	}
+
+	private static (Operation? Op, string? Name) GetMatchingOperation(MethodDeclarationSyntax method, PathItem pathItem) =>
+		method.Identifier.ValueText.ToUpperInvariant() switch
+		{
+			"GET" => (pathItem.Get, nameof(pathItem.Get)),
+			"POST" => (pathItem.Post, nameof(pathItem.Post)),
+			"PUT" => (pathItem.Put, nameof(pathItem.Put)),
+			"DELETE" => (pathItem.Delete, nameof(pathItem.Delete)),
+			"TRACE" => (pathItem.Trace, nameof(pathItem.Trace)),
+			"OPTIONS" => (pathItem.Options, nameof(pathItem.Options)),
+			"HEAD" => (pathItem.Head, nameof(pathItem.Head)),
+			_ => (null, null)
+		};
 
 	private static readonly Regex TemplatedSegmentPattern = new(@"^\{(?<param>.*)\}$", RegexOptions.Compiled | RegexOptions.ECMAScript);
 
@@ -165,9 +170,9 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 		}
 	}
 
-	private static bool MethodExists(PathTemplate route, Operation? op, string opName, IEnumerable<MethodDeclarationSyntax> methods)
+	private static bool OperationExists(PathTemplate route, Operation? op, MethodDeclarationSyntax method)
 	{
-		if (op is null) return true;
+		if (op is null) return false;
 
 		// parameters can be implicitly or explicitly bound
 		//
@@ -193,10 +198,9 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 			implicitOpenApiParameters = implicitOpenApiParameters.Append(Parameter.Body);
 		var explicitOpenapiParameters = op.Parameters?.Select(x => new Parameter(x.Name, x.In)) ?? [];
 		var openApiParameters = implicitOpenApiParameters.Union(explicitOpenapiParameters).ToArray();
-		var methodParameterLists = methods.Where(x => string.Equals(x.Identifier.ValueText, opName, StringComparison.InvariantCultureIgnoreCase))
-			.Select(x => x.ParameterList.Parameters.SelectMany(GetParameters));
+		var methodParameterList = method.ParameterList.Parameters.SelectMany(GetParameters);
 
-		return methodParameterLists.Any(methodParameterList => openApiParameters.All(methodParameterList.Contains));
+		return openApiParameters.All(methodParameterList.Contains);
 	}
 
 	private static IEnumerable<Parameter> GetParameters(ParameterSyntax parameter)
@@ -241,5 +245,14 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 
 		attribute = null;
 		return false;
+	}
+}
+
+internal static class Debug
+{
+	[Conditional("DEBUG")]
+	public static void Break()
+	{
+		if (!Debugger.IsAttached) Debugger.Launch(); else Debugger.Break();
 	}
 }

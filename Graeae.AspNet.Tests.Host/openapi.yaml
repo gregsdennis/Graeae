@@ -13,6 +13,27 @@ paths:
             application/json:
               schema:
                 type: string
+      parameters:
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+    delete:
+      description: hello world
+      responses:
+        '200':
+          description: okay
+          content:
+            application/json:
+              schema:
+                type: string
+      parameters:
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
   /goodbye:
     get:
       description: goodbye world

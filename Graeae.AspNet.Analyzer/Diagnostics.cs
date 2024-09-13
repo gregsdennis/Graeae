@@ -15,4 +15,10 @@ public static class Diagnostics
 
 	public static Diagnostic MissingRouteOperationHandler(string route, string op) =>
 		Diagnostic.Create(new("GR0004", "Route not handled", $"Found no handler for '{op.ToUpperInvariant()} {route}'", "Path coverage", DiagnosticSeverity.Warning, true), Location.None, DiagnosticSeverity.Warning);
+
+	public static Diagnostic AdditionalRouteHandler(string route) =>
+		Diagnostic.Create(new("GR0005", "Route not published", $"Found handler type for route '{route}' but it does not appear in the OpenAPI definition", "Path coverage", DiagnosticSeverity.Warning, true), Location.None, DiagnosticSeverity.Warning);
+
+	public static Diagnostic AdditionalRouteOperationHandler(string route, string op) =>
+		Diagnostic.Create(new("GR0006", "Route not published", $"Found handler for '{op.ToUpperInvariant()} {route}' but it does not appear in the OpenAPI definition", "Path coverage", DiagnosticSeverity.Warning, true), Location.None, DiagnosticSeverity.Warning);
 }

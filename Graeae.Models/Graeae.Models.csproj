@@ -6,7 +6,7 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <PackageId>Graeae.Models</PackageId>
-    <NoWarn>IDE0290</NoWarn>
+    <NoWarn>IDE0290,CS1591,CS1735,IL3050,IL2026,IL2046</NoWarn>
     <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">true</IsAotCompatible>
 
     <Authors>Greg Dennis</Authors>

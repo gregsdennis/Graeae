@@ -4,6 +4,9 @@ var builder = WebApplication.CreateBuilder();
 
 var app = builder.Build();
 
-await app.MapOpenApi("openapi.yaml");
+await app.MapOpenApi("openapi.yaml", new OpenApiOptions
+{
+	IgnoreUnhandledPaths = true
+});
 
 app.Run();

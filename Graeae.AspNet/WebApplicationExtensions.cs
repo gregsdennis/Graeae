@@ -17,9 +17,12 @@ public static class WebApplicationExtensions
 	/// </summary>
 	/// <param name="app">The application builder</param>
 	/// <param name="openApiFileName">The file name of the Open API document</param>
+	/// <param name="options"></param>
 	/// <returns>The application builder.</returns>
-	public static async Task<IEndpointRouteBuilder> MapOpenApi(this IEndpointRouteBuilder app, string openApiFileName)
+	public static async Task<IEndpointRouteBuilder> MapOpenApi(this IEndpointRouteBuilder app, string openApiFileName, OpenApiOptions? options = null)
 	{
+		options ??= OpenApiOptions.Default;
+
 		var openApiText = await File.ReadAllTextAsync(openApiFileName);
 		var openApiDocument = YamlSerializer.Deserialize<OpenApiDocument>(openApiText)!;
 
@@ -29,35 +32,43 @@ public static class WebApplicationExtensions
 		{
 			foreach (var (pathTemplate, pathItem) in openApiDocument.Paths)
 			{
-				MapPath(app, pathTemplate, pathItem);
+				MapPath(app, pathTemplate, pathItem, options);
 			}
 		}
 
 		return app;
 	}
 
-	private static void MapPath(IEndpointRouteBuilder app, PathTemplate pathTemplate, PathItem pathItem)
+	private static Type[]? _allEntryTypes;
+	private static Type[] AllEntryTypes => _allEntryTypes ??= Assembly.GetEntryAssembly()!.GetTypes();
+
+	private static void MapPath(IEndpointRouteBuilder app, PathTemplate pathTemplate, PathItem pathItem, OpenApiOptions options)
 	{
 		var path = pathTemplate.ToString();
-		var type = Assembly.GetEntryAssembly()!.GetTypes()
-			           .SingleOrDefault(x => x.GetCustomAttribute<RequestHandlerAttribute>()?.Path == path)
-		           ?? throw new NotImplementedException($"A handler for '{path}' was not found.");
+		var type = AllEntryTypes.SingleOrDefault(x => x.GetCustomAttribute<RequestHandlerAttribute>()?.Path == path);
+		if (type == null)
+		{
+			if (!options.IgnoreUnhandledPaths)
+				throw new NotImplementedException($"A handler for '{path}' was not found.");
+
+			return;
+		}
 
 		if (pathItem.Get is not null)
 			MapOperation(app, nameof(pathItem.Get), path, type);
-		if (pathItem.Get is not null)
+		if (pathItem.Post is not null)
 			MapOperation(app, nameof(pathItem.Post), path, type);
-		if (pathItem.Get is not null)
+		if (pathItem.Put is not null)
 			MapOperation(app, nameof(pathItem.Put), path, type);
-		if (pathItem.Get is not null)
+		if (pathItem.Delete is not null)
 			MapOperation(app, nameof(pathItem.Delete), path, type);
-		if (pathItem.Get is not null)
+		if (pathItem.Trace is not null)
 			MapOperation(app, nameof(pathItem.Trace), path, type);
-		if (pathItem.Get is not null)
+		if (pathItem.Head is not null)
 			MapOperation(app, nameof(pathItem.Head), path, type);
-		if (pathItem.Get is not null)
+		if (pathItem.Options is not null)
 			MapOperation(app, nameof(pathItem.Options), path, type);
-		if (pathItem.Get is not null)
+		if (pathItem.Patch is not null)
 			MapOperation(app, nameof(pathItem.Patch), path, type);
 	}
 
@@ -68,7 +79,7 @@ public static class WebApplicationExtensions
 		foreach (var handlerMethod in handlerMethods)
 		{
 			var handlerDelegate = CreateDelegate(handlerMethod);
-			app.MapMethods(path, new[] { action }, handlerDelegate);
+			app.MapMethods(path, [action], handlerDelegate);
 		}
 	}
 

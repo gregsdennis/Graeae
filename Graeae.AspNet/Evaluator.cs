@@ -85,7 +85,7 @@ public static class Evaluator
 		{
 			case RuntimeExpressionSourceType.Header:
 				response.Headers.TryGetValue(expr.Token!, out var header);
-				return header;
+				return header!;
 			case RuntimeExpressionSourceType.Query:
 				throw new NotSupportedException("$response.query is not supported");
 			case RuntimeExpressionSourceType.Path:
