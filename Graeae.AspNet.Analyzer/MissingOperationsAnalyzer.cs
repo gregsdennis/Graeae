@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using Graeae.Models;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Yaml2JsonNode;
 
@@ -42,55 +39,13 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 		var symbol = context.SemanticModel.GetDeclaredSymbol(context.Node);
 
 		if (symbol is INamedTypeSymbol &&
-			TryGetAttribute(classDeclaration, "Graeae.AspNet.RequestHandlerAttribute", context.SemanticModel, token, out var attribute) &&
-			TryGetStringParameter(attribute!, out var route))
+		    classDeclaration.TryGetAttribute("Graeae.AspNet.RequestHandlerAttribute", context.SemanticModel, token, out var attribute) &&
+			attribute!.TryGetStringParameter(out var route))
 		{
 			return (route!, classDeclaration);
 		}
 
 		return null;
-	}
-
-	private static bool TryGetAttribute(ClassDeclarationSyntax candidate, string attributeName, SemanticModel semanticModel, CancellationToken cancellationToken, out AttributeSyntax? value)
-	{
-		foreach (var attributeList in candidate.AttributeLists)
-		{
-			foreach (var attribute in attributeList.Attributes)
-			{
-				var info = semanticModel.GetSymbolInfo(attribute, cancellationToken);
-				var symbol = info.Symbol;
-
-				if (symbol is IMethodSymbol method
-				    && method.ContainingType.ToDisplayString().Equals(attributeName, StringComparison.Ordinal))
-				{
-					value = attribute;
-					return true;
-				}
-			}
-		}
-
-		value = null;
-		return false;
-	}
-
-	private static bool TryGetStringParameter(AttributeSyntax attribute, out string? value)
-	{
-		if (attribute.ArgumentList is
-		    {
-			    Arguments.Count: 1,
-		    } argumentList)
-		{
-			var argument = argumentList.Arguments[0];
-
-			if (argument.Expression is LiteralExpressionSyntax literal)
-			{
-				value = literal.Token.Value?.ToString();
-				return true;
-			}
-		}
-
-		value = null;
-		return false;
 	}
 
 	private static void AddDiagnostics(SourceProductionContext context, ((string Name, string? Content, string Path) File, ImmutableArray<(string Route, ClassDeclarationSyntax Type)?> Handlers) source)
@@ -141,27 +96,8 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 		}
 		catch (Exception e)
 		{
-#if DEBUG
-			if (!Debugger.IsAttached) Debugger.Launch(); else Debugger.Break();
-#endif
 			var errorMessage = $"Error: {e.Message}\n\nStack trace: {e.StackTrace}\n\nStack trace: {e.InnerException?.StackTrace}";
 			context.ReportDiagnostic(Diagnostics.OperationalError(errorMessage));
-		}
-	}
-
-	private static readonly Regex TemplatedSegmentPattern = new(@"^\{(?<param>.*)\}$", RegexOptions.Compiled | RegexOptions.ECMAScript);
-
-	private record Parameter
-	{
-		public static readonly Parameter Body = new(string.Empty, ParameterLocation.Unspecified);
-
-		public string Name { get; }
-		public ParameterLocation In { get; }
-
-		public Parameter(string name, ParameterLocation @in)
-		{
-			Name = @in == ParameterLocation.Header ? name.ToLowerInvariant() : name;
-			In = @in;
 		}
 	}
 
@@ -184,7 +120,7 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 
 		var implicitOpenApiParameters = route.Segments.Select(x =>
 		{
-			var match = TemplatedSegmentPattern.Match(x);
+			var match = PathHelpers.TemplatedSegmentPattern.Match(x);
 			return match.Success
 				? new Parameter(match.Groups["param"].Value, ParameterLocation.Path)
 				: null;
@@ -194,52 +130,8 @@ internal class MissingOperationsAnalyzer : IIncrementalGenerator
 		var explicitOpenapiParameters = op.Parameters?.Select(x => new Parameter(x.Name, x.In)) ?? [];
 		var openApiParameters = implicitOpenApiParameters.Union(explicitOpenapiParameters).ToArray();
 		var methodParameterLists = methods.Where(x => string.Equals(x.Identifier.ValueText, opName, StringComparison.InvariantCultureIgnoreCase))
-			.Select(x => x.ParameterList.Parameters.SelectMany(GetParameters));
+			.Select(x => x.ParameterList.Parameters.SelectMany(AnalysisExtensions.GetParameters));
 
 		return methodParameterLists.Any(methodParameterList => openApiParameters.All(methodParameterList.Contains));
-	}
-
-	private static IEnumerable<Parameter> GetParameters(ParameterSyntax parameter)
-	{
-		if (TryGetAttribute(parameter.AttributeLists, "FromRoute", out var attribute) &&
-		    TryGetStringParameter(attribute!, out var name))
-			yield return new Parameter(name!, ParameterLocation.Path);
-		else if (TryGetAttribute(parameter.AttributeLists, "FromQuery", out attribute) &&
-		         TryGetStringParameter(attribute!, out name))
-			yield return new Parameter(name!, ParameterLocation.Query);
-		else if (TryGetAttribute(parameter.AttributeLists, "FromHeader", out attribute) &&
-		         TryGetStringParameter(attribute!, out name))
-			yield return new Parameter(name!, ParameterLocation.Header);
-		else if (TryGetAttribute(parameter.AttributeLists, "FromBody", out _))
-			yield return Parameter.Body;
-		else if (TryGetAttribute(parameter.AttributeLists, "FromServices", out _))
-		{
-		}
-		else
-		{
-			// if no attributes are found then consider all implicit options
-			yield return new Parameter(parameter.Identifier.ValueText, ParameterLocation.Path);
-			yield return new Parameter(parameter.Identifier.ValueText, ParameterLocation.Query);
-			// TODO: this is catching services and the http context
-			//yield return Parameter.Body;
-		}
-	}
-
-	private static bool TryGetAttribute(SyntaxList<AttributeListSyntax> attributeLists, string attributeName, out AttributeSyntax? attribute)
-	{
-		foreach (var attributeList in attributeLists)
-		{
-			foreach (var att in attributeList.Attributes)
-			{
-				if (att.Name.ToString() == attributeName)
-				{
-					attribute = att;
-					return true;
-				}
-			}
-		}
-
-		attribute = null;
-		return false;
 	}
 }
