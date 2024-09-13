@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -90,6 +89,7 @@ internal class AdditionalOperationsAnalyzer : IIncrementalGenerator
 		}
 		catch (Exception e)
 		{
+			//Debug.Break();
 			var errorMessage = $"Error: {e.Message}\n\nStack trace: {e.StackTrace}\n\nStack trace: {e.InnerException?.StackTrace}";
 			context.ReportDiagnostic(Diagnostics.OperationalError(errorMessage));
 		}
@@ -139,14 +139,5 @@ internal class AdditionalOperationsAnalyzer : IIncrementalGenerator
 		var methodParameterList = method.ParameterList.Parameters.SelectMany(AnalysisExtensions.GetParameters);
 
 		return openApiParameters.All(x => methodParameterList.Contains(x));
-	}
-}
-
-internal static class Debug
-{
-	[Conditional("DEBUG")]
-	public static void Break()
-	{
-		if (!Debugger.IsAttached) Debugger.Launch(); else Debugger.Break();
 	}
 }

@@ -19,7 +19,7 @@ paths:
           required: false
           schema:
             type: string
-    delete:
+    post:
       description: hello world
       responses:
         '200':
@@ -33,7 +33,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            $ref: '#/components/schemas/Person'
   /goodbye:
     get:
       description: goodbye world
@@ -54,3 +54,15 @@ paths:
             application/json:
               schema:
                 type: string
+components:
+  schemas:
+    Person:
+      type: object
+      properties:
+        name:
+          type: string
+        age:
+          type: integer
+      required:
+        - name
+        - age
