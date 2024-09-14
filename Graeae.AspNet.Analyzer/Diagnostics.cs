@@ -21,4 +21,10 @@ public static class Diagnostics
 
 	public static Diagnostic AdditionalRouteOperationHandler(string route, string op) =>
 		Diagnostic.Create(new("GR0006", "Route not published", $"Found handler for '{op.ToUpperInvariant()} {route}' but it does not appear in the OpenAPI definition", "Path coverage", DiagnosticSeverity.Warning, true), Location.None, DiagnosticSeverity.Warning);
+
+	public static Diagnostic ExternalFileAdded(string filePath) =>
+		Diagnostic.Create(new("GR0007", "Document load success", $"File {filePath} added to document resolver", "OpenAPI docs", DiagnosticSeverity.Info, true), null, filePath);
+
+	public static Diagnostic ExternalFileNotAdded(string filePath) =>
+		Diagnostic.Create(new DiagnosticDescriptor("GR0008", "Document load failure", $"File {filePath} could not be added to document resolver", "OpenAPI docs", DiagnosticSeverity.Warning, true), null, filePath);
 }
