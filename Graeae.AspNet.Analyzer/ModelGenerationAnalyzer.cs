@@ -74,7 +74,12 @@ internal class ModelGenerationAnalyzer : IIncrementalGenerator
 				var added = documentResolver.AddDocument(file.Path, doc);
 
 				var openapiDoc = node.Deserialize<OpenApiDocument>()!;
-				references.AddRange(openapiDoc.FindSchemaLocations(file.Path));
+				var schemaLocations = openapiDoc.FindSchemaLocations(file.Path);
+				foreach (var schemaLocation in schemaLocations)
+				{
+					references.Add(schemaLocation.Ref);
+					documentResolver.AddDocument(schemaLocation.Ref, schemaLocation.Schema);
+				}
 
 				context.ReportDiagnostic(added ? Diagnostics.ExternalFileAdded(file.Path) : Diagnostics.ExternalFileNotAdded(file.Path));
 			}
@@ -92,7 +97,7 @@ internal class ModelGenerationAnalyzer : IIncrementalGenerator
 		}
 		catch (Exception e)
 		{
-			Debug.Inject();
+			//Debug.Inject();
 			var errorMessage = $"Error: {e.Message}\n\nStack trace: {e.StackTrace}\n\nStack trace: {e.InnerException?.StackTrace}";
 			context.ReportDiagnostic(Diagnostics.OperationalError(errorMessage));
 		}
