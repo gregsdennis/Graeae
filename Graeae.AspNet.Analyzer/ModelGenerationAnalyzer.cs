@@ -1,5 +1,4 @@
 ﻿using System;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
@@ -13,6 +12,7 @@ using Corvus.Json.CodeGeneration.CSharp;
 using Graeae.Models;
 using Json.Schema;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Yaml2JsonNode;
 using Encoding = System.Text.Encoding;
@@ -23,12 +23,35 @@ namespace Graeae.AspNet.Analyzer;
 [Generator(LanguageNames.CSharp)]
 internal class ModelGenerationAnalyzer : IIncrementalGenerator
 {
+	private static string _namespace = null!;
+
 	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
+		// need to identify the namespace to generate models in
+		var handlerClasses = context.SyntaxProvider.CreateSyntaxProvider(HandlerClassPredicate, HandlerClassTransform)
+			.Where(x => x is not null);
+		context.RegisterSourceOutput(handlerClasses.Collect(), CacheNamespace);
+
+		// generate the models
 		var files = context.AdditionalTextsProvider.Where(static file => file.Path.EndsWith("openapi.yaml"));
 		var namesAndContents = files.Select((f, ct) => (Name: Path.GetFileNameWithoutExtension(f.Path), Content: f.GetText(ct)?.ToString(), Path: f.Path));
-	
 		context.RegisterSourceOutput(namesAndContents.Collect(), AddDiagnostics);
+	}
+
+	private static bool HandlerClassPredicate(SyntaxNode node, CancellationToken token)
+	{
+		return node is ClassDeclarationSyntax { AttributeLists.Count: > 0 };
+	}
+
+	private static string? HandlerClassTransform(GeneratorSyntaxContext context, CancellationToken token)
+	{
+		var classDeclaration = (ClassDeclarationSyntax)context.Node;
+		return classDeclaration.GetNamespace();
+	}
+
+	private static void CacheNamespace(SourceProductionContext context, ImmutableArray<string?> namespaces)
+	{
+		_namespace = (namespaces.Distinct().FirstOrDefault() ?? "Graeae.AspNet") + ".Models";
 	}
 
 	private static void AddDiagnostics(SourceProductionContext context, ImmutableArray<(string Name, string? Content, string Path)> files)
@@ -59,7 +82,8 @@ internal class ModelGenerationAnalyzer : IIncrementalGenerator
 			RegisterMetaSchemas(documentResolver);
 			var typeBuilder = new JsonSchemaTypeBuilder(documentResolver, RegisterVocabularies(documentResolver));
 			var typeDeclarations = references.Select(r => typeBuilder.AddTypeDeclarations(r, Corvus.Json.CodeGeneration.Draft202012.VocabularyAnalyser.DefaultVocabulary));
-			var generatedCode = typeBuilder.GenerateCodeUsing(CSharpLanguageProvider.Default, CancellationToken.None, typeDeclarations);
+			var languageProvider = CSharpLanguageProvider.DefaultWithOptions(new CSharpLanguageProvider.Options(_namespace));
+			var generatedCode = typeBuilder.GenerateCodeUsing(languageProvider, CancellationToken.None, typeDeclarations);
 
 			foreach (var codeFile in generatedCode)
 			{
@@ -68,7 +92,7 @@ internal class ModelGenerationAnalyzer : IIncrementalGenerator
 		}
 		catch (Exception e)
 		{
-			Debug.Break();
+			Debug.Inject();
 			var errorMessage = $"Error: {e.Message}\n\nStack trace: {e.StackTrace}\n\nStack trace: {e.InnerException?.StackTrace}";
 			context.ReportDiagnostic(Diagnostics.OperationalError(errorMessage));
 		}

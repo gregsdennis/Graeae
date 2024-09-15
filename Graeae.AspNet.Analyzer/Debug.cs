@@ -5,8 +5,8 @@ namespace Graeae.AspNet.Analyzer;
 internal static class Debug
 {
 	[Conditional("DEBUG")]
-	public static void Break()
+	public static void Inject()
 	{
-		if (!Debugger.IsAttached) Debugger.Launch(); else Debugger.Break();
+		if (!Debugger.IsAttached) Debugger.Launch();
 	}
 }
