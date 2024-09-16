@@ -17,7 +17,7 @@ internal static class OpenApiDocumentExtensions
 			.Concat(GetSchemas(JsonPointer.Create("paths"), openApiDocument.Paths))
 			.Concat(GetSchemas(JsonPointer.Create("webhooks"), openApiDocument.Webhooks))
 			.Where(x => x.Item2 is not null)
-			.Select(x => (new JsonReference(documentPath, $"#{x.Item1}"), JsonSerializer.SerializeToDocument(x.Item2)));
+			.Select(x => (new JsonReference(new Uri(documentPath).ToString(), $"#{x.Item1}"), JsonSerializer.SerializeToDocument(x.Item2)));
 	}
 
 	private static IEnumerable<(JsonPointer, JsonSchema?)> GetSchemas(JsonPointer baseRoute, ComponentCollection? components)

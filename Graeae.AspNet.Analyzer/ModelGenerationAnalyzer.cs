@@ -58,7 +58,7 @@ internal class ModelGenerationAnalyzer : IIncrementalGenerator
 	{
 		try
 		{
-			var documentResolver = new CompoundDocumentResolver(new FileSystemDocumentResolver(), new HttpClientDocumentResolver(new HttpClient()));
+			var documentResolver = new PrepopulatedDocumentResolver();
 			var references = new List<JsonReference>();
 
 			foreach (var file in files)
@@ -70,18 +70,18 @@ internal class ModelGenerationAnalyzer : IIncrementalGenerator
 				var node = yaml.ToJsonNode().FirstOrDefault();
 				if (node is null) continue;
 
+				PathHelpers.TryNormalizeSchemaReference(file.Path, out var normalizedUri);
+
 				var doc = JsonDocument.Parse(node.ToString());
-				var added = documentResolver.AddDocument(file.Path, doc);
+				documentResolver.AddDocument(normalizedUri, doc);
 
 				var openapiDoc = node.Deserialize<OpenApiDocument>()!;
-				var schemaLocations = openapiDoc.FindSchemaLocations(file.Path);
+				var schemaLocations = openapiDoc.FindSchemaLocations(normalizedUri);
 				foreach (var schemaLocation in schemaLocations)
 				{
 					references.Add(schemaLocation.Ref);
 					documentResolver.AddDocument(schemaLocation.Ref, schemaLocation.Schema);
 				}
-
-				context.ReportDiagnostic(added ? Diagnostics.ExternalFileAdded(file.Path) : Diagnostics.ExternalFileNotAdded(file.Path));
 			}
 
 			RegisterMetaSchemas(documentResolver);
@@ -97,7 +97,7 @@ internal class ModelGenerationAnalyzer : IIncrementalGenerator
 		}
 		catch (Exception e)
 		{
-			//Debug.Inject();
+			Debug.Inject();
 			var errorMessage = $"Error: {e.Message}\n\nStack trace: {e.StackTrace}\n\nStack trace: {e.InnerException?.StackTrace}";
 			context.ReportDiagnostic(Diagnostics.OperationalError(errorMessage));
 		}
