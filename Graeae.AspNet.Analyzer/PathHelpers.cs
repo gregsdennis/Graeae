@@ -11,7 +11,7 @@ internal static class PathHelpers
 	public static readonly Regex TemplatedSegmentPattern = new(@"^\{(?<param>.*)\}$", RegexOptions.Compiled | RegexOptions.ECMAScript);
 
 	//public static string Normalize(string path) => path.Replace("\\", "/");
-	public static string Normalize(string path) => new Uri(path).ToString();
+	public static string Normalize(string path) => new Uri(path).ToString().Replace("file:///C:", "https://graeae.net");
 
 	public static bool TryNormalizeSchemaReference(string schemaFile, [NotNullWhen(true)] out string? result)
 	{

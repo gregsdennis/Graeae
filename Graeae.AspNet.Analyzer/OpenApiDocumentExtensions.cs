@@ -46,9 +46,9 @@ internal static class OpenApiDocumentExtensions
 
 		return responses.SelectMany(x =>
 		{
-			var b = baseRoute.Combine(x.Key!.ToString());
-			return GetSchemas(b, x.Value.Headers)
-				.Concat(GetSchemas(b, x.Value.Content));
+			var b = baseRoute.Combine(x.Key.GetKeyString());
+			return GetSchemas(b.Combine("headers"), x.Value.Headers)
+				.Concat(GetSchemas(b.Combine("content"), x.Value.Content));
 		});
 	}
 
@@ -56,55 +56,35 @@ internal static class OpenApiDocumentExtensions
 	{
 		if (parameters is null) return [];
 
-		return parameters.SelectMany(x =>
-		{
-			var b = baseRoute.Combine(x.Key);
-			return GetSchemas(b, x.Value.Content);
-		});
+		return parameters.SelectMany(x => GetSchemas(baseRoute.Combine(x.Key, "content"), x.Value.Content));
 	}
 
 	private static IEnumerable<(JsonPointer, JsonSchema?)> GetSchemas(JsonPointer baseRoute, IReadOnlyList<Models.Parameter>? parameters)
 	{
 		if (parameters is null) return [];
 
-		return parameters.SelectMany((x, i) =>
-		{
-			var b = baseRoute.Combine(i);
-			return GetSchemas(b, x.Content);
-		});
+		return parameters.SelectMany((x, i) => GetSchemas(baseRoute.Combine(i, "content"), x.Content));
 	}
 
 	private static IEnumerable<(JsonPointer, JsonSchema?)> GetSchemas(JsonPointer baseRoute, IDictionary<string, RequestBody>? requestBodies)
 	{
 		if (requestBodies is null) return [];
 
-		return requestBodies.SelectMany(x =>
-		{
-			var b = baseRoute.Combine(x.Key);
-			return GetSchemas(b, x.Value.Content);
-		});
+		return requestBodies.SelectMany(x => GetSchemas(baseRoute.Combine(x.Key, "content"), x.Value.Content));
 	}
 
 	private static IEnumerable<(JsonPointer, JsonSchema?)> GetSchemas(JsonPointer baseRoute, IDictionary<string, Header>? headers)
 	{
 		if (headers is null) return [];
 
-		return headers.SelectMany(x =>
-		{
-			var b = baseRoute.Combine(x.Key);
-			return GetSchemas(b, x.Value.Content);
-		});
+		return headers.SelectMany(x => GetSchemas(baseRoute.Combine(x.Key, "content"), x.Value.Content));
 	}
 
 	private static IEnumerable<(JsonPointer, JsonSchema?)> GetSchemas(JsonPointer baseRoute, IDictionary<string, Callback>? callbacks)
 	{
 		if (callbacks is null) return [];
 
-		return callbacks.SelectMany(x =>
-		{
-			var b = baseRoute.Combine(x.Key);
-			return GetSchemas(b, x.Value);
-		});
+		return callbacks.SelectMany(x => GetSchemas(baseRoute.Combine(x.Key), x.Value));
 	}
 
 	private static IEnumerable<(JsonPointer, JsonSchema?)> GetSchemas(JsonPointer baseRoute, IDictionary<string, MediaType>? mediaTypes)
@@ -120,7 +100,7 @@ internal static class OpenApiDocumentExtensions
 
 		return pathItems.SelectMany(x =>
 		{
-			var b = baseRoute.Combine(x.Key!.ToString());
+			var b = baseRoute.Combine(x.Key.GetKeyString());
 			return GetSchemas(b.Combine("get"), x.Value.Get)
 				.Concat(GetSchemas(b.Combine("put"), x.Value.Put))
 				.Concat(GetSchemas(b.Combine("post"), x.Value.Post))
@@ -138,8 +118,17 @@ internal static class OpenApiDocumentExtensions
 		if (operation is null) return [];
 
 		return GetSchemas(baseRoute.Combine("parameters"), operation.Parameters)
-			.Concat(GetSchemas(baseRoute.Combine("requestBody"), operation.RequestBody?.Content))
+			.Concat(GetSchemas(baseRoute.Combine("requestBody", "content"), operation.RequestBody?.Content))
 			.Concat(GetSchemas(baseRoute.Combine("responses"), operation.Responses))
 			.Concat(GetSchemas(baseRoute.Combine("callbacks"), operation.Callbacks));
+	}
+
+	private static string GetKeyString<T>(this T? value)
+	{
+		var keyString = typeof(T).IsEnum
+			? Convert.ToInt32(value).ToString()
+			: value!.ToString();
+
+		return keyString;
 	}
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using Corvus.Json;
@@ -70,7 +69,15 @@ internal class ModelGenerationAnalyzer : IIncrementalGenerator
 				var node = yaml.ToJsonNode().FirstOrDefault();
 				if (node is null) continue;
 
-				PathHelpers.TryNormalizeSchemaReference(file.Path, out var normalizedUri);
+				/*
+				if (!PathHelpers.TryNormalizeSchemaReference(file.Path, out var normalizedUri))
+				{
+					context.ReportDiagnostic(Diagnostics.OperationalError($"Could not normalize path for file '{file.Path}'"));
+					continue;
+				}
+				/*/
+				var normalizedUri = PathHelpers.Normalize(file.Path);
+				//*/
 
 				var doc = JsonDocument.Parse(node.ToString());
 				documentResolver.AddDocument(normalizedUri, doc);
@@ -97,7 +104,7 @@ internal class ModelGenerationAnalyzer : IIncrementalGenerator
 		}
 		catch (Exception e)
 		{
-			Debug.Inject();
+			//Debug.Inject();
 			var errorMessage = $"Error: {e.Message}\n\nStack trace: {e.StackTrace}\n\nStack trace: {e.InnerException?.StackTrace}";
 			context.ReportDiagnostic(Diagnostics.OperationalError(errorMessage));
 		}
