@@ -16,5 +16,5 @@ public static class GoodbyeHandler
 
 public class Check
 {
-    public Janitor Janitor{ get; set; } = new();
+	public Janitor Janitor { get; set; } = new();
 }

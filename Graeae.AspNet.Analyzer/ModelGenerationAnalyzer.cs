@@ -103,7 +103,7 @@ internal class ModelGenerationAnalyzer : IIncrementalGenerator
 		}
 		catch (Exception e)
 		{
-			Debug.Inject();
+			//Debug.Inject();
 			var errorMessage = $"Error: {e.Message}\n\nStack trace: {e.StackTrace}\n\nStack trace: {e.InnerException?.StackTrace}";
 			context.ReportDiagnostic(Diagnostics.OperationalError(errorMessage));
 		}
