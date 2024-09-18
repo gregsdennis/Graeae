@@ -11,16 +11,15 @@ namespace Graeae.AspNet.Analyzer;
 
 internal static class OpenApiDocumentExtensions
 {
-	public static IEnumerable<(JsonReference Ref, JsonDocument Schema)> FindSchemaLocations(this OpenApiDocument openApiDocument, string documentPath)
+	public static IEnumerable<JsonReference> FindSchemaLocations(this OpenApiDocument openApiDocument, string documentPath)
 	{
 		return GetSchemas(JsonPointer.Create("components"), openApiDocument.Components)
 			.Concat(GetSchemas(JsonPointer.Create("paths"), openApiDocument.Paths))
 			.Concat(GetSchemas(JsonPointer.Create("webhooks"), openApiDocument.Webhooks))
-			.Where(x => x.Item2 is not null)
-			.Select(x => (new JsonReference(new Uri(documentPath).ToString(), $"#{x.Item1}"), JsonSerializer.SerializeToDocument(x.Item2)));
+			.Select(x => new JsonReference(new Uri(documentPath).ToString(), $"#{x}"));
 	}
 
-	private static IEnumerable<(JsonPointer, JsonSchema?)> GetSchemas(JsonPointer baseRoute, ComponentCollection? components)
+	private static IEnumerable<JsonPointer> GetSchemas(JsonPointer baseRoute, ComponentCollection? components)
 	{
 		if (components is null) return [];
 
@@ -33,14 +32,14 @@ internal static class OpenApiDocumentExtensions
 			.Concat(GetSchemas(baseRoute.Combine("pathItems"), components.PathItems));
 	}
 
-	private static IEnumerable<(JsonPointer, JsonSchema?)> GetSchemas(JsonPointer baseRoute, IDictionary<string, JsonSchema>? schemas)
+	private static IEnumerable<JsonPointer> GetSchemas(JsonPointer baseRoute, IDictionary<string, JsonSchema>? schemas)
 	{
 		if (schemas is null) return [];
 
-		return schemas.Select(x => (baseRoute.Combine(x.Key), x.Value))!;
+		return schemas.Select(x => baseRoute.Combine(x.Key));
 	}
 
-	private static IEnumerable<(JsonPointer, JsonSchema?)> GetSchemas<T>(JsonPointer baseRoute, IDictionary<T, Response>? responses)
+	private static IEnumerable<JsonPointer> GetSchemas<T>(JsonPointer baseRoute, IDictionary<T, Response>? responses)
 	{
 		if (responses is null) return [];
 
@@ -52,49 +51,49 @@ internal static class OpenApiDocumentExtensions
 		});
 	}
 
-	private static IEnumerable<(JsonPointer, JsonSchema?)> GetSchemas(JsonPointer baseRoute, IDictionary<string, Models.Parameter>? parameters)
+	private static IEnumerable<JsonPointer> GetSchemas(JsonPointer baseRoute, IDictionary<string, Models.Parameter>? parameters)
 	{
 		if (parameters is null) return [];
 
 		return parameters.SelectMany(x => GetSchemas(baseRoute.Combine(x.Key, "content"), x.Value.Content));
 	}
 
-	private static IEnumerable<(JsonPointer, JsonSchema?)> GetSchemas(JsonPointer baseRoute, IReadOnlyList<Models.Parameter>? parameters)
+	private static IEnumerable<JsonPointer> GetSchemas(JsonPointer baseRoute, IReadOnlyList<Models.Parameter>? parameters)
 	{
 		if (parameters is null) return [];
 
 		return parameters.SelectMany((x, i) => GetSchemas(baseRoute.Combine(i, "content"), x.Content));
 	}
 
-	private static IEnumerable<(JsonPointer, JsonSchema?)> GetSchemas(JsonPointer baseRoute, IDictionary<string, RequestBody>? requestBodies)
+	private static IEnumerable<JsonPointer> GetSchemas(JsonPointer baseRoute, IDictionary<string, RequestBody>? requestBodies)
 	{
 		if (requestBodies is null) return [];
 
 		return requestBodies.SelectMany(x => GetSchemas(baseRoute.Combine(x.Key, "content"), x.Value.Content));
 	}
 
-	private static IEnumerable<(JsonPointer, JsonSchema?)> GetSchemas(JsonPointer baseRoute, IDictionary<string, Header>? headers)
+	private static IEnumerable<JsonPointer> GetSchemas(JsonPointer baseRoute, IDictionary<string, Header>? headers)
 	{
 		if (headers is null) return [];
 
 		return headers.SelectMany(x => GetSchemas(baseRoute.Combine(x.Key, "content"), x.Value.Content));
 	}
 
-	private static IEnumerable<(JsonPointer, JsonSchema?)> GetSchemas(JsonPointer baseRoute, IDictionary<string, Callback>? callbacks)
+	private static IEnumerable<JsonPointer> GetSchemas(JsonPointer baseRoute, IDictionary<string, Callback>? callbacks)
 	{
 		if (callbacks is null) return [];
 
 		return callbacks.SelectMany(x => GetSchemas(baseRoute.Combine(x.Key), x.Value));
 	}
 
-	private static IEnumerable<(JsonPointer, JsonSchema?)> GetSchemas(JsonPointer baseRoute, IDictionary<string, MediaType>? mediaTypes)
+	private static IEnumerable<JsonPointer> GetSchemas(JsonPointer baseRoute, IDictionary<string, MediaType>? mediaTypes)
 	{
 		if (mediaTypes is null) return [];
 
-		return mediaTypes.Select(x => (baseRoute.Combine(x.Key, "schema"), x.Value.Schema));
+		return mediaTypes.Select(x => baseRoute.Combine(x.Key, "schema"));
 	}
 
-	private static IEnumerable<(JsonPointer, JsonSchema?)> GetSchemas<T>(JsonPointer baseRoute, IDictionary<T, PathItem>? pathItems)
+	private static IEnumerable<JsonPointer> GetSchemas<T>(JsonPointer baseRoute, IDictionary<T, PathItem>? pathItems)
 	{
 		if (pathItems is null) return [];
 
@@ -113,7 +112,7 @@ internal static class OpenApiDocumentExtensions
 		});
 	}
 
-	private static IEnumerable<(JsonPointer, JsonSchema?)> GetSchemas(JsonPointer baseRoute, Operation? operation)
+	private static IEnumerable<JsonPointer> GetSchemas(JsonPointer baseRoute, Operation? operation)
 	{
 		if (operation is null) return [];
 

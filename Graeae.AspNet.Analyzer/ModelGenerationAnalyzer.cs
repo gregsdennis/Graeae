@@ -86,8 +86,7 @@ internal class ModelGenerationAnalyzer : IIncrementalGenerator
 				var schemaLocations = openapiDoc.FindSchemaLocations(normalizedUri);
 				foreach (var schemaLocation in schemaLocations)
 				{
-					references.Add(schemaLocation.Ref);
-					documentResolver.AddDocument(schemaLocation.Ref, schemaLocation.Schema);
+					references.Add(schemaLocation);
 				}
 			}
 
@@ -104,7 +103,7 @@ internal class ModelGenerationAnalyzer : IIncrementalGenerator
 		}
 		catch (Exception e)
 		{
-			//Debug.Inject();
+			Debug.Inject();
 			var errorMessage = $"Error: {e.Message}\n\nStack trace: {e.StackTrace}\n\nStack trace: {e.InnerException?.StackTrace}";
 			context.ReportDiagnostic(Diagnostics.OperationalError(errorMessage));
 		}
