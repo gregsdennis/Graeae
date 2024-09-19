@@ -37,7 +37,7 @@ public class Analyzer : IIncrementalGenerator
 
 		              public class Janitor
 		              {
-		                  public string Name { get; set; }
+		                  public string Name { get; set; } = null!;
 		                  public int Age { get; set; }
 		              }
 		              """;

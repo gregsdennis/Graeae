@@ -20,5 +20,10 @@
   <ItemGroup>
     <AdditionalFiles Include="openapi.yaml" />
   </ItemGroup>
-      
+
+
+  <ItemGroup>
+    <PackageReference Include="Corvus.Json.ExtendedTypes" Version="4.0.0-preview.11" />
+  </ItemGroup>
+
 </Project>

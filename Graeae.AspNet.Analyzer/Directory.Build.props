@@ -41,6 +41,11 @@
     <PackageReference Include="System.CodeDom" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="System.Collections.Immutable" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="System.Composition.AttributedModel" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="System.Composition.Convention" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="System.Composition.Hosting" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="System.Composition.Runtime" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="System.Composition.TypedParts" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="System.IO.Pipelines" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="System.Memory" Version="4.5.5" PrivateAssets="all" GeneratePathProperty="true" />
@@ -49,14 +54,18 @@
     <PackageReference Include="System.Reflection.Emit.ILGeneration" Version="4.7.0" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="System.Text.Json" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="System.Text.Encodings.Web" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="System.Threading.Channels" Version="7.0.0" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" PrivateAssets="all" GeneratePathProperty="true" />
 
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" PrivateAssets="all" GeneratePathProperty="true" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0-1.final" PrivateAssets="all" GeneratePathProperty="true" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.12.0-1.final" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.CodeAnalysis" Version="4.12.0-2.final" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.12.0-2.final" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0-2.final" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.12.0-2.final" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
@@ -66,13 +75,6 @@
     <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="9.0.0-rc.1.24452.1" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.Extensions.Primitives" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
-
-    <!-- These are needed to build the analyzer -->
-    <PackageReference Include="Microsoft.CodeAnalysis" Version="4.12.0-1.final" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.12.0-1.final" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-    <PackageReference Include="PolySharp" Version="1.14.1" PrivateAssets="all" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -120,6 +122,11 @@
       <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_CodeDom)\lib\netstandard2.0\System.CodeDom.dll" IncludeRuntimeDependency="false" />
       <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Collections_Immutable)\lib\netstandard2.0\System.Collections.Immutable.dll" IncludeRuntimeDependency="false" />
       <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_ComponentModel_Annotations)\lib\netstandard2.0\System.ComponentModel.Annotations.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Composition_AttributedModel)\lib\netstandard2.0\System.Composition.AttributedModel.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Composition_Convention)\lib\netstandard2.0\System.Composition.Convention.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Composition_Hosting)\lib\netstandard2.0\System.Composition.Hosting.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Composition_Runtime)\lib\netstandard2.0\System.Composition.Runtime.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Composition_TypedParts)\lib\netstandard2.0\System.Composition.TypedParts.dll" IncludeRuntimeDependency="false" />
       <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Diagnostics_DiagnosticSource)\lib\netstandard2.0\System.Diagnostics.DiagnosticSource.dll" IncludeRuntimeDependency="false" />
       <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Memory)\lib\netstandard2.0\System.Memory.dll" IncludeRuntimeDependency="false" />
       <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Numerics_Vectors)\lib\netstandard2.0\System.Numerics.Vectors.dll" IncludeRuntimeDependency="false" />
@@ -128,11 +135,15 @@
       <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Runtime_CompilerServices_Unsafe)\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll" IncludeRuntimeDependency="false" />
       <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Text_Json)\lib\netstandard2.0\System.Text.Json.dll" IncludeRuntimeDependency="false" />
       <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Text_Encodings_Web)\lib\netstandard2.0\System.Text.Encodings.Web.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Text_Encoding_CodePages)\lib\netstandard2.0\System.Text.Encoding.CodePages.dll" IncludeRuntimeDependency="false" />
       <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Threading_Channels)\lib\netstandard2.0\System.Threading.Channels.dll" IncludeRuntimeDependency="false" />
       <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Threading_Tasks_Extensions)\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll" IncludeRuntimeDependency="false" />
 
       <TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_Bcl_AsyncInterfaces)\lib\netstandard2.0\Microsoft.Bcl.AsyncInterfaces.dll" IncludeRuntimeDependency="false" />
       <TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_Bcl_HashCode)\lib\netstandard2.0\Microsoft.Bcl.HashCode.dll" IncludeRuntimeDependency="false" />
+      <!--<TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_CodeAnalysis)\lib\netstandard2.0\Microsoft.CodeAnalysis.dll" IncludeRuntimeDependency="false" />-->
+      <!--<TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_CodeAnalysis_Common)\lib\netstandard2.0\Microsoft.CodeAnalysis.Common.dll" IncludeRuntimeDependency="false" />-->
+      <!--<TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_CodeAnalysis_Analyzers)\lib\netstandard2.0\Microsoft.CodeAnalysis.Analyzers.dll" IncludeRuntimeDependency="false" />-->
       <TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_CodeAnalysis_CSharp)\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.dll" IncludeRuntimeDependency="false" />
       <TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_CodeAnalysis_CSharp_Workspaces)\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll" IncludeRuntimeDependency="false" />
       <TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_Extensions_Configuration_Abstractions)\lib\netstandard2.0\Microsoft.Extensions.Configuration.Abstractions.dll" IncludeRuntimeDependency="false" />

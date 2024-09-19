@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net8.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>Graeae.AspNet</PackageId>
@@ -49,13 +49,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Corvus.Json.ExtendedTypes" Version="4.0.0-preview.9" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Graeae.Models\Graeae.Models.csproj" />
-
-    <!--<None Include="..\Graeae.AspNet.Analyzer\bin\$(Configuration)\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />-->
   </ItemGroup>
 
 </Project>
