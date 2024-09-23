@@ -17,8 +17,8 @@
     <PackageReleaseNotes>Release notes can be found at https://github.com/gregsdennis/Graeae</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <DocumentationFile>Graeae.AspNet.xml</DocumentationFile>
-    <Version>0.1.0</Version>
-    <FileVersion>0.1.0.0</FileVersion>
+    <Version>0.1.0-preview1</Version>
+    <FileVersion>0.1.0</FileVersion>
     <AssemblyVersion>0.1.0.0</AssemblyVersion>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
@@ -38,6 +38,7 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+    <None Include="RELEASE_NOTES.md" Link="RELEASE_NOTES.md" />
     <None Include="..\Resources\openapi.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>

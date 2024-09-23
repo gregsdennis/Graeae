@@ -2,7 +2,7 @@
 
 namespace Graeae.AspNet.Analyzer;
 
-public static class Diagnostics
+internal static class Diagnostics
 {
 	public static Diagnostic OperationalError(string message) =>
 		Diagnostic.Create(new("GR0001", "Operational error", message, "Operation", DiagnosticSeverity.Error, true), Location.None, DiagnosticSeverity.Error);
