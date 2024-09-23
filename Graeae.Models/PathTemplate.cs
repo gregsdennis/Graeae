@@ -68,7 +68,7 @@ public class PathTemplate : IEquatable<PathTemplate>, IEquatable<string>
 
 		if (Segments.Length != other.Segments.Length) return false;
 
-		var zipped = Segments.Zip(other.Segments);
+		var zipped = Segments.Zip(other.Segments, (x,y) => (First: x, Second: y));
 
 		return zipped.All(x => x.First == x.Second ||
 		                       TemplatedSegmentPattern.IsMatch(x.First) && TemplatedSegmentPattern.IsMatch(x.Second));

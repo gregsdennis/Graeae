@@ -7,6 +7,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Graeae.Models", "Graeae.Mod
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Graeae.Models.Tests", "Graeae.Models.Tests\Graeae.Models.Tests.csproj", "{943DABF3-96AB-47AE-88C6-9FCEBCA82920}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Graeae.AspNet", "Graeae.AspNet\Graeae.AspNet.csproj", "{B24340A3-0F0B-4E1A-A998-0C0C49718E20}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Graeae.AspNet.Tests.Host", "Graeae.AspNet.Tests.Host\Graeae.AspNet.Tests.Host.csproj", "{1C13A90F-1A7E-4FE4-BA9F-95A35A3F97A3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Graeae.AspNet.Analyzer", "Graeae.AspNet.Analyzer\Graeae.AspNet.Analyzer.csproj", "{BDED533C-D538-4E96-B37B-A4C65FA4D504}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B24340A3-0F0B-4E1A-A998-0C0C49718E20} = {B24340A3-0F0B-4E1A-A998-0C0C49718E20}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +35,24 @@ Global
 		{943DABF3-96AB-47AE-88C6-9FCEBCA82920}.Localization|Any CPU.Build.0 = Release|Any CPU
 		{943DABF3-96AB-47AE-88C6-9FCEBCA82920}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{943DABF3-96AB-47AE-88C6-9FCEBCA82920}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B24340A3-0F0B-4E1A-A998-0C0C49718E20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B24340A3-0F0B-4E1A-A998-0C0C49718E20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B24340A3-0F0B-4E1A-A998-0C0C49718E20}.Localization|Any CPU.ActiveCfg = Debug|Any CPU
+		{B24340A3-0F0B-4E1A-A998-0C0C49718E20}.Localization|Any CPU.Build.0 = Debug|Any CPU
+		{B24340A3-0F0B-4E1A-A998-0C0C49718E20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B24340A3-0F0B-4E1A-A998-0C0C49718E20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C13A90F-1A7E-4FE4-BA9F-95A35A3F97A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C13A90F-1A7E-4FE4-BA9F-95A35A3F97A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C13A90F-1A7E-4FE4-BA9F-95A35A3F97A3}.Localization|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C13A90F-1A7E-4FE4-BA9F-95A35A3F97A3}.Localization|Any CPU.Build.0 = Debug|Any CPU
+		{1C13A90F-1A7E-4FE4-BA9F-95A35A3F97A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C13A90F-1A7E-4FE4-BA9F-95A35A3F97A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDED533C-D538-4E96-B37B-A4C65FA4D504}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDED533C-D538-4E96-B37B-A4C65FA4D504}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDED533C-D538-4E96-B37B-A4C65FA4D504}.Localization|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDED533C-D538-4E96-B37B-A4C65FA4D504}.Localization|Any CPU.Build.0 = Debug|Any CPU
+		{BDED533C-D538-4E96-B37B-A4C65FA4D504}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDED533C-D538-4E96-B37B-A4C65FA4D504}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

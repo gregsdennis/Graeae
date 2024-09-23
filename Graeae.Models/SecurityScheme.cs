@@ -144,7 +144,7 @@ public class SecurityScheme : IRefTargetContainer
 		if (keys[0] == "flows")
 		{
 			if (keys.Length == 1) return Flows;
-			return Flows?.Resolve(keys[1..]);
+			return Flows?.Resolve(keys.Slice(1));
 		}
 
 		return ExtensionData?.Resolve(keys);

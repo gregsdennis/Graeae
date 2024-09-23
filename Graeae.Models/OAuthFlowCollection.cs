@@ -96,7 +96,7 @@ public class OAuthFlowCollection : IRefTargetContainer
 		}
 
 		return target != null
-			? target.Resolve(keys[keysConsumed..])
+			? target.Resolve(keys.Slice(keysConsumed))
 			: ExtensionData?.Resolve(keys);
 	}
 }

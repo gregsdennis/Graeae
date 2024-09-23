@@ -18,7 +18,7 @@ public class RuntimeExpressionTests
 
 		Console.WriteLine(backToString);
 #pragma warning disable NUnit2005
-		Assert.AreEqual(source, backToString);
+		Assert.That(backToString, Is.EqualTo(source));
 #pragma warning restore NUnit2005
 	}
 

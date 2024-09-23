@@ -89,7 +89,7 @@ public class MediaType : IRefTargetContainer
 				// TODO: consider some other kind of value being buried in a schema
 				throw new NotImplementedException();
 			case "example":
-				return Example?.GetFromNode(keys[1..]);
+				return Example?.GetFromNode(keys.Slice(1));
 			case "examples":
 				if (keys.Length == 1) return null;
 				keysConsumed++;
@@ -103,7 +103,7 @@ public class MediaType : IRefTargetContainer
 		}
 
 		return target != null
-			? target.Resolve(keys[keysConsumed..])
+			? target.Resolve(keys.Slice(keysConsumed))
 			: ExtensionData?.Resolve(keys);
 	}
 

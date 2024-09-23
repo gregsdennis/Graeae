@@ -111,7 +111,7 @@ public class RequestBody : IRefTargetContainer
 		{
 			if (keys.Length == 1) return null;
 			var target = Content.GetFromMap(keys[1]);
-			return target?.Resolve(keys[2..]);
+			return target?.Resolve(keys.Slice(2));
 		}
 
 		return ExtensionData?.Resolve(keys);

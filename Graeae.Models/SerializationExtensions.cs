@@ -54,10 +54,10 @@ internal static class SerializationExtensions
 
 		var deserialized = new Dictionary<string, T>();
 
-		foreach (var (key, value) in map)
+		foreach (var kvp in map)
 		{
-			var item = factory(value);
-			deserialized.Add(key, item);
+			var item = factory(kvp.Value);
+			deserialized.Add(kvp.Key, item);
 		}
 
 		return deserialized;
@@ -71,10 +71,10 @@ internal static class SerializationExtensions
 
 		var deserialized = new Dictionary<string, T>();
 
-		foreach (var (key, value) in map)
+		foreach (var kvp in map)
 		{
-			var item = factory(value);
-			deserialized.Add(key, item);
+			var item = factory(kvp.Value);
+			deserialized.Add(kvp.Key, item);
 		}
 
 		return deserialized;
@@ -179,9 +179,9 @@ internal static class SerializationExtensions
 	{
 		if (extensionData == null) return;
 
-		foreach (var (key, value) in extensionData)
+		foreach (var kvp in extensionData)
 		{
-			obj.Add(key, value?.DeepClone());
+			obj.Add(kvp.Key, kvp.Value?.DeepClone());
 		}
 	}
 
@@ -198,10 +198,10 @@ internal static class SerializationExtensions
 
 		// We do this manually here because .ToDictionary() allocates an intermediate dictionary
 		var newObj = new JsonObject();
-		foreach (var (key, value) in values)
+		foreach (var kvp in values)
 		{
-			var node = convert(value);
-			newObj.Add(key, node);
+			var node = convert(kvp.Value);
+			newObj.Add(kvp.Key, node);
 		}
 
 		obj.Add(propertyName, newObj);

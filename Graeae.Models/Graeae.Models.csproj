@@ -6,7 +6,7 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <PackageId>Graeae.Models</PackageId>
-    <NoWarn>IDE0290</NoWarn>
+    <NoWarn>IDE0290,CS1591,CS1735,IL3050,IL2026,IL2046</NoWarn>
     <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">true</IsAotCompatible>
 
     <Authors>Greg Dennis</Authors>
@@ -29,6 +29,8 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>../openapi.snk</AssemblyOriginatorKeyFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+
+    <PolySharpIncludeRuntimeSupportedAttributes>true</PolySharpIncludeRuntimeSupportedAttributes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -48,9 +50,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="JsonPointer.Net" Version="5.0.1" />
-    <PackageReference Include="JsonSchema.Net" Version="7.1.1" />
+    <PackageReference Include="JsonSchema.Net" Version="7.1.2" />
     <PackageReference Include="JsonSchema.Net.OpenApi" Version="3.1.0" />
-    <PackageReference Include="Yaml2JsonNode" Version="2.1.0" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+    <PackageReference Include="PolySharp" Version="1.14.1" PrivateAssets="all" />
+    <PackageReference Include="Yaml2JsonNode" Version="2.1.1" />
   </ItemGroup>
 </Project>

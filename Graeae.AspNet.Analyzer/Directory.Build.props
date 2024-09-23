@@ -1,0 +1,239 @@
+<Project>
+  <PropertyGroup>
+    <AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
+  </PropertyGroup>
+
+  <!-- See https://aka.ms/dotnet/msbuild/customize for more details on customizing your build -->
+  <ItemGroup>
+    <!-- These are needed to run the analyzer -->
+    <PackageReference Include="IndexRange" Version="1.0.3" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.3.0" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="NodaTime" Version="3.1.12" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Humanizer.Core" Version="2.14.1" PrivateAssets="all" GeneratePathProperty="true" />
+
+    <PackageReference Include="Corvus.HighPerformance" Version="1.0.0" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Corvus.Json.CodeGeneration" Version="4.0.0-preview.11" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Corvus.Json.CodeGeneration.4" Version="4.0.0-preview.11" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Corvus.Json.CodeGeneration.6" Version="4.0.0-preview.11" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Corvus.Json.CodeGeneration.7" Version="4.0.0-preview.11" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Corvus.Json.CodeGeneration.201909" Version="4.0.0-preview.11" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Corvus.Json.CodeGeneration.202012" Version="4.0.0-preview.11" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Corvus.Json.CodeGeneration.CorvusVocabulary" Version="4.0.0-preview.11" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Corvus.Json.CodeGeneration.CSharp" Version="4.0.0-preview.11" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Corvus.Json.CodeGeneration.OpenApi30" Version="4.0.0-preview.11" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Corvus.Json.JsonReference" Version="4.0.0-preview.11" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Corvus.Json.JsonSchema.Draft4" Version="4.0.0-preview.11" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Corvus.Json.JsonSchema.Draft6" Version="4.0.0-preview.11" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Corvus.Json.JsonSchema.Draft7" Version="4.0.0-preview.11" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Corvus.Json.JsonSchema.Draft201909" Version="4.0.0-preview.11" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Corvus.Json.JsonSchema.Draft202012" Version="4.0.0-preview.11" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Corvus.Json.JsonSchema.OpenApi30" Version="4.0.0-preview.11" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Corvus.Json.Validator" Version="4.0.0-preview.11" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Corvus.UriTemplates" Version="2.1.0" PrivateAssets="all" GeneratePathProperty="true" />
+
+    <PackageReference Include="Json.More.Net" Version="2.0.2" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="JsonPointer.Net" Version="5.0.2" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="JsonSchema.Net" Version="7.1.2" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="JsonSchema.Net.OpenApi" Version="3.1.0" PrivateAssets="all" GeneratePathProperty="true" />
+
+    <PackageReference Include="YamlDotNet" Version="15.1.4" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Yaml2JsonNode" Version="2.1.1" PrivateAssets="all" GeneratePathProperty="true" />
+
+    <PackageReference Include="Graeae.Models" Version="0.3.3" PrivateAssets="all" GeneratePathProperty="true" />
+
+    <PackageReference Include="System.Buffers" Version="4.5.1" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="System.CodeDom" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="System.Collections.Immutable" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="System.Composition.AttributedModel" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="System.Composition.Convention" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="System.Composition.Hosting" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="System.Composition.Runtime" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="System.Composition.TypedParts" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="System.IO.Pipelines" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="System.Memory" Version="4.5.5" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="System.Reflection.Emit.ILGeneration" Version="4.7.0" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="System.Text.Json" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="System.Text.Encodings.Web" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="System.Threading.Channels" Version="7.0.0" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" PrivateAssets="all" GeneratePathProperty="true" />
+
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.CodeAnalysis" Version="4.12.0-2.final" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.12.0-2.final" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0-2.final" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.12.0-2.final" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="9.0.0-rc.1.24452.1" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.Extensions.Primitives" Version="9.0.0-rc.1.24431.7" PrivateAssets="all" GeneratePathProperty="true" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetDependencyTargetPaths</GetTargetPathDependsOn>
+  </PropertyGroup>
+
+  <Target Name="GetDependencyTargetPaths">
+    <ItemGroup>
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGIndexRange)\lib\netstandard2.0\IndexRange.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGCommunityToolkit_HighPerformance)\lib\netstandard2.0\CommunityToolkit.HighPerformance.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGNodaTime)\lib\netstandard2.0\NodaTime.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGHumanizer_Core)\lib\netstandard2.0\Humanizer.dll" IncludeRuntimeDependency="false" />
+
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGCorvus_HighPerformance)\lib\netstandard2.0\Corvus.HighPerformance.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGCorvus_Json_CodeGeneration)\lib\netstandard2.0\Corvus.Json.CodeGeneration.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGCorvus_Json_CodeGeneration_4)\lib\netstandard2.0\Corvus.Json.CodeGeneration.4.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGCorvus_Json_CodeGeneration_6)\lib\netstandard2.0\Corvus.Json.CodeGeneration.6.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGCorvus_Json_CodeGeneration_7)\lib\netstandard2.0\Corvus.Json.CodeGeneration.7.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGCorvus_Json_CodeGeneration_201909)\lib\netstandard2.0\Corvus.Json.CodeGeneration.201909.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGCorvus_Json_CodeGeneration_202012)\lib\netstandard2.0\Corvus.Json.CodeGeneration.202012.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGCorvus_Json_CodeGeneration_CorvusVocabulary)\lib\netstandard2.0\Corvus.Json.CodeGeneration.CorvusVocabulary.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGCorvus_Json_CodeGeneration_CSharp)\lib\netstandard2.0\Corvus.Json.CodeGeneration.CSharp.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGCorvus_Json_CodeGeneration_OpenApi30)\lib\netstandard2.0\Corvus.Json.CodeGeneration.OpenApi30.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGCorvus_Json_JsonReference)\lib\netstandard2.0\Corvus.Json.JsonReference.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGCorvus_Json_JsonSchema_Draft4)\lib\netstandard2.0\Corvus.Json.JsonSchema.Draft4.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGCorvus_Json_JsonSchema_Draft6)\lib\netstandard2.0\Corvus.Json.JsonSchema.Draft6.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGCorvus_Json_JsonSchema_Draft7)\lib\netstandard2.0\Corvus.Json.JsonSchema.Draft7.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGCorvus_Json_JsonSchema_Draft201909)\lib\netstandard2.0\Corvus.Json.JsonSchema.Draft201909.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGCorvus_Json_JsonSchema_Draft202012)\lib\netstandard2.0\Corvus.Json.JsonSchema.Draft202012.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGCorvus_Json_JsonSchema_OpenApi30)\lib\netstandard2.0\Corvus.Json.JsonSchema.OpenApi30.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGCorvus_Json_Validator)\lib\netstandard2.0\Corvus.Json.Validator.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGCorvus_UriTemplates)\lib\netstandard2.0\Corvus.UriTemplates.dll" IncludeRuntimeDependency="false" />
+
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGJson_More_Net)\lib\netstandard2.0\Json.More.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGJsonPointer_Net)\lib\netstandard2.0\JsonPointer.Net.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGJsonSchema_Net)\lib\netstandard2.0\JsonSchema.Net.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGJsonSchema_Net_OpenApi)\lib\netstandard2.0\JsonSchema.Net.OpenApi.dll" IncludeRuntimeDependency="false" />
+
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGYamlDotNet)\lib\netstandard2.0\YamlDotNet.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGYaml2JsonNode)\lib\netstandard2.0\Yaml2JsonNode.dll" IncludeRuntimeDependency="false" />
+
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGGraeae_Models)\lib\netstandard2.0\Graeae.Models.dll" IncludeRuntimeDependency="false" />
+
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Buffers)\lib\netstandard2.0\System.Buffers.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_CodeDom)\lib\netstandard2.0\System.CodeDom.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Collections_Immutable)\lib\netstandard2.0\System.Collections.Immutable.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_ComponentModel_Annotations)\lib\netstandard2.0\System.ComponentModel.Annotations.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Composition_AttributedModel)\lib\netstandard2.0\System.Composition.AttributedModel.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Composition_Convention)\lib\netstandard2.0\System.Composition.Convention.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Composition_Hosting)\lib\netstandard2.0\System.Composition.Hosting.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Composition_Runtime)\lib\netstandard2.0\System.Composition.Runtime.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Composition_TypedParts)\lib\netstandard2.0\System.Composition.TypedParts.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Diagnostics_DiagnosticSource)\lib\netstandard2.0\System.Diagnostics.DiagnosticSource.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Memory)\lib\netstandard2.0\System.Memory.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Numerics_Vectors)\lib\netstandard2.0\System.Numerics.Vectors.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Reflection_Emit_Lightweight)\lib\netstandard2.0\System.Reflection.Emit.Lightweight.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Reflection_Emit_ILGeneration)\lib\netstandard2.0\System.Reflection.Emit.ILGeneration.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Runtime_CompilerServices_Unsafe)\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Text_Json)\lib\netstandard2.0\System.Text.Json.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Text_Encodings_Web)\lib\netstandard2.0\System.Text.Encodings.Web.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Text_Encoding_CodePages)\lib\netstandard2.0\System.Text.Encoding.CodePages.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Threading_Channels)\lib\netstandard2.0\System.Threading.Channels.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Threading_Tasks_Extensions)\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll" IncludeRuntimeDependency="false" />
+
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_Bcl_AsyncInterfaces)\lib\netstandard2.0\Microsoft.Bcl.AsyncInterfaces.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_Bcl_HashCode)\lib\netstandard2.0\Microsoft.Bcl.HashCode.dll" IncludeRuntimeDependency="false" />
+      <!--<TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_CodeAnalysis)\lib\netstandard2.0\Microsoft.CodeAnalysis.dll" IncludeRuntimeDependency="false" />-->
+      <!--<TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_CodeAnalysis_Common)\lib\netstandard2.0\Microsoft.CodeAnalysis.Common.dll" IncludeRuntimeDependency="false" />-->
+      <!--<TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_CodeAnalysis_Analyzers)\lib\netstandard2.0\Microsoft.CodeAnalysis.Analyzers.dll" IncludeRuntimeDependency="false" />-->
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_CodeAnalysis_CSharp)\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_CodeAnalysis_CSharp_Workspaces)\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_Extensions_Configuration_Abstractions)\lib\netstandard2.0\Microsoft.Extensions.Configuration.Abstractions.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_Extensions_DependencyInjection)\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_Extensions_DependencyInjection_Abstractions)\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_Extensions_Http)\lib\netstandard2.0\Microsoft.Extensions.Http.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_Extensions_Logging)\lib\netstandard2.0\Microsoft.Extensions.Logging.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_Extensions_Logging_Abstractions)\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_Extensions_ObjectPool)\lib\netstandard2.0\Microsoft.Extensions.ObjectPool.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_Extensions_Options)\lib\netstandard2.0\Microsoft.Extensions.Options.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_Extensions_Primitives)\lib\netstandard2.0\Microsoft.Extensions.Primitives.dll" IncludeRuntimeDependency="false" />
+    </ItemGroup>
+  </Target>
+
+  <ItemGroup>
+    <None Include="$(PKGIndexRange)\lib\netstandard2.0\IndexRange.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGCommunityToolkit_HighPerformance)\lib\netstandard2.0\CommunityToolkit.HighPerformance.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGNodaTime)\lib\netstandard2.0\NodaTime.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGHumanizer_Core)\lib\netstandard2.0\Humanizer.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+
+    <None Include="$(PKGCorvus_HighPerformance)\lib\netstandard2.0\Corvus.HighPerformance.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGCorvus_Json_CodeGeneration)\lib\netstandard2.0\Corvus.Json.CodeGeneration.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGCorvus_Json_CodeGeneration_4)\lib\netstandard2.0\Corvus.Json.CodeGeneration.4.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGCorvus_Json_CodeGeneration_6)\lib\netstandard2.0\Corvus.Json.CodeGeneration.6.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGCorvus_Json_CodeGeneration_7)\lib\netstandard2.0\Corvus.Json.CodeGeneration.7.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGCorvus_Json_CodeGeneration_201909)\lib\netstandard2.0\Corvus.Json.CodeGeneration.201909.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGCorvus_Json_CodeGeneration_202012)\lib\netstandard2.0\Corvus.Json.CodeGeneration.202012.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGCorvus_Json_CodeGeneration_CorvusVocabulary)\lib\netstandard2.0\Corvus.Json.CodeGeneration.CorvusVocabulary.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGCorvus_Json_CodeGeneration_CSharp)\lib\netstandard2.0\Corvus.Json.CodeGeneration.CSharp.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGCorvus_Json_CodeGeneration_OpenApi30)\lib\netstandard2.0\Corvus.Json.CodeGeneration.OpenApi30.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGCorvus_Json_JsonReference)\lib\netstandard2.0\Corvus.Json.JsonReference.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGCorvus_Json_JsonSchema_Draft4)\lib\netstandard2.0\Corvus.Json.JsonSchema.Draft4.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGCorvus_Json_JsonSchema_Draft6)\lib\netstandard2.0\Corvus.Json.JsonSchema.Draft6.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGCorvus_Json_JsonSchema_Draft7)\lib\netstandard2.0\Corvus.Json.JsonSchema.Draft7.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGCorvus_Json_JsonSchema_Draft201909)\lib\netstandard2.0\Corvus.Json.JsonSchema.Draft201909.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGCorvus_Json_JsonSchema_Draft202012)\lib\netstandard2.0\Corvus.Json.JsonSchema.Draft202012.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGCorvus_Json_JsonSchema_OpenApi30)\lib\netstandard2.0\Corvus.Json.JsonSchema.OpenApi30.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGCorvus_Json_Validator)\lib\netstandard2.0\Corvus.Json.Validator.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGCorvus_UriTemplates)\lib\netstandard2.0\Corvus.UriTemplates.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+
+    <None Include="$(PKGJson_More_Net)\lib\netstandard2.0\Json.More.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGJsonPointer_Net)\lib\netstandard2.0\JsonPointer.Net.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGJsonSchema_Net)\lib\netstandard2.0\JsonSchema.Net.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGJsonSchema_Net_OpenApi)\lib\netstandard2.0\JsonSchema.Net.OpenApi.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+
+    <None Include="$(PKGYamlDotNet)\lib\netstandard2.0\YamlDotNet.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGYaml2JsonNode)\lib\netstandard2.0\Yaml2JsonNode.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+
+    <None Include="$(PKGGraeae_Models)\lib\netstandard2.0\Graeae.Models.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+
+    <None Include="$(PKGSystem_Buffers)\lib\netstandard2.0\System.Buffers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGSystem_CodeDom)\lib\netstandard2.0\System.CodeDom.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGSystem_Collections_Immutable)\lib\netstandard2.0\System.Collections.Immutable.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGSystem_ComponentModel_Annotations)\lib\netstandard2.0\System.ComponentModel.Annotations.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGSystem_Composition_AttributedModel)\lib\netstandard2.0\System.Composition.AttributedModel.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGSystem_Composition_Convention)\lib\netstandard2.0\System.Composition.Convention.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGSystem_Composition_Hosting)\lib\netstandard2.0\System.Composition.Hosting.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGSystem_Composition_Runtime)\lib\netstandard2.0\System.Composition.Runtime.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGSystem_Composition_TypedParts)\lib\netstandard2.0\System.Composition.TypedParts.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGSystem_Diagnostics_DiagnosticSource)\lib\netstandard2.0\System.Diagnostics.DiagnosticSource.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGSystem_Memory)\lib\netstandard2.0\System.Memory.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGSystem_Numerics_Vectors)\lib\netstandard2.0\System.Numerics.Vectors.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGSystem_Reflection_Emit_Lightweight)\lib\netstandard2.0\System.Reflection.Emit.Lightweight.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGSystem_Reflection_Emit_ILGeneration)\lib\netstandard2.0\System.Reflection.Emit.ILGeneration.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGSystem_Runtime_CompilerServices_Unsafe)\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGSystem_Text_Json)\lib\netstandard2.0\System.Text.Json.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGSystem_Text_Encodings_Web)\lib\netstandard2.0\System.Text.Encodings.Web.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGSystem_Text_Encoding_CodePages)\lib\netstandard2.0\System.Text.Encoding.CodePages.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGSystem_Threading_Channels)\lib\netstandard2.0\System.Threading.Channels.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGSystem_Threading_Tasks_Extensions)\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+
+    <None Include="$(PKGMicrosoft_Bcl_AsyncInterfaces)\lib\netstandard2.0\Microsoft.Bcl.AsyncInterfaces.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGMicrosoft_Bcl_HashCode)\lib\netstandard2.0\Microsoft.Bcl.HashCode.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <!--<None Include="$(PKGMicrosoft_CodeAnalysis)\lib\netstandard2.0\Microsoft.CodeAnalysis.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />-->
+    <!--<None Include="$(PKGMicrosoft_CodeAnalysis_Common)\lib\netstandard2.0\Microsoft.CodeAnalysis.Common.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />-->
+    <!--<None Include="$(PKGMicrosoft_CodeAnalysis_Analyzers)\lib\netstandard2.0\Microsoft.CodeAnalysis.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />-->
+    <None Include="$(PKGMicrosoft_CodeAnalysis_CSharp)\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGMicrosoft_CodeAnalysis_CSharp_Workspaces)\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGMicrosoft_Extensions_Configuration_Abstractions)\lib\netstandard2.0\Microsoft.Extensions.Configuration.Abstractions.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGMicrosoft_Extensions_DependencyInjection)\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGMicrosoft_Extensions_DependencyInjection_Abstractions)\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGMicrosoft_Extensions_Http)\lib\netstandard2.0\Microsoft.Extensions.Http.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGMicrosoft_Extensions_Logging)\lib\netstandard2.0\Microsoft.Extensions.Logging.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGMicrosoft_Extensions_Logging_Abstractions)\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGMicrosoft_Extensions_ObjectPool)\lib\netstandard2.0\Microsoft.Extensions.ObjectPool.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGMicrosoft_Extensions_Options)\lib\netstandard2.0\Microsoft.Extensions.Options.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGMicrosoft_Extensions_Primitives)\lib\netstandard2.0\Microsoft.Extensions.Primitives.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+  </ItemGroup>
+</Project>

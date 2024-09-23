@@ -10,9 +10,9 @@ public class ExtensionData : Dictionary<string, JsonNode?>, IRefTargetContainer
 	internal static ExtensionData? FromNode(JsonObject obj)
 	{
 		var data = new ExtensionData();
-		foreach (var (key, value) in obj.Where(x => x.Key.StartsWith("x-")))
+		foreach (var kvp in obj.Where(x => x.Key.StartsWith("x-")))
 		{
-			data.Add(key, value);
+			data.Add(kvp.Key, kvp.Value);
 		}
 
 		return data.Any() ? data : null;
@@ -26,7 +26,7 @@ public class ExtensionData : Dictionary<string, JsonNode?>, IRefTargetContainer
 		if (!TryGetValue(keys[0], out var jn)) return null;
 		if (keys.Length == 1) return jn;
 
-		keys[1..].ToPointer().TryEvaluate(jn, out var result);
+		keys.Slice(1).ToPointer().TryEvaluate(jn, out var result);
 
 		return result;
 	}

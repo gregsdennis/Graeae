@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Graeae.Models;
 
@@ -8,7 +9,7 @@ namespace Graeae.Models;
 public class CallbackKeyExpression : IEquatable<string>
 {
 	private static readonly Regex TemplateVarsIdentifier = new(@"^([^{]*)(\{(?<runtimeExpr>[^}]+)\}([^{])*)*$");
-	
+
 	private readonly string _source;
 
 	/// <summary>
@@ -25,7 +26,7 @@ public class CallbackKeyExpression : IEquatable<string>
 	internal static CallbackKeyExpression Parse(string source)
 	{
 		var matches = TemplateVarsIdentifier.Matches(source);
-		var parameters = matches.SelectMany(x => x.Groups["runtimeExpr"].Captures.Select(c => c.Value))
+		var parameters = matches.Cast<Match>().SelectMany(x => x.Groups["runtimeExpr"].Captures.Cast<Capture>().Select(c => c.Value))
 			.Select(RuntimeExpression.Parse);
 
 		return new CallbackKeyExpression(source, parameters);

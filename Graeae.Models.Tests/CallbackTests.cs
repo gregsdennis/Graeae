@@ -8,8 +8,8 @@ public class CallbackTests
 		// example from https://spec.openapis.org/oas/v3.1.0#callback-object-examples
 		var expr = (CallbackKeyExpression) "http://notificationServer.com?transactionId={$request.body#/id}&email={$request.body#/email}";
 
-		Assert.AreEqual(2, expr.Parameters.Length);
-		Assert.AreEqual("$request.body#/id", expr.Parameters[0]);
-		Assert.AreEqual("$request.body#/email", expr.Parameters[1]);
+		Assert.That(expr.Parameters.Length, Is.EqualTo(2));
+		Assert.That(expr.Parameters[0], Is.EqualTo("$request.body#/id"));
+		Assert.That(expr.Parameters[1], Is.EqualTo("$request.body#/email"));
 	}
 }

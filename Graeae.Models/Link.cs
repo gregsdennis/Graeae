@@ -119,7 +119,7 @@ public class Link : IRefTargetContainer
 		if (keys[0] == "server")
 		{
 			if (keys.Length == 1) return Server;
-			return Server?.Resolve(keys[1..]);
+			return Server?.Resolve(keys.Slice(1));
 		}
 
 		return ExtensionData?.Resolve(keys);

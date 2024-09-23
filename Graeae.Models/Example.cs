@@ -1,7 +1,7 @@
-﻿using System.Text.Json;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
-using Json.More;
 
 namespace Graeae.Models;
 
@@ -12,12 +12,12 @@ namespace Graeae.Models;
 public class Example : IRefTargetContainer
 {
 	private static readonly string[] KnownKeys =
-	{
+	[
 		"summary",
 		"description",
 		"value",
 		"externalValue"
-	};
+	];
 
 	/// <summary>
 	/// Gets or sets the summary.
@@ -189,6 +189,8 @@ public class ExampleRef : Example, IComponentRef
 
 internal class ExampleJsonConverter : JsonConverter<Example>
 {
+	[RequiresUnreferencedCode("Calls System.Text.Json.JsonSerializer.Deserialize<TValue>(ref Utf8JsonReader, JsonSerializerOptions)")]
+	[UnconditionalSuppressMessage("AOT", "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.", Justification = "<Pending>")]
 	public override Example Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
 		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
@@ -197,6 +199,8 @@ internal class ExampleJsonConverter : JsonConverter<Example>
 		return Example.FromNode(obj);
 	}
 
+	[RequiresUnreferencedCode("Calls System.Text.Json.JsonSerializer.Deserialize<TValue>(ref Utf8JsonReader, JsonSerializerOptions)")]
+	[UnconditionalSuppressMessage("AOT", "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.", Justification = "<Pending>")]
 	public override void Write(Utf8JsonWriter writer, Example value, JsonSerializerOptions options)
 	{
 		var json = Example.ToNode(value);

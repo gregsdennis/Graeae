@@ -44,10 +44,10 @@ public class Callback : Dictionary<CallbackKeyExpression, PathItem>, IRefTargetC
 	{
 		ExtensionData = ExtensionData.FromNode(obj);
 
-		foreach (var (key, value) in obj)
+		foreach (var kvp in obj)
 		{
-			if (key.StartsWith("x-")) continue;
-			Add(CallbackKeyExpression.Parse(key), PathItem.FromNode(value, options));
+			if (kvp.Key.StartsWith("x-")) continue;
+			Add(CallbackKeyExpression.Parse(kvp.Key), PathItem.FromNode(kvp.Value, options));
 		}
 	}
 
@@ -65,9 +65,9 @@ public class Callback : Dictionary<CallbackKeyExpression, PathItem>, IRefTargetC
 		}
 		else
 		{
-			foreach (var (key, value) in callback)
+			foreach (var kvp in callback)
 			{
-				obj.Add(key.ToString(), PathItem.ToNode(value, options));
+				obj.Add(kvp.Key.ToString(), PathItem.ToNode(kvp.Value, options));
 			}
 			obj.AddExtensions(callback.ExtensionData);
 		}
@@ -79,7 +79,7 @@ public class Callback : Dictionary<CallbackKeyExpression, PathItem>, IRefTargetC
 	{
 		if (keys.Length == 0) return null;
 
-		return this.GetFromMap(keys[0])?.Resolve(keys[1..]) ??
+		return this.GetFromMap(keys[0])?.Resolve(keys.Slice(1)) ??
 		       ExtensionData?.Resolve(keys);
 	}
 
@@ -158,9 +158,9 @@ public class CallbackRef : Callback, IComponentRef
 		void copy(Callback other)
 		{
 			ExtensionData = other.ExtensionData;
-			foreach (var (key, value) in other)
+			foreach (var kvp in other)
 			{
-				this[key] = value;
+				this[kvp.Key] = kvp.Value;
 			}
 		}
 

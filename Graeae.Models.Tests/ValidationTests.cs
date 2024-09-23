@@ -1,5 +1,4 @@
 using System.Text.Json;
-using System.Text.Json.Nodes;
 using Json.Schema;
 using Yaml2JsonNode;
 
@@ -31,7 +30,7 @@ public class ValidationTests
 
 		Console.WriteLine(JsonSerializer.Serialize(results, TestEnvironment.TestOutputSerializerOptions));
 
-		Assert.IsTrue(results.IsValid);
+		Assert.That(results.IsValid, Is.True);
 	}
 
 	[Test]
@@ -52,6 +51,6 @@ public class ValidationTests
 
 		Console.WriteLine(JsonSerializer.Serialize(results, TestEnvironment.TestOutputSerializerOptions));
 
-		Assert.IsTrue(results.IsValid);
+		Assert.That(results.IsValid, Is.True);
 	}
 }
