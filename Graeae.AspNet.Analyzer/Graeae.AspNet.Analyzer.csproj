@@ -25,7 +25,7 @@
     <PackageReleaseNotes>Release notes can be found at https://github.com/gregsdennis/Graeae</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <DocumentationFile>Graeae.AspNet.xml</DocumentationFile>
-    <Version>0.1.0-preview1</Version>
+    <Version>0.1.0-preview2</Version>
     <FileVersion>0.1.0</FileVersion>
     <AssemblyVersion>0.1.0.0</AssemblyVersion>
     <IncludeSymbols>false</IncludeSymbols>
@@ -63,6 +63,10 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
     <PackageReference Include="PolySharp" Version="1.14.1" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
   </ItemGroup>
 
 </Project>
