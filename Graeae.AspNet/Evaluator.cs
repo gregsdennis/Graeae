@@ -23,7 +23,7 @@ public static class Evaluator
 	/// <returns>The resolved expression as a URI</returns>
 	public static Uri Resolve(this CallbackKeyExpression expr, HttpContext context, PathTemplate? pathTemplate = null)
 	{
-		var sb = new StringBuilder(expr.Source);
+		var sb = new StringBuilder(expr.ToString());
 
 		foreach (var parameter in expr.Parameters)
 		{
