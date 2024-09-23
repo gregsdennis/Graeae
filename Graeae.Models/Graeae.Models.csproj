@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
@@ -19,9 +19,9 @@
     <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/../RELEASE_NOTES.md"))</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <DocumentationFile>Graeae.Models.xml</DocumentationFile>
-    <Version>0.3.3</Version>
-    <FileVersion>0.3.3</FileVersion>
-    <AssemblyVersion>0.3.3.0</AssemblyVersion>
+    <Version>0.3.4</Version>
+    <FileVersion>0.3.4</FileVersion>
+    <AssemblyVersion>0.3.4.0</AssemblyVersion>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
