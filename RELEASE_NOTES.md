@@ -1,3 +1,7 @@
+[0.3.3](https://github.com/gregsdennis/Graeae/pull/13)
+
+- Added .Net Standard 2.0 support.
+
 [0.3.2](https://github.com/gregsdennis/Graeae/pull/11)
 
 - Fixed a bug that Draft4Support.Enable() crashed when called multiple times.

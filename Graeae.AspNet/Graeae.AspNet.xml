@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Graeae.AspNet</name>
+    </assembly>
+    <members>
+        <member name="T:Graeae.AspNet.Evaluator">
+            <summary>
+            Extensions to evaluate runtime expressions against an HTTP call.
+            </summary>
+        </member>
+        <member name="M:Graeae.AspNet.Evaluator.Resolve(Graeae.Models.CallbackKeyExpression,Microsoft.AspNetCore.Http.HttpContext,Graeae.Models.PathTemplate)">
+            <summary>
+            Resolves a callback key expression.
+            </summary>
+            <param name="expr">The callback key expression</param>
+            <param name="context">The HTTP context</param>
+            <param name="pathTemplate">(optional) A path template</param>
+            <returns>The resolved expression as a URI</returns>
+        </member>
+        <member name="M:Graeae.AspNet.Evaluator.Resolve(Graeae.Models.RuntimeExpression,Microsoft.AspNetCore.Http.HttpContext,Graeae.Models.PathTemplate)">
+            <summary>
+            Resolves a runtime expression.
+            </summary>
+            <param name="expr">The runtime expression</param>
+            <param name="context">The HTTP context</param>
+            <param name="pathTemplate">(optional) A path template</param>
+            <returns>The resolved expression</returns>
+        </member>
+        <member name="T:Graeae.AspNet.OpenApiOptions">
+            <summary>
+            Defines options for the <see cref="M:Graeae.AspNet.WebApplicationExtensions.MapOpenApi(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder,System.String,Graeae.AspNet.OpenApiOptions)"/> extension.
+            </summary>
+        </member>
+        <member name="P:Graeae.AspNet.OpenApiOptions.Default">
+            <summary>
+            Provides a default set of options.
+            </summary>
+        </member>
+        <member name="P:Graeae.AspNet.OpenApiOptions.IgnoreUnhandledPaths">
+            <summary>
+            Ignores paths/routes that do not have handlers assigned.
+            </summary>
+        </member>
+        <member name="T:Graeae.AspNet.RequestHandlerAttribute">
+            <summary>
+            Indicates that the attributed class contains handler methods for the indicated route.
+            </summary>
+        </member>
+        <member name="P:Graeae.AspNet.RequestHandlerAttribute.Path">
+            <summary>
+            The route to handle.
+            </summary>
+        </member>
+        <member name="M:Graeae.AspNet.RequestHandlerAttribute.#ctor(System.String)">
+            <summary>
+            Creates a new <see cref="T:Graeae.AspNet.RequestHandlerAttribute"/>
+            </summary>
+            <param name="path">The route to handle</param>
+            <exception cref="T:System.ArgumentException">Thrown when the route is not a valid path template</exception>
+        </member>
+        <member name="T:Graeae.AspNet.WebApplicationExtensions">
+            <summary>
+            Extends the app builder to scan an Open API document and automatically register methods.
+            </summary>
+        </member>
+        <member name="M:Graeae.AspNet.WebApplicationExtensions.MapOpenApi(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder,System.String,Graeae.AspNet.OpenApiOptions)">
+            <summary>
+            Maps request handlers (see <see cref="T:Graeae.AspNet.RequestHandlerAttribute"/>) contained in the current assembly.
+            </summary>
+            <param name="app">The application builder</param>
+            <param name="openApiFileName">The file name of the Open API document</param>
+            <param name="options"></param>
+            <returns>The application builder.</returns>
+        </member>
+    </members>
+</doc>
