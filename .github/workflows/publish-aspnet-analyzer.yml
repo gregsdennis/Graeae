@@ -1,10 +1,11 @@
 # https://github.com/marketplace/actions/publish-nuget
-name: Publish Graeae.Models
+name: Publish Graeae.AspNet.Analyzer
 on:
   push:
     branches:
       - main
     paths:
+      - '.github/workflows/publish-aspnet-analyzer.yml'
       - 'Graeae.AspNet.Analyzer/**/*'
   workflow_dispatch:
 
