@@ -1,4 +1,6 @@
+[0.3.5](https://github.com/gregsdennis/Graeae/pull/14)
 
+- Fixed an [issue](https://github.com/gregsdennis/Graeae/issues/13) where OAuth objects incorrectly required various URLs.
 
 [0.3.4](https://github.com/gregsdennis/Graeae/commit/f3f6bb0c4ec29879f8fb24573900f51f61e0bfae) (v0.3.3 redacted)
 
@@ -6,7 +8,7 @@
 
 [0.3.2](https://github.com/gregsdennis/Graeae/pull/11)
 
-- Fixed a bug that Draft4Support.Enable() crashed when called multiple times.
+- Fixed a bug that `Draft4Support.Enable()` crashed when called multiple times.
 
 [0.3.1](https://github.com/gregsdennis/Graeae/pull/10)
 
