@@ -398,4 +398,4 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 *.xml
-
+.idea/

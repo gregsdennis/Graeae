@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0</TargetFrameworks>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>Graeae.AspNet</PackageId>
@@ -17,7 +17,7 @@
     <PackageReleaseNotes>Release notes can be found at https://github.com/gregsdennis/Graeae</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <DocumentationFile>Graeae.AspNet.xml</DocumentationFile>
-    <Version>0.1.0-preview1</Version>
+    <Version>0.1.0-preview2</Version>
     <FileVersion>0.1.0</FileVersion>
     <AssemblyVersion>0.1.0.0</AssemblyVersion>
     <IncludeSymbols>true</IncludeSymbols>
