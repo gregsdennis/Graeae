@@ -25,7 +25,7 @@
     <PackageReleaseNotes>Release notes can be found at https://github.com/gregsdennis/Graeae</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <DocumentationFile>Graeae.AspNet.xml</DocumentationFile>
-    <Version>0.1.0-preview2</Version>
+    <Version>0.1.0-preview3</Version>
     <FileVersion>0.1.0</FileVersion>
     <AssemblyVersion>0.1.0.0</AssemblyVersion>
     <IncludeSymbols>false</IncludeSymbols>

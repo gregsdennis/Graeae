@@ -52,6 +52,18 @@ public class OAuthFlowCollection : IRefTargetContainer
 			AuthorizationCode = obj.Maybe("authorizationCode", OAuthFlow.FromNode),
 			ExtensionData = ExtensionData.FromNode(obj)
 		};
+        
+        if (flows.Implicit is not null && flows.Implicit.AuthorizationUrl is null)
+            throw new JsonException($"`authorizationUrl` is required for implicit oauth flow object");
+        if (flows.Password is not null && flows.Password.TokenUrl is null)
+            throw new JsonException($"`tokenUrl` is required for password oauth flow object");
+        if (flows.ClientCredentials is not null && flows.ClientCredentials.TokenUrl is null)
+            throw new JsonException($"`tokenUrl` is required for clientCredentials oauth flow object");
+        if (flows.AuthorizationCode is not null)
+        {
+            if (flows.AuthorizationCode.AuthorizationUrl is null) throw new JsonException($"`authorizationUrl` is required for authorizationCode oauth flow object");
+            if (flows.AuthorizationCode.TokenUrl is null) throw new JsonException($"`tokenUrl` is required for authorizationCode oauth flow object");
+        }
 
 		obj.ValidateNoExtraKeys(KnownKeys, flows.ExtensionData?.Keys);
 

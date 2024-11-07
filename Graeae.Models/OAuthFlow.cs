@@ -21,11 +21,11 @@ public class OAuthFlow : IRefTargetContainer
 	/// <summary>
 	/// Gets the authorization URL.
 	/// </summary>
-	public Uri AuthorizationUrl { get; }
+	public Uri? AuthorizationUrl { get; set; }
 	/// <summary>
 	/// Gets the token URL.
 	/// </summary>
-	public Uri TokenUrl { get; }
+	public Uri? TokenUrl { get; set; }
 	/// <summary>
 	/// Gets or sets the refresh token URL.
 	/// </summary>
@@ -42,13 +42,9 @@ public class OAuthFlow : IRefTargetContainer
 	/// <summary>
 	/// Creates a new <see cref="OAuthFlow"/>
 	/// </summary>
-	/// <param name="authorizationUrl">The authorization URL</param>
-	/// <param name="tokenUrl">The token URL</param>
 	/// <param name="scopes">The scopes</param>
-	public OAuthFlow(Uri authorizationUrl, Uri tokenUrl, Dictionary<string, string> scopes)
+	public OAuthFlow(Dictionary<string, string> scopes)
 	{
-		AuthorizationUrl = authorizationUrl;
-		TokenUrl = tokenUrl;
 		Scopes = scopes;
 	}
 
@@ -58,10 +54,10 @@ public class OAuthFlow : IRefTargetContainer
 			throw new JsonException("Expected an object");
 
 		var flow = new OAuthFlow(
-			obj.ExpectUri("authorizationUrl", "oauth flow"),
-			obj.ExpectUri("tokenUrl", "oauth flow"),
 			obj.ExpectMap("scopes", "oauth flow", x => x is JsonValue v && v.TryGetValue(out string? s) ? s : throw new JsonException("scopes must be strings")))
 		{
+            AuthorizationUrl = obj.MaybeUri("authorizationUrl", "oauth flow"),
+            TokenUrl = obj.MaybeUri("tokenUrl", "oauth flow"),
 			RefreshUrl = obj.MaybeUri("refreshUrl", "oauth flow"),
 			ExtensionData = ExtensionData.FromNode(obj)
 		};
@@ -75,11 +71,10 @@ public class OAuthFlow : IRefTargetContainer
 	{
 		if (flow == null) return null;
 
-		var obj = new JsonObject
-		{
-			["authorizationUrl"] = flow.AuthorizationUrl.ToString(),
-			["tokenUrl"] = flow.TokenUrl.ToString()
-		};
+		var obj = new JsonObject();
+		obj.MaybeAdd("authorizationUrl", flow.AuthorizationUrl?.ToString());
+		obj.MaybeAdd("tokenUrl", flow.TokenUrl?.ToString());
+		obj.MaybeAdd("refreshUrl", flow.RefreshUrl?.ToString());
 
 		var scopes = new JsonObject();
 		foreach (var kvp in flow.Scopes)
@@ -88,7 +83,6 @@ public class OAuthFlow : IRefTargetContainer
 		}
 		obj.Add("scopes", scopes);
 
-		obj.MaybeAdd("refreshUrl", flow.RefreshUrl?.ToString());
 		obj.AddExtensions(flow.ExtensionData);
 
 		return obj;
