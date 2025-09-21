@@ -66,7 +66,7 @@
         </member>
         <member name="M:Graeae.AspNet.WebApplicationExtensions.MapOpenApi(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder,System.String,Graeae.AspNet.OpenApiOptions)">
             <summary>
-            Maps request handlers (see <see cref="T:Graeae.AspNet.RequestHandlerAttribute"/>) contained in the current assembly.
+            Maps request handlers (see <see cref="T:Graeae.AspNet.RequestHandlerAttribute"/>) contained in the current assembly onto a manually curated OpenAPI doument.
             </summary>
             <param name="app">The application builder</param>
             <param name="openApiFileName">The file name of the Open API document</param>

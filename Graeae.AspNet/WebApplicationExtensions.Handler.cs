@@ -10,10 +10,10 @@ namespace Graeae.AspNet;
 /// <summary>
 /// Extends the app builder to scan an Open API document and automatically register methods.
 /// </summary>
-public static class WebApplicationExtensions
+public static partial class WebApplicationExtensions
 {
 	/// <summary>
-	/// Maps request handlers (see <see cref="RequestHandlerAttribute"/>) contained in the current assembly.
+	/// Maps request handlers (see <see cref="RequestHandlerAttribute"/>) contained in the current assembly onto a manually curated OpenAPI doument.
 	/// </summary>
 	/// <param name="app">The application builder</param>
 	/// <param name="openApiFileName">The file name of the Open API document</param>

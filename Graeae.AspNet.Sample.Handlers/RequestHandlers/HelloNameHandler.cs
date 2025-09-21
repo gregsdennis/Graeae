@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Graeae.AspNet.Tests.Host.RequestHandlers;
+namespace Graeae.AspNet.Sample.Handlers.RequestHandlers;
 
 [RequestHandler("/hello/{name}")]
 public static class HelloNameHandler

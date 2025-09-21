@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>Graeae.AspNet</PackageId>
@@ -17,9 +17,9 @@
     <PackageReleaseNotes>Release notes can be found at https://github.com/gregsdennis/Graeae</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <DocumentationFile>Graeae.AspNet.xml</DocumentationFile>
-    <Version>0.1.0-preview3</Version>
-    <FileVersion>0.1.0</FileVersion>
-    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <Version>0.2.0</Version>
+    <FileVersion>0.2.0</FileVersion>
+    <AssemblyVersion>0.2.0.0</AssemblyVersion>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -47,6 +47,10 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="JsonSchema.Net.Generation" Version="5.1.1" />
   </ItemGroup>
 
   <ItemGroup>

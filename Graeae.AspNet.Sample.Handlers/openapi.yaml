@@ -35,7 +35,7 @@ paths:
           schema:
             $ref: '#/components/schemas/Person'
   /goodbye:
-    get:
+    post:
       description: goodbye world
       requestBody:
         content:
