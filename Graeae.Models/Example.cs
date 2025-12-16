@@ -167,7 +167,7 @@ public class ExampleRef : Example, IComponentRef
 		Ref = new Uri(reference ?? throw new ArgumentNullException(nameof(reference)), UriKind.RelativeOrAbsolute);
 	}
 
-	async Task IComponentRef.Resolve(OpenApiDocument root, BuildOptions buildOptions)
+	void IComponentRef.Resolve(OpenApiDocument root, BuildOptions buildOptions)
 	{
 		bool import(JsonElement? node)
 		{
@@ -186,7 +186,7 @@ public class ExampleRef : Example, IComponentRef
 			ExtensionData = other.ExtensionData;
 		}
 
-		IsResolved = await Models.Ref.Resolve<Example>(root, Ref, import, copy);
+		IsResolved = Models.Ref.Resolve<Example>(root, Ref, import, copy);
 	}
 }
 

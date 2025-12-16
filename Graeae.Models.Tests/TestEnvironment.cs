@@ -26,17 +26,18 @@ public class TestEnvironment
 
 	[OneTimeSetUp]
 	public void Setup()
-	{
-		Draft4Support.Enable();
+    {
+        var options = new BuildOptions
+        {
+            Dialect = SchemaDraft4.Dialect.Draft4,
+            SchemaRegistry = new()
+        };
+
+		MetaSchema.Register(options);
 	}
 }
 
 [JsonSerializable(typeof(OpenApiDocument))]
-[JsonSerializable(typeof(Draft4ExclusiveMaximumKeyword))]
-[JsonSerializable(typeof(Draft4ExclusiveMinimumKeyword))]
-[JsonSerializable(typeof(Draft4IdKeyword))]
-[JsonSerializable(typeof(Draft4TypeKeyword))]
-[JsonSerializable(typeof(NullableKeyword))]
 [JsonSerializable(typeof(ParameterStyle))]
 [JsonSerializable(typeof(ParameterStyle?))]
 [JsonSerializable(typeof(ParameterLocation))]
@@ -47,6 +48,7 @@ public class TestEnvironment
 [JsonSerializable(typeof(JsonSchema))]
 [JsonSerializable(typeof(EvaluationResults))]
 
+[JsonSerializable(typeof(JsonElement))]
 [JsonSerializable(typeof(JsonNode))]
 [JsonSerializable(typeof(JsonObject))]
 [JsonSerializable(typeof(Dictionary<string, object>))]

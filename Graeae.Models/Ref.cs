@@ -76,7 +76,7 @@ public static class Ref
 		/// </summary>
 		/// <param name="componentName">The key that identifies the schema.</param>
 		/// <returns>The reference.</returns>
-		public static JsonSchema Schema(string componentName) => new JsonSchemaBuilder().Ref($"#/components/schemas/{componentName}");
+		public static JsonSchemaBuilder Schema(string componentName) => new JsonSchemaBuilder().Ref($"#/components/schemas/{componentName}");
 
 		/// <summary>
 		/// Creates a reference to a security scheme.
@@ -89,7 +89,7 @@ public static class Ref
 	/// <summary>
 	/// Gets or sets the `$ref` fetching function.
 	/// </summary>
-	public static Func<Uri, Task<JsonElement?>>? Fetch { get; set; } = FetchJson;
+	public static Func<Uri, JsonElement?>? Fetch { get; set; } = FetchJson;
 
 	/// <summary>
 	/// Defines a default basic fetching function that uses an
@@ -97,11 +97,11 @@ public static class Ref
 	/// </summary>
 	/// <param name="uri">The resource URI</param>
 	/// <returns>The JSON content as a `JsonNode`</returns>
-	public static async Task<JsonElement?> FetchJson(Uri uri)
+	public static JsonElement? FetchJson(Uri uri)
 	{
 		// This is inefficient, but it gets the job done.
 		using var client = new HttpClient();
-		var content = await client.GetStringAsync(uri);
+		var content = client.GetStringAsync(uri).Result;
 		var yaml = YamlSerializer.Parse(content);
 		var json = yaml.First().ToJsonElement();
 
@@ -137,7 +137,7 @@ public static class Ref
 #pragma warning restore CS0618 // Type or member is obsolete
     }
 
-	internal static async Task<bool> Resolve<T>(OpenApiDocument root, Uri targetUri, Func<JsonElement?, bool> import, Action<T> copy)
+	internal static bool Resolve<T>(OpenApiDocument root, Uri targetUri, Func<JsonElement?, bool> import, Action<T> copy)
 		where T : class
 	{
 		var baseUri = ((IBaseDocument)root).BaseUri;
@@ -158,7 +158,7 @@ public static class Ref
 		if (Fetch == null)
 			throw new RefResolutionException("Automatic fetching of referenced documents has been disabled.");
 
-		var targetBase = await Fetch(newBaseUri) ??
+		var targetBase = Fetch(newBaseUri) ??
 		                 throw new RefResolutionException($"Cannot resolve base schema from `{newUri}`");
 
 		if (!JsonPointer.TryParse(fragment, out var pointerFragment))

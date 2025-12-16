@@ -22,7 +22,7 @@ public static class MetaSchema
     /// <summary>
     /// Defines the JSON Schema draft 4 meta-schema.
     /// </summary>
-    public static JsonSchema Draft4 { get; internal set; }   
+    public static JsonSchema Draft4 { get; internal set; }
 
     /// <summary>
     /// Registers all components required to use the OpenAPI vocabulary.
@@ -38,8 +38,8 @@ public static class MetaSchema
 
     private static JsonSchema LoadMetaSchema(string resourceName, BuildOptions buildOptions)
     {
-        var resources = typeof(MetaSchemas).Assembly.GetManifestResourceNames();
-        var resourceStream = typeof(MetaSchemas).Assembly.GetManifestResourceStream(@$"Json.Schema.OpenApi.Meta_Schemas._3._1.{resourceName}.json");
+        var resources = typeof(MetaSchema).Assembly.GetManifestResourceNames();
+        var resourceStream = typeof(MetaSchema).Assembly.GetManifestResourceStream($"Graeae.Models.{resourceName}.json");
         using var reader = new StreamReader(resourceStream!, System.Text.Encoding.UTF8);
 
         var text = reader.ReadToEnd();

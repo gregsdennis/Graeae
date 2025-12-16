@@ -34,6 +34,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="draft4.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="draft4.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="..\LICENSE">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>

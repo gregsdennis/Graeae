@@ -18,14 +18,19 @@ public class ValidationTests
 	{
 		var fullFileName = GetFile(fileName);
 		var yaml = File.ReadAllText(fullFileName);
-		var instance = YamlSerializer.Parse(yaml).First().ToJsonNode();
+		var instance = YamlSerializer.Parse(yaml).First().ToJsonElement();
 		var schemaFileName = GetFile("openapi-schema-3.0.json");
-		var schema = JsonSchema.FromFile(schemaFileName, TestEnvironment.SerializerOptions);
+
+        var buildOptions = new BuildOptions
+        {
+			Dialect = SchemaDraft4.Dialect.Draft4,
+            SchemaRegistry = new()
+        };
+		var schema = JsonSchema.FromFile(schemaFileName, buildOptions);
 
 		var results = schema.Evaluate(instance, new EvaluationOptions
 		{
 			OutputFormat = OutputFormat.List,
-			EvaluateAs = SchemaDraft4.Draft4Support.Draft4Version
 		});
 
 		Console.WriteLine(JsonSerializer.Serialize(results, TestEnvironment.TestOutputSerializerOptions));
@@ -40,9 +45,15 @@ public class ValidationTests
 	{
 		var fullFileName = GetFile(fileName);
 		var yaml = File.ReadAllText(fullFileName);
-		var instance = YamlSerializer.Parse(yaml).First().ToJsonNode();
+		var instance = YamlSerializer.Parse(yaml).First().ToJsonElement();
 		var schemaFileName = GetFile("openapi-schema-3.1.json");
-		var schema = JsonSchema.FromFile(schemaFileName, TestEnvironment.SerializerOptions);
+
+        var buildOptions = new BuildOptions
+        {
+            Dialect = Dialect.Draft202012,
+            SchemaRegistry = new()
+        };
+		var schema = JsonSchema.FromFile(schemaFileName, buildOptions);
 
 		var results = schema.Evaluate(instance, new EvaluationOptions
 		{

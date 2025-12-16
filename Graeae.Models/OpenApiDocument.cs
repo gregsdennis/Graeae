@@ -1,8 +1,9 @@
-﻿using System.Text.Json;
+﻿using Json.Pointer;
+using Json.Schema;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
-using Json.Pointer;
-using Json.Schema;
+using System.Xml.Linq;
 
 namespace Graeae.Models;
 
@@ -94,16 +95,16 @@ public class OpenApiDocument : IBaseDocument
 	/// <param name="info">The API information</param>
 	public OpenApiDocument(string openApi, OpenApiInfo info)
 	{
-		OpenApi = openApi;
+        OpenApi = openApi;
 		Info = info;
-	}
+    }
 
 	JsonSchemaNode? IBaseDocument.FindSubschema(JsonPointer pointer, BuildContext context)
 	{
 		return Find<JsonSchema>(pointer)?.Root;
 	}
 
-	public static async Task<OpenApiDocument> Build(JsonElement node, BuildOptions? schemaBuildOptions = null)
+	public static OpenApiDocument Build(JsonElement node, BuildOptions? schemaBuildOptions = null)
 	{
         schemaBuildOptions ??= BuildOptions.Default;
 
@@ -131,14 +132,23 @@ public class OpenApiDocument : IBaseDocument
 
         node.ValidateNoExtraKeys(KnownKeys, document.ExtensionData?.Keys);
         // find and attempt to resolve all reference objects
-        await document.TryResolveRefs(schemaBuildOptions);
+        document.TryResolveRefs(schemaBuildOptions);
 
         schemaBuildOptions.SchemaRegistry.Register(document);
 
         return document;
 	}
 
-	internal static JsonNode? ToNode(OpenApiDocument? document, JsonSerializerOptions? options)
+    public void Initialize(BuildOptions? schemaBuildOptions = null)
+    {
+        schemaBuildOptions ??= BuildOptions.Default;
+  
+        TryResolveRefs(schemaBuildOptions);
+
+        schemaBuildOptions.SchemaRegistry.Register(this);
+    }
+
+    internal static JsonNode? ToNode(OpenApiDocument? document, JsonSerializerOptions? options)
 	{
 		if (document == null) return null;
 
@@ -161,7 +171,7 @@ public class OpenApiDocument : IBaseDocument
 		return obj;
 	}
 
-	private async Task TryResolveRefs(BuildOptions buildOptions)
+	private void TryResolveRefs(BuildOptions buildOptions)
 	{
 		var allRefs = GeneralHelpers.Collect(
 			Paths?.FindRefs(),
@@ -169,7 +179,7 @@ public class OpenApiDocument : IBaseDocument
 			Components?.FindRefs()
 		);
 
-		await Task.WhenAll(allRefs.Select(x => x.Resolve(this, buildOptions)));
+		allRefs.AsParallel().ForAll(x => x.Resolve(this, buildOptions));
 	}
 
 	/// <summary>
@@ -247,7 +257,7 @@ public class OpenApiDocumentJsonConverter : JsonConverter<OpenApiDocument>
         if (obj.ValueKind is not JsonValueKind.Object)
             throw new JsonException("Expected an object");
 
-		return OpenApiDocument.Build(obj, BuildOptions.Default).Result;
+		return OpenApiDocument.Build(obj, BuildOptions.Default);
 	}
 
 	public override void Write(Utf8JsonWriter writer, OpenApiDocument value, JsonSerializerOptions options)

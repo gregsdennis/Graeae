@@ -43,5 +43,10 @@ public static class Dialect
             SchemaKeyword.Instance,
             TitleKeyword.Instance,
             TypeKeyword.Instance,
-            UniqueItemsKeyword.Instance);
+            UniqueItemsKeyword.Instance)
+        {
+            Id = MetaSchema.Draft4Id,
+            AllowUnknownKeywords = true,
+            RefIgnoresSiblingKeywords = true
+        };
 }

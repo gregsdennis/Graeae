@@ -1,5 +1,6 @@
 ﻿using System.Net;
-using System.Text.Json.Nodes;
+using System.Text.Json;
+using Json.More;
 using Json.Schema;
 using Yaml2JsonNode;
 
@@ -20,14 +21,14 @@ public class DocumentBuilderTests
 				Email = "me@you.com",
 				Name = "me you",
 				Url = new Uri("https://you.com"),
-				ExtensionData = new() { ["key"] = new JsonArray(1, 2, 3) }
+				ExtensionData = new() { ["key"] = JsonDocument.Parse("[1,2,3]").RootElement }
 			},
 			Description = "this is an api",
 			License = new("generic license")
 			{
 				Identifier = "GEN1.0",
 				Url = new Uri("https://genlicense.info"),
-				ExtensionData = new() { ["key"] = 42 }
+				ExtensionData = new() { ["key"] = 42.AsJsonElement() }
 			},
 			Summary = "summary",
 			TermsOfService = new Uri("https://you.com/terms")
@@ -43,8 +44,8 @@ public class DocumentBuilderTests
 						{
 							["basic"] = Ref.To.Callback("basic")
 						},
-						Parameters = new[] { Ref.To.Parameter("item") }
-					},
+						Parameters = [Ref.To.Parameter("item")]
+                    },
 					Post = new()
 					{
 						Deprecated = true,
@@ -54,7 +55,7 @@ public class DocumentBuilderTests
 							Description = "docs"
 						},
 						OperationId = "operation",
-						Parameters = new[] { Ref.To.Parameter("item") },
+						Parameters = [Ref.To.Parameter("item")],
 						RequestBody = new(new()
 						{
 							["application/json"] = new()
@@ -100,7 +101,7 @@ public class DocumentBuilderTests
 								}),
 								ExtensionData = new()
 								{
-									["x-comment"] = "this is a numerically-index dictionary of booleans"
+									["x-comment"] = "this is a numerically-index dictionary of booleans".AsJsonElement()
 								}
 							}
 						}
@@ -128,7 +129,7 @@ public class DocumentBuilderTests
 									.Properties(
 										("name", new JsonSchemaBuilder().Type(SchemaValueType.String))
 									),
-								Example = new JsonObject { ["name"] = "example item" }
+								Example = JsonDocument.Parse("""{ "name": "example item" }""") .RootElement
 							}
 						}
 					}
@@ -148,10 +149,10 @@ public class DocumentBuilderTests
 			}
 		)
 		{
-			Servers = new[]
-			{
-				new Server("http://petstore.swagger.io/v1")
-			},
+			Servers =
+            [
+                new Server("http://petstore.swagger.io/v1")
+            ],
 			Paths = new()
 			{
 				["/pets"] = new()
@@ -160,10 +161,10 @@ public class DocumentBuilderTests
 					{
 						Summary = "List all pets",
 						OperationId = "listPets",
-						Tags = new[] { "pets" },
-						Parameters = new[]
-						{
-							new Parameter("limit", ParameterLocation.Query)
+						Tags = ["pets"],
+						Parameters =
+                        [
+                            new Parameter("limit", ParameterLocation.Query)
 							{
 								Description = "How many items to return at one time (max 100)",
 								Required = false,
@@ -172,7 +173,7 @@ public class DocumentBuilderTests
 									.Maximum(100)
 									.Format(Formats.Int32)
 							}
-						},
+                        ],
 						Responses = new()
 						{
 							[HttpStatusCode.OK] = new("A paged array of pets")
@@ -209,7 +210,7 @@ public class DocumentBuilderTests
 					{
 						Summary = "Create a pet",
 						OperationId = "createPets",
-						Tags = new[] { "pets" },
+						Tags = ["pets"],
 						Responses = new()
 						{
 							[HttpStatusCode.Created] = new("Null response"),
@@ -232,17 +233,17 @@ public class DocumentBuilderTests
 					{
 						Summary = "Info for a specific pet",
 						OperationId = "showPetById",
-						Tags = new[] { "pets" },
-						Parameters = new[]
-						{
-							new Parameter("petId", ParameterLocation.Path)
+						Tags = ["pets"],
+						Parameters =
+                        [
+                            new Parameter("petId", ParameterLocation.Path)
 							{
 								Required = true,
 								Description = "The id of the pet to retrieve",
 								Schema = new JsonSchemaBuilder()
 									.Type(SchemaValueType.String)
 							}
-						},
+                        ],
 						Responses = new()
 						{
 							[HttpStatusCode.OK] = new("Expected response to a valid request")

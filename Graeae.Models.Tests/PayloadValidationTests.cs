@@ -1,7 +1,7 @@
 using System.Text.Json;
-using Graeae.Models.SchemaDraft4;
 using Json.Pointer;
 using Json.Schema;
+using Dialect = Graeae.Models.SchemaDraft4.Dialect;
 
 namespace Graeae.Models.Tests;
 
@@ -13,20 +13,21 @@ public class PayloadValidationTests
 	{
 		var schemaFileName = GetFile("schema-components.json");
 		var fileText = await File.ReadAllTextAsync(schemaFileName);
-		var openApiDoc = JsonSerializer.Deserialize(fileText, TestSerializerContext.Default.OpenApiDocument);
+		var fileJson = JsonDocument.Parse(fileText).RootElement;
 
-		var options = new EvaluationOptions
+		var options = new BuildOptions
 		{
-			EvaluateAs = Draft4Support.Draft4Version,
+			Dialect = Dialect.Draft4,
+			SchemaRegistry = new()
 		};
-		await openApiDoc!.Initialize(options.SchemaRegistry);
+        var openApiDoc = OpenApiDocument.Build(fileJson, options);
 
 		var componentRef = JsonPointer.Parse("#/components/schemas/outer");
 		var fullFileName = GetFile(fileName);
 		var payloadJson = await File.ReadAllTextAsync(fullFileName);
-		var document = JsonDocument.Parse(payloadJson);
+		var document = JsonDocument.Parse(payloadJson).RootElement;
 
-		var results = openApiDoc.EvaluatePayload(document, componentRef, options);
+		var results = openApiDoc.EvaluatePayload(document, componentRef);
 		Assert.That(results!.IsValid, Is.True);
 	}
 
@@ -40,21 +41,22 @@ public class PayloadValidationTests
 		var schemaFileName = GetFile("schema-components.json");
 
 		var fileText = await File.ReadAllTextAsync(schemaFileName);
-		var openApiDoc = JsonSerializer.Deserialize(fileText, TestSerializerContext.Default.OpenApiDocument);
+        var fileJson = JsonDocument.Parse(fileText).RootElement;
 
-		var options = new EvaluationOptions
-		{
-			EvaluateAs = Draft4Support.Draft4Version,
-		};
-		await openApiDoc!.Initialize(options.SchemaRegistry);
+        var options = new BuildOptions
+        {
+            Dialect = Dialect.Draft4,
+            SchemaRegistry = new()
+        };
+        var openApiDoc = OpenApiDocument.Build(fileJson, options);
 
-		var componentRef = JsonPointer.Parse("#/components/schemas/outer");
+        var componentRef = JsonPointer.Parse("#/components/schemas/outer");
 
 		var fullFileName = GetFile(fileName);
 		var payloadJson = await File.ReadAllTextAsync(fullFileName);
-		var document = JsonDocument.Parse(payloadJson);
+		var document = JsonDocument.Parse(payloadJson).RootElement;
 
-		var results = openApiDoc.EvaluatePayload(document, componentRef, options);
+		var results = openApiDoc.EvaluatePayload(document, componentRef);
 		Assert.That(results!.IsValid, Is.False);
 	}
 }

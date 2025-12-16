@@ -31,5 +31,5 @@ internal interface IComponentRef
     /// <param name="root">The document root.</param>
     /// <param name="buildOptions"></param>
     /// <returns>A task.</returns>
-    Task Resolve(OpenApiDocument root, BuildOptions buildOptions);
+    void Resolve(OpenApiDocument root, BuildOptions buildOptions);
 }

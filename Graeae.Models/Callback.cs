@@ -145,7 +145,7 @@ public class CallbackRef : Callback, IComponentRef
 		Ref = new Uri(reference ?? throw new ArgumentNullException(nameof(reference)), UriKind.RelativeOrAbsolute);
 	}
 
-	async Task IComponentRef.Resolve(OpenApiDocument root, BuildOptions buildOptions)
+	void IComponentRef.Resolve(OpenApiDocument root, BuildOptions buildOptions)
 	{
 		bool import(JsonElement? node)
 		{
@@ -164,7 +164,7 @@ public class CallbackRef : Callback, IComponentRef
 			}
 		}
 
-		IsResolved = await Models.Ref.Resolve<Callback>(root, Ref, import, copy);
+		IsResolved = Models.Ref.Resolve<Callback>(root, Ref, import, copy);
 	}
 }
 

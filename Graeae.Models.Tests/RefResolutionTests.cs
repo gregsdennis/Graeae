@@ -1,4 +1,5 @@
 using System.Net;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using Json.More;
 using Json.Pointer;
@@ -32,7 +33,7 @@ public class RefResolutionTests
 
 		var example = document!.Find<Example>(JsonPointer.Parse("/paths/~1v2/get/responses/203/content/application~1json/examples/foo"));
 
-		Assert.That(example!.Value!["version"]!["updated"]!.GetValue<string>(), Is.EqualTo("2011-01-21T11:33:21Z"));
+		Assert.That(example!.Value?.GetProperty("version").GetProperty("updated").GetString(), Is.EqualTo("2011-01-21T11:33:21Z"));
 	}
 
 	[Test]
@@ -55,14 +56,18 @@ public class RefResolutionTests
 			}
 		};
 
-		var options = new EvaluationOptions();
-		await document.Initialize(options.SchemaRegistry);
+		var options = new BuildOptions
+        {
+			Dialect = Dialect.Draft202012,
+			SchemaRegistry = new()
+        };
+		document.Initialize(options);
 
 		var start = document.Find<JsonSchema>(JsonPointer.Parse("/components/schemas/start"));
 
-		var instance = new JsonObject { ["foo"] = "a string" };
+		var instance = JsonDocument.Parse("""{ "foo": "a string" }""").RootElement;
 
-		var validation = start!.Evaluate(instance, options);
+		var validation = start!.Evaluate(instance);
 
 		Assert.That(validation.IsValid, Is.True);
 	}
@@ -103,18 +108,22 @@ public class RefResolutionTests
 				{
 					["foo"] = new()
 					{
-						Value = 42
+						Value = 42.AsJsonElement()
 					}
 				}
 			}
 		};
 
-		var options = new EvaluationOptions();
-		await document.Initialize(options.SchemaRegistry);
+        var options = new BuildOptions
+        {
+			Dialect = Dialect.Draft202012,
+            SchemaRegistry = new()
+        };
+		document.Initialize(options);
 
 		var inlineExample = document.Find<Example>(JsonPointer.Parse("/paths/~1v2/get/responses/200/content/application~1json/examples/foo"));
 
-		Assert.That(inlineExample!.Value!.AsValue().GetNumber(), Is.EqualTo(42));
+		Assert.That(inlineExample?.Value?.GetInt32(), Is.EqualTo(42));
 	}
 
 	[Test]
@@ -122,14 +131,14 @@ public class RefResolutionTests
 	{
 		try
 		{
-			Ref.Fetch = async uri =>
+			Ref.Fetch = uri =>
 			{
 				var fileName = uri.OriginalString.Replace("http://localhost:1234/", string.Empty);
 				var fullFileName = GetFile(fileName);
 
-				var content = await File.ReadAllTextAsync(fullFileName);
+				var content = File.ReadAllText(fullFileName);
 
-				return JsonNode.Parse(content);
+				return JsonDocument.Parse(content).RootElement;
 			};
 
 			var document = new OpenApiDocument("3.1.0", new OpenApiInfo("title", "v1"))
@@ -161,17 +170,18 @@ public class RefResolutionTests
 				}
 			};
 
-			var options = new EvaluationOptions();
-			await document.Initialize(options.SchemaRegistry);
+			var options = new BuildOptions
+            {
+				Dialect = Dialect.Draft202012,
+				SchemaRegistry = new()
+            };
+			document.Initialize(options);
 
 			var reffedExample = document.Find<Example>(JsonPointer.Parse("/paths/~1v2/get/responses/200/content/application~1json/examples/foo"));
 
-			var expected = new JsonObject
-			{
-				["type"] = "string"
-			};
+            var expected = JsonDocument.Parse("""{ "type": "string" }""").RootElement;
 
-			Assert.That(() => reffedExample!.Value.IsEquivalentTo(expected));
+			Assert.That(reffedExample!.Value?.IsEquivalentTo(expected), Is.True);
 		}
 		finally
 		{
