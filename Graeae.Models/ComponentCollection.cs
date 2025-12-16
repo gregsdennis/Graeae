@@ -71,27 +71,27 @@ public class ComponentCollection : IRefTargetContainer
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	internal static ComponentCollection FromNode(JsonNode? node, JsonSerializerOptions? options)
+	internal static ComponentCollection FromNode(JsonElement node, BuildOptions buildOptions)
 	{
-		if (node is not JsonObject obj)
+		if (node.ValueKind is not JsonValueKind.Object)
 			throw new JsonException("Expected an object");
 
 		var components = new ComponentCollection
 		{
-			Schemas = obj.MaybeDeserialize<Dictionary<string, JsonSchema>>("schemas", options),
-			Responses = obj.MaybeMap("responses", x => Response.FromNode(x, options)),
-			Parameters = obj.MaybeMap("parameters", x => Parameter.FromNode(x, options)),
-			Examples = obj.MaybeMap("examples", Example.FromNode),
-			RequestBodies = obj.MaybeMap("requestBodies", x => RequestBody.FromNode(x, options)),
-			Headers = obj.MaybeMap("headers", x => Header.FromNode(x, options)),
-			SecuritySchemes = obj.MaybeMap("securitySchemes", x => SecurityScheme.FromNode(x, options)),
-			Links = obj.MaybeMap("links", Link.FromNode),
-			Callbacks = obj.MaybeMap("callbacks", x => Callback.FromNode(x, options)),
-			PathItems = obj.MaybeMap("pathItems", x => PathItem.FromNode(x, options)),
-			ExtensionData = ExtensionData.FromNode(obj)
+			Schemas = node.MaybeMap("schemas", x => JsonSchema.Build(x, buildOptions)),
+			Responses = node.MaybeMap("responses", node1 => Response.FromNode(node1, buildOptions)),
+			Parameters = node.MaybeMap("parameters", node1 => Parameter.FromNode(node1, buildOptions)),
+			Examples = node.MaybeMap("examples", Example.FromNode),
+			RequestBodies = node.MaybeMap("requestBodies", node1 => RequestBody.FromNode(node1, buildOptions)),
+			Headers = node.MaybeMap("headers", node1 => Header.FromNode(node1, buildOptions)),
+			SecuritySchemes = node.MaybeMap("securitySchemes", SecurityScheme.FromNode),
+			Links = node.MaybeMap("links", Link.FromNode),
+			Callbacks = node.MaybeMap("callbacks", node1 => Callback.FromNode(node1, buildOptions)),
+			PathItems = node.MaybeMap("pathItems", node1 => PathItem.FromNode(node1, buildOptions)),
+			ExtensionData = ExtensionData.FromNode(node)
 		};
 
-		obj.ValidateNoExtraKeys(KnownKeys, components.ExtensionData?.Keys);
+        node.ValidateNoExtraKeys(KnownKeys, components.ExtensionData?.Keys);
 
 		return components;
 	}
@@ -205,11 +205,12 @@ internal class ComponentCollectionJsonConverter : JsonConverter<ComponentCollect
 	[RequiresUnreferencedCode("Calls System.Text.Json.JsonSerializer.Deserialize<TValue>(ref Utf8JsonReader, JsonSerializerOptions)")]
 	[UnconditionalSuppressMessage("AOT", "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.", Justification = "<Pending>")]
 	public override ComponentCollection Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-	{
-		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
-		          throw new JsonException("Expected an object");
+    {
+        var obj = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+        if (obj.ValueKind is not JsonValueKind.Object)
+            throw new JsonException("Expected an object");
 
-		return ComponentCollection.FromNode(obj, options);
+		return ComponentCollection.FromNode(obj, BuildOptions.Default);
 	}
 
 	[RequiresUnreferencedCode("Calls System.Text.Json.JsonSerializer.Deserialize<TValue>(ref Utf8JsonReader, JsonSerializerOptions)")]

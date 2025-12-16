@@ -48,21 +48,21 @@ public class OAuthFlow : IRefTargetContainer
 		Scopes = scopes;
 	}
 
-	internal static OAuthFlow FromNode(JsonNode? node)
+	internal static OAuthFlow FromNode(JsonElement node)
 	{
-		if (node is not JsonObject obj)
+		if (node.ValueKind is not JsonValueKind.Object)
 			throw new JsonException("Expected an object");
 
 		var flow = new OAuthFlow(
-			obj.ExpectMap("scopes", "oauth flow", x => x is JsonValue v && v.TryGetValue(out string? s) ? s : throw new JsonException("scopes must be strings")))
+            node.ExpectMap("scopes", "oauth flow", x => x.ValueKind is JsonValueKind.String ? x.GetString()! : throw new JsonException("scopes must be strings")))
 		{
-            AuthorizationUrl = obj.MaybeUri("authorizationUrl", "oauth flow"),
-            TokenUrl = obj.MaybeUri("tokenUrl", "oauth flow"),
-			RefreshUrl = obj.MaybeUri("refreshUrl", "oauth flow"),
-			ExtensionData = ExtensionData.FromNode(obj)
+            AuthorizationUrl = node.MaybeUri("authorizationUrl", "oauth flow"),
+            TokenUrl = node.MaybeUri("tokenUrl", "oauth flow"),
+			RefreshUrl = node.MaybeUri("refreshUrl", "oauth flow"),
+			ExtensionData = ExtensionData.FromNode(node)
 		};
 
-		obj.ValidateNoExtraKeys(KnownKeys, flow.ExtensionData?.Keys);
+        node.ValidateNoExtraKeys(KnownKeys, flow.ExtensionData?.Keys);
 
 		return flow;
 	}
@@ -99,9 +99,10 @@ public class OAuthFlow : IRefTargetContainer
 internal class OAuthFlowJsonConverter : JsonConverter<OAuthFlow>
 {
 	public override OAuthFlow Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-	{
-		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
-		          throw new JsonException("Expected an object");
+    {
+        var obj = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+        if (obj.ValueKind is not JsonValueKind.Object)
+            throw new JsonException("Expected an object");
 
 		return OAuthFlow.FromNode(obj);
 	}

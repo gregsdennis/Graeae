@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using System.Text.Json.Nodes;
 
 namespace Graeae.Models;
 
@@ -12,12 +11,12 @@ internal static class ValidationHelper
 		"description"
 	};
 
-	public static void ValidateNoExtraKeys(this JsonObject obj, IEnumerable<string> knownKeys, IEnumerable<string>? extensionKeys = null)
+	public static void ValidateNoExtraKeys(this JsonElement obj, IEnumerable<string> knownKeys, IEnumerable<string>? extensionKeys = null)
 	{
 		// ReSharper disable PossibleMultipleEnumeration
 		if (extensionKeys != null)
 			knownKeys = knownKeys.Concat(extensionKeys);
-		var extraKeys = ((IDictionary<string, JsonNode?>)obj).Keys.Except(knownKeys);
+		var extraKeys = obj.EnumerateObject().Select(x => x.Name).Except(knownKeys);
 		if (extraKeys.Any())
 			throw new JsonException("Extra keys are not supported.")
 			{
@@ -26,7 +25,7 @@ internal static class ValidationHelper
 		// ReSharper restore PossibleMultipleEnumeration
 	}
 
-	public static void ValidateReferenceKeys(this JsonObject obj)
+	public static void ValidateReferenceKeys(this JsonElement obj)
 	{
 		obj.ValidateNoExtraKeys(ReferenceKeys);
 	}

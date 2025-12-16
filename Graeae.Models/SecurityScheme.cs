@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using Json.Schema;
 
 namespace Graeae.Models;
 
@@ -71,40 +72,40 @@ public class SecurityScheme : IRefTargetContainer
 	private protected SecurityScheme(){}
 #pragma warning restore CS8618
 
-	internal static SecurityScheme FromNode(JsonNode? node, JsonSerializerOptions? options)
+	internal static SecurityScheme FromNode(JsonElement node)
 	{
-		if (node is not JsonObject obj)
+		if (node.ValueKind is not JsonValueKind.Object)
 			throw new JsonException("Expected an object");
 
 		SecurityScheme scheme;
-		if (obj.ContainsKey("$ref"))
+		if (node.TryGetProperty("$ref", out _))
 		{
-			scheme = new SecuritySchemeRef(obj.ExpectUri("$ref", "reference"))
+			scheme = new SecuritySchemeRef(node.ExpectUri("$ref", "reference"))
 			{
-				Description = obj.MaybeString("description", "reference"),
-				Summary = obj.MaybeString("summary", "reference")
+				Description = node.MaybeString("description", "reference"),
+				Summary = node.MaybeString("summary", "reference")
 			};
 
-			obj.ValidateReferenceKeys();
+            node.ValidateReferenceKeys();
 		}
 		else
 		{
-			scheme = new SecurityScheme(obj.ExpectString("type", "securityScheme"));
-			scheme.Import(obj, options);
+			scheme = new SecurityScheme(node.ExpectString("type", "securityScheme"));
+			scheme.Import(node);
 
-			obj.ValidateNoExtraKeys(KnownKeys, scheme.ExtensionData?.Keys);
+            node.ValidateNoExtraKeys(KnownKeys, scheme.ExtensionData?.Keys);
 		}
 		return scheme;
 	}
 
-	private protected void Import(JsonObject obj, JsonSerializerOptions? options)
+	private protected void Import(JsonElement obj)
 	{
-		Description = obj.MaybeString("description", "response");
+		Description = obj.MaybeString("description", "securityScheme");
 		Name = obj.MaybeString("name", "securityScheme");
-		In = obj.MaybeEnum<SecuritySchemeLocation>("in", options);
+		In = obj.MaybeEnum<SecuritySchemeLocation>("in", "securityScheme");
 		Scheme = obj.MaybeString("scheme", "securityScheme");
 		BearerFormat = obj.MaybeString("bearerFormat", "securityScheme");
-		Flows = obj.TryGetPropertyValue("flows", out var v) ? OAuthFlowCollection.FromNode(v) : null;
+		Flows = obj.TryGetProperty("flows", out var v) ? OAuthFlowCollection.FromNode(v) : null;
 		OpenIdConnectUrl = obj.MaybeUri("openIdConnectUrl", "securityScheme");
 		ExtensionData = ExtensionData.FromNode(obj);
 	}
@@ -200,14 +201,14 @@ public class SecuritySchemeRef : SecurityScheme, IComponentRef
 		Ref = new Uri(reference ?? throw new ArgumentNullException(nameof(reference)), UriKind.RelativeOrAbsolute);
 	}
 
-	async Task IComponentRef.Resolve(OpenApiDocument root, JsonSerializerOptions? options)
+	async Task IComponentRef.Resolve(OpenApiDocument root, BuildOptions buildOptions)
 	{
-		bool import(JsonNode? node)
+		bool import(JsonElement? node)
 		{
-			if (node is not JsonObject obj) return false;
+			if (node?.ValueKind is not JsonValueKind.Object) return false;
 
-			Type = obj.ExpectString("type", "securityScheme");
-			Import(obj, options);
+			Type = node.Value.ExpectString("type", "securityScheme");
+			Import(node.Value);
 			return true;
 		}
 
@@ -231,11 +232,12 @@ public class SecuritySchemeRef : SecurityScheme, IComponentRef
 internal class SecuritySchemeJsonConverter : JsonConverter<SecurityScheme>
 {
 	public override SecurityScheme Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-	{
-		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
-		          throw new JsonException("Expected an object");
+    {
+        var obj = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+        if (obj.ValueKind is not JsonValueKind.Object)
+            throw new JsonException("Expected an object");
 
-		return SecurityScheme.FromNode(obj, options);
+		return SecurityScheme.FromNode(obj);
 	}
 
 	public override void Write(Utf8JsonWriter writer, SecurityScheme value, JsonSerializerOptions options)

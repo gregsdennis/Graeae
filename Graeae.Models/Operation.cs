@@ -80,29 +80,29 @@ public class Operation : IRefTargetContainer
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	internal static Operation FromNode(JsonNode? node, JsonSerializerOptions? options)
+	internal static Operation FromNode(JsonElement node, BuildOptions buildOptions)
 	{
-		if (node is not JsonObject obj)
+		if (node.ValueKind is not JsonValueKind.Object)
 			throw new JsonException("Expected an object");
 
 		var operation = new Operation
 		{
-			Tags = obj.MaybeArray("tags", x => x is JsonValue v && v.TryGetValue(out string? s) ? s : throw new JsonException("tags must be strings")),
-			Summary = obj.MaybeString("summary", "operation"),
-			Description = obj.MaybeString("description", "operation"),
-			ExternalDocs = obj.Maybe("externalDocs", ExternalDocumentation.FromNode),
-			OperationId = obj.MaybeString("operationId", "operation"),
-			Parameters = obj.MaybeArray("parameters", x => Parameter.FromNode(x, options)),
-			RequestBody = obj.Maybe("requestBody", x => RequestBody.FromNode(x, options)),
-			Responses = obj.Maybe("responses", x => ResponseCollection.FromNode(x, options)),
-			Callbacks = obj.MaybeMap("callbacks", x => Callback.FromNode(x, options)),
-			Deprecated = obj.MaybeBool("deprecated", "operation"),
-			Security = obj.MaybeArray("security", SecurityRequirement.FromNode),
-			Servers = obj.MaybeArray("servers", Server.FromNode),
-			ExtensionData = ExtensionData.FromNode(obj)
+			Tags = node.MaybeArray("tags", x => x.ValueKind is JsonValueKind.String ? x.GetString()! : throw new JsonException("tags must be strings")),
+			Summary = node.MaybeString("summary", "operation"),
+			Description = node.MaybeString("description", "operation"),
+			ExternalDocs = node.Maybe("externalDocs", ExternalDocumentation.FromNode),
+			OperationId = node.MaybeString("operationId", "operation"),
+			Parameters = node.MaybeArray("parameters", node1 => Parameter.FromNode(node1, buildOptions)),
+			RequestBody = node.Maybe("requestBody", node1 => RequestBody.FromNode(node1, buildOptions)),
+			Responses = node.Maybe("responses", node1 => ResponseCollection.FromNode(node1, buildOptions)),
+			Callbacks = node.MaybeMap("callbacks", node1 => Callback.FromNode(node1, buildOptions)),
+			Deprecated = node.MaybeBool("deprecated", "operation"),
+			Security = node.MaybeArray("security", SecurityRequirement.FromNode),
+			Servers = node.MaybeArray("servers", Server.FromNode),
+			ExtensionData = ExtensionData.FromNode(node)
 		};
 
-		obj.ValidateNoExtraKeys(KnownKeys, operation.ExtensionData?.Keys);
+        node.ValidateNoExtraKeys(KnownKeys, operation.ExtensionData?.Keys);
 
 		return operation;
 	}
@@ -194,10 +194,11 @@ internal class OperationJsonConverter : JsonConverter<Operation>
 {
 	public override Operation Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
-		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
-		          throw new JsonException("Expected an object");
+		var obj = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+        if (obj.ValueKind is not JsonValueKind.Object)
+            throw new JsonException("Expected an object");
 
-		return Operation.FromNode(obj, options);
+		return Operation.FromNode(obj, BuildOptions.Default);
 	}
 
 	public override void Write(Utf8JsonWriter writer, Operation value, JsonSerializerOptions options)

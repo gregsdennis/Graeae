@@ -43,19 +43,19 @@ public class ServerVariable : IRefTargetContainer
 		Default = @default;
 	}
 
-	internal static ServerVariable FromNode(JsonNode? node)
+	internal static ServerVariable FromNode(JsonElement node)
 	{
-		if (node is not JsonObject obj)
+		if (node.ValueKind is not JsonValueKind.Object)
 			throw new JsonException("Expected an object");
 
-		var vars = new ServerVariable(obj.ExpectString("default", "server variable"))
+		var vars = new ServerVariable(node.ExpectString("default", "server variable"))
 		{
-			Enum = obj.MaybeArray("enum", x => x is JsonValue v && v.TryGetValue(out string? s) ? s : throw new JsonException("`enum` values must be strings")),
-			Description = obj.MaybeString("description", "server variable"),
-			ExtensionData = ExtensionData.FromNode(obj)
+			Enum = node.MaybeArray("enum", x => x.ValueKind is JsonValueKind.String ? x.GetString()! : throw new JsonException("`enum` values must be strings")),
+			Description = node.MaybeString("description", "server variable"),
+			ExtensionData = ExtensionData.FromNode(node)
 		};
 
-		obj.ValidateNoExtraKeys(KnownKeys, vars.ExtensionData?.Keys);
+        node.ValidateNoExtraKeys(KnownKeys, vars.ExtensionData?.Keys);
 
 		return vars;
 	}
@@ -88,8 +88,9 @@ internal class ServerVariableJsonConverter : JsonConverter<ServerVariable>
 {
 	public override ServerVariable Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
-		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
-		          throw new JsonException("Expected an object");
+		var obj = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+        if (obj.ValueKind is not JsonValueKind.Object)
+            throw new JsonException("Expected an object");
 
 		return ServerVariable.FromNode(obj);
 	}

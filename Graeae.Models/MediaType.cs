@@ -27,7 +27,7 @@ public class MediaType : IRefTargetContainer
 	/// <summary>
 	/// Gets or sets an example.
 	/// </summary>
-	public JsonNode? Example { get; set; }
+	public JsonElement? Example { get; set; }
 	/// <summary>
 	/// Gets or sets a collection of examples.
 	/// </summary>
@@ -41,21 +41,21 @@ public class MediaType : IRefTargetContainer
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	internal static MediaType FromNode(JsonNode? node, JsonSerializerOptions? options)
+	internal static MediaType FromNode(JsonElement node, BuildOptions buildOptions)
 	{
-		if (node is not JsonObject obj)
+		if (node.ValueKind is not JsonValueKind.Object)
 			throw new JsonException("Expected an object");
 
 		var mediaType = new MediaType
 		{
-			Schema = obj.MaybeDeserialize<JsonSchema>("schema", options),
-			Example = obj.TryGetPropertyValue("example", out var v) ? v : null,
-			Examples = obj.MaybeMap("examples", Models.Example.FromNode),
-			Encoding = obj.MaybeMap("encoding", x => Models.Encoding.FromNode(x, options)),
-			ExtensionData = ExtensionData.FromNode(obj)
+			Schema = node.MaybeSchema("schema", buildOptions),
+			Example = node.TryGetProperty("example", out var v) ? v : null,
+			Examples = node.MaybeMap("examples", Models.Example.FromNode),
+			Encoding = node.MaybeMap("encoding", node1 => Models.Encoding.FromNode(node1, buildOptions)),
+			ExtensionData = ExtensionData.FromNode(node)
 		};
 
-		obj.ValidateNoExtraKeys(KnownKeys, mediaType.ExtensionData?.Keys);
+        node.ValidateNoExtraKeys(KnownKeys, mediaType.ExtensionData?.Keys);
 
 		return mediaType;
 	}
@@ -67,7 +67,7 @@ public class MediaType : IRefTargetContainer
 		var obj = new JsonObject();
 
 		obj.MaybeSerialize("schema", mediaType.Schema, options);
-		obj.MaybeAdd("example", mediaType.Example?.DeepClone());
+		obj.MaybeAdd("example", mediaType.Example?.AsNode());
 		obj.MaybeAddMap("examples", mediaType.Examples, Models.Example.ToNode);
 		obj.MaybeAddMap("encoding", mediaType.Encoding, x => Models.Encoding.ToNode(x, options));
 		obj.AddExtensions(mediaType.ExtensionData);
@@ -132,11 +132,12 @@ public class MediaType : IRefTargetContainer
 internal class MediaTypeJsonConverter : JsonConverter<MediaType>
 {
 	public override MediaType Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-	{
-		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
-		          throw new JsonException("Expected an object");
+    {
+        var obj = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+        if (obj.ValueKind is not JsonValueKind.Object)
+            throw new JsonException("Expected an object");
 
-		return MediaType.FromNode(obj, options);
+		return MediaType.FromNode(obj, BuildOptions.Default);
 	}
 
 	public override void Write(Utf8JsonWriter writer, MediaType value, JsonSerializerOptions options)

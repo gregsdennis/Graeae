@@ -47,33 +47,33 @@ public class RequestBody : IRefTargetContainer
 	private protected RequestBody(){}
 #pragma warning restore CS8618
 
-	internal static RequestBody FromNode(JsonNode? node, JsonSerializerOptions? options)
+	internal static RequestBody FromNode(JsonElement node, BuildOptions buildOptions)
 	{
-		if (node is not JsonObject obj)
+		if (node.ValueKind is not JsonValueKind.Object)
 			throw new JsonException("Expected an object");
 
 		RequestBody body;
-		if (obj.ContainsKey("$ref"))
+		if (node.TryGetProperty("$ref", out _))
 		{
-			body = new RequestBodyRef(obj.ExpectUri("$ref", "reference"))
+			body = new RequestBodyRef(node.ExpectUri("$ref", "reference"))
 			{
-				Description = obj.MaybeString("description", "reference"),
-				Summary = obj.MaybeString("summary", "reference")
+				Description = node.MaybeString("description", "reference"),
+				Summary = node.MaybeString("summary", "reference")
 			};
 
-			obj.ValidateReferenceKeys();
+            node.ValidateReferenceKeys();
 		}
 		else
 		{
-			body = new RequestBody(obj.ExpectMap("content", "request body", x => MediaType.FromNode(x, options)));
-			body.Import(obj);
+			body = new RequestBody(node.ExpectMap("content", "request body", node1 => MediaType.FromNode(node1, buildOptions)));
+			body.Import(node);
 
-			obj.ValidateNoExtraKeys(KnownKeys, body.ExtensionData?.Keys);
+            node.ValidateNoExtraKeys(KnownKeys, body.ExtensionData?.Keys);
 		}
 		return body;
 	}
 
-	private protected void Import(JsonObject obj)
+	private protected void Import(JsonElement obj)
 	{
 		Description = obj.MaybeString("description", "request body");
 		Required = obj.MaybeBool("required", "request body");
@@ -179,14 +179,14 @@ public class RequestBodyRef : RequestBody, IComponentRef
 		Ref = new Uri(reference ?? throw new ArgumentNullException(nameof(reference)), UriKind.RelativeOrAbsolute);
 	}
 
-	async Task IComponentRef.Resolve(OpenApiDocument root, JsonSerializerOptions? options)
+	async Task IComponentRef.Resolve(OpenApiDocument root, BuildOptions buildOptions)
 	{
-		bool import(JsonNode? node)
+		bool import(JsonElement? node)
 		{
-			if (node is not JsonObject obj) return false;
+			if (node?.ValueKind is not JsonValueKind.Object) return false;
 
-			Content = obj.ExpectMap("content", "request body", x => MediaType.FromNode(x, options));
-			Import(obj);
+			Content = node.Value.ExpectMap("content", "request body", node1 => MediaType.FromNode(node1, buildOptions));
+			Import(node.Value);
 			return true;
 		}
 
@@ -206,10 +206,11 @@ internal class RequestBodyJsonConverter : JsonConverter<RequestBody>
 {
 	public override RequestBody Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
-		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
-		          throw new JsonException("Expected an object");
+		var obj = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+        if (obj.ValueKind is not JsonValueKind.Object)
+            throw new JsonException("Expected an object");
 
-		return RequestBody.FromNode(obj, options);
+		return RequestBody.FromNode(obj, BuildOptions.Default);
 	}
 
 	public override void Write(Utf8JsonWriter writer, RequestBody value, JsonSerializerOptions options)

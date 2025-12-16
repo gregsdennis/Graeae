@@ -3,7 +3,6 @@ using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Json.Pointer;
 using Json.Schema;
-using Vocabularies = Json.Schema.OpenApi.Vocabularies;
 
 namespace Graeae.Models;
 
@@ -14,18 +13,18 @@ namespace Graeae.Models;
 public class OpenApiDocument : IBaseDocument
 {
 	private static readonly string[] SupportedVersions =
-	{
-		"3.0.0",
+    [
+        "3.0.0",
 		"3.0.1",
 		"3.0.2",
 		"3.0.3",
 		"3.0.4",
 		"3.1.0",
 		"3.1.1"
-	};
+    ];
 	private static readonly string[] KnownKeys =
-	{
-		"openapi",
+    [
+        "openapi",
 		"info",
 		"jsonSchemaDialect",
 		"servers",
@@ -35,7 +34,7 @@ public class OpenApiDocument : IBaseDocument
 		"security",
 		"tags",
 		"externalDocs"
-	};
+    ];
 
 	private readonly Dictionary<JsonPointer, object> _lookup = new();
 
@@ -88,17 +87,6 @@ public class OpenApiDocument : IBaseDocument
 
 	private static Uri GenerateBaseUri() => new($"graeae:models:{Guid.NewGuid().ToString("N").AsSpan(0, 10).ToString()}");
 
-	static OpenApiDocument()
-	{
-		Json.Schema.Formats.Register(Formats.Double);
-		Json.Schema.Formats.Register(Formats.Float);
-		Json.Schema.Formats.Register(Formats.Int32);
-		Json.Schema.Formats.Register(Formats.Int64);
-		Json.Schema.Formats.Register(Formats.Password);
-
-		VocabularyRegistry.Register(Vocabularies.OpenApi);
-	}
-
 	/// <summary>
 	/// Creates a new <see cref="OpenApiDocument"/>
 	/// </summary>
@@ -110,38 +98,44 @@ public class OpenApiDocument : IBaseDocument
 		Info = info;
 	}
 
-	JsonSchema? IBaseDocument.FindSubschema(JsonPointer pointer, EvaluationOptions options)
+	JsonSchemaNode? IBaseDocument.FindSubschema(JsonPointer pointer, BuildContext context)
 	{
-		return Find<JsonSchema>(pointer);
+		return Find<JsonSchema>(pointer)?.Root;
 	}
 
-	internal static OpenApiDocument FromNode(JsonNode? node, JsonSerializerOptions? options)
+	public static async Task<OpenApiDocument> Build(JsonElement node, BuildOptions? schemaBuildOptions = null)
 	{
-		if (node is not JsonObject obj)
+        schemaBuildOptions ??= BuildOptions.Default;
+
+        if (node.ValueKind != JsonValueKind.Object)
 			throw new JsonException("Expected an object");
 
-		var openapi = obj.ExpectString("openapi", "open api document");
+		var openapi = node.ExpectString("openapi", "open api document");
 		if (!SupportedVersions.Contains(openapi))
 			throw new JsonException($"Version '{openapi}' is not supported.");
 
 		var document = new OpenApiDocument(
 			openapi,
-			obj.Expect("info", "open api document", OpenApiInfo.FromNode))
+            node.Expect("info", "open api document", OpenApiInfo.FromNode))
 		{
-			JsonSchemaDialect = obj.MaybeUri("jsonSchemaDialect", "open api document"),
-			Servers = obj.MaybeArray("servers", Server.FromNode),
-			Paths = obj.Maybe("paths", x => PathCollection.FromNode(x, options)),
-			Webhooks = obj.MaybeMap("webhooks", x=> PathItem.FromNode(x, options)),
-			Components = obj.Maybe("components", x=> ComponentCollection.FromNode(x, options)),
-			Security = obj.MaybeArray("security", SecurityRequirement.FromNode),
-			Tags = obj.MaybeArray("tags", Tag.FromNode),
-			ExternalDocs = obj.Maybe("externalDocs", ExternalDocumentation.FromNode),
-			ExtensionData = ExtensionData.FromNode(obj)
+			JsonSchemaDialect = node.MaybeUri("jsonSchemaDialect", "open api document"),
+			Servers = node.MaybeArray("servers", Server.FromNode),
+			Paths = node.Maybe("paths", node1 => PathCollection.FromNode(node1, schemaBuildOptions)),
+			Webhooks = node.MaybeMap("webhooks", node1 => PathItem.FromNode(node1, schemaBuildOptions)),
+			Components = node.Maybe("components", node1 => ComponentCollection.FromNode(node1, schemaBuildOptions)),
+			Security = node.MaybeArray("security", SecurityRequirement.FromNode),
+			Tags = node.MaybeArray("tags", Tag.FromNode),
+			ExternalDocs = node.Maybe("externalDocs", ExternalDocumentation.FromNode),
+			ExtensionData = ExtensionData.FromNode(node)
 		};
 
-		obj.ValidateNoExtraKeys(KnownKeys, document.ExtensionData?.Keys);
+        node.ValidateNoExtraKeys(KnownKeys, document.ExtensionData?.Keys);
+        // find and attempt to resolve all reference objects
+        await document.TryResolveRefs(schemaBuildOptions);
 
-		return document;
+        schemaBuildOptions.SchemaRegistry.Register(document);
+
+        return document;
 	}
 
 	internal static JsonNode? ToNode(OpenApiDocument? document, JsonSerializerOptions? options)
@@ -167,45 +161,7 @@ public class OpenApiDocument : IBaseDocument
 		return obj;
 	}
 
-	/// <summary>
-	/// Initializes the document model.
-	/// </summary>
-	/// <param name="schemaRegistry">(optional) A schema registry.</param>
-	/// <param name="options">(optional) Serializer options</param>
-	/// <exception cref="RefResolutionException">Thrown if a reference cannot be resolved.</exception>
-	public async Task Initialize(SchemaRegistry? schemaRegistry = null, JsonSerializerOptions? options = null)
-	{
-		schemaRegistry ??= SchemaRegistry.Global;
-
-		schemaRegistry.Register(this);
-
-		// find all JSON Schemas and populate their base URIs (if they don't have $id)
-		RegisterSchemas(schemaRegistry);
-
-		// find and attempt to resolve all reference objects
-		await TryResolveRefs(options);
-	}
-
-	private void RegisterSchemas(SchemaRegistry schemaRegistry)
-	{
-		var allSchemas = GeneralHelpers.Collect(
-			Paths?.FindSchemas(),
-			Webhooks?.Values.SelectMany(x => x.FindSchemas()),
-			Components?.FindSchemas()
-		);
-
-		var baseUri = ((IBaseDocument)this).BaseUri;
-		foreach (var schema in allSchemas)
-		{
-			if (schema.BoolValue.HasValue) continue;
-			if (schema.Keywords!.OfType<IdKeyword>().Any())
-				schemaRegistry.Register(schema);
-
-			schema.BaseUri = baseUri;
-		}
-	}
-
-	private async Task TryResolveRefs(JsonSerializerOptions? options)
+	private async Task TryResolveRefs(BuildOptions buildOptions)
 	{
 		var allRefs = GeneralHelpers.Collect(
 			Paths?.FindRefs(),
@@ -213,7 +169,7 @@ public class OpenApiDocument : IBaseDocument
 			Components?.FindRefs()
 		);
 
-		await Task.WhenAll(allRefs.Select(x => x.Resolve(this, options)));
+		await Task.WhenAll(allRefs.Select(x => x.Resolve(this, buildOptions)));
 	}
 
 	/// <summary>
@@ -278,7 +234,7 @@ public class OpenApiDocument : IBaseDocument
 		}
 
 		return target != null
-			? target.Resolve(keys.Slice(keysConsumed))
+			? target.Resolve(keys[keysConsumed..])
 			: ExtensionData?.Resolve(keys);
 	}
 }
@@ -286,11 +242,12 @@ public class OpenApiDocument : IBaseDocument
 public class OpenApiDocumentJsonConverter : JsonConverter<OpenApiDocument>
 {
 	public override OpenApiDocument Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-	{
-		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
-		          throw new JsonException("Expected an object");
+    {
+        var obj = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+        if (obj.ValueKind is not JsonValueKind.Object)
+            throw new JsonException("Expected an object");
 
-		return OpenApiDocument.FromNode(obj, options);
+		return OpenApiDocument.Build(obj, BuildOptions.Default).Result;
 	}
 
 	public override void Write(Utf8JsonWriter writer, OpenApiDocument value, JsonSerializerOptions options)

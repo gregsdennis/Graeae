@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Nodes;
+﻿using System.Text.Json;
 using Json.Pointer;
 using Json.Schema;
 using Yaml2JsonNode;
@@ -89,7 +89,7 @@ public static class Ref
 	/// <summary>
 	/// Gets or sets the `$ref` fetching function.
 	/// </summary>
-	public static Func<Uri, Task<JsonNode?>>? Fetch { get; set; } = FetchJson;
+	public static Func<Uri, Task<JsonElement?>>? Fetch { get; set; } = FetchJson;
 
 	/// <summary>
 	/// Defines a default basic fetching function that uses an
@@ -97,13 +97,13 @@ public static class Ref
 	/// </summary>
 	/// <param name="uri">The resource URI</param>
 	/// <returns>The JSON content as a `JsonNode`</returns>
-	public static async Task<JsonNode?> FetchJson(Uri uri)
+	public static async Task<JsonElement?> FetchJson(Uri uri)
 	{
 		// This is inefficient, but it gets the job done.
 		using var client = new HttpClient();
 		var content = await client.GetStringAsync(uri);
 		var yaml = YamlSerializer.Parse(content);
-		var json = yaml.First().ToJsonNode();
+		var json = yaml.First().ToJsonElement();
 
 		return json;
 	}
@@ -124,20 +124,20 @@ public static class Ref
 		return map?.FirstOrDefault(x => x.Key.Equals(key)).Value;
 	}
 
-	internal static object? GetFromNode(this JsonNode? node, ReadOnlySpan<string> keys)
+	internal static object? GetFromNode(this JsonElement node, ReadOnlySpan<string> keys)
 	{
-		return keys.ToPointer().TryEvaluate(node, out var target)
-			? target
-			: null;
-	}
+		var target = keys.ToPointer().Evaluate(node);
+        return target;
+    }
 
 	internal static JsonPointer ToPointer(this ReadOnlySpan<string> segments)
 	{
-		// TODO: this is horrible.
-		return JsonPointer.Create(segments.ToArray().Select(x => (PointerSegment)x).ToArray());
-	}
+#pragma warning disable CS0618 // Type or member is obsolete
+        return JsonPointer.Create(segments.ToArray().Select(x => (SegmentValueStandIn)x).ToArray());
+#pragma warning restore CS0618 // Type or member is obsolete
+    }
 
-	internal static async Task<bool> Resolve<T>(OpenApiDocument root, Uri targetUri, Func<JsonNode?, bool> import, Action<T> copy)
+	internal static async Task<bool> Resolve<T>(OpenApiDocument root, Uri targetUri, Func<JsonElement?, bool> import, Action<T> copy)
 		where T : class
 	{
 		var baseUri = ((IBaseDocument)root).BaseUri;
@@ -164,7 +164,7 @@ public static class Ref
 		if (!JsonPointer.TryParse(fragment, out var pointerFragment))
 			throw new RefResolutionException("URI fragments for $ref must be JSON Pointers.");
 			
-		pointerFragment!.TryEvaluate(targetBase, out var targetContent);
+		var targetContent = pointerFragment.Evaluate(targetBase);
 
 		return import(targetContent);
 	}

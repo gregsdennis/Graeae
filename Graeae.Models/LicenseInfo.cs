@@ -43,19 +43,19 @@ public class LicenseInfo : IRefTargetContainer
 		Name = name;
 	}
 
-	internal static LicenseInfo FromNode(JsonNode? node)
+	internal static LicenseInfo FromNode(JsonElement node)
 	{
-		if (node is not JsonObject obj)
+		if (node.ValueKind is not JsonValueKind.Object)
 			throw new JsonException("Expected an object");
 
-		var info = new LicenseInfo(obj.ExpectString("name", "license info"))
+		var info = new LicenseInfo(node.ExpectString("name", "license info"))
 		{
-			Identifier = obj.MaybeString("identifier", "license info"),
-			Url = obj.MaybeUri("url", "license info"),
-			ExtensionData = ExtensionData.FromNode(obj)
+			Identifier = node.MaybeString("identifier", "license info"),
+			Url = node.MaybeUri("url", "license info"),
+			ExtensionData = ExtensionData.FromNode(node)
 		};
 
-		obj.ValidateNoExtraKeys(KnownKeys, info.ExtensionData?.Keys);
+        node.ValidateNoExtraKeys(KnownKeys, info.ExtensionData?.Keys);
 
 		return info;
 	}
@@ -88,10 +88,11 @@ internal class LicenseInfoJsonConverter : JsonConverter<LicenseInfo>
 {
 	public override LicenseInfo Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
-		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
-		          throw new JsonException("Expected an object");
+        var obj = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+        if (obj.ValueKind is not JsonValueKind.Object)
+            throw new JsonException("Expected an object");
 
-		return LicenseInfo.FromNode(obj);
+        return LicenseInfo.FromNode(obj);
 	}
 
 	public override void Write(Utf8JsonWriter writer, LicenseInfo value, JsonSerializerOptions options)

@@ -72,7 +72,7 @@ public class Parameter : IRefTargetContainer
 	/// <summary>
 	/// Gets or sets an example.
 	/// </summary>
-	public JsonNode? Example { get; set; }
+	public JsonElement? Example { get; set; }
 	/// <summary>
 	/// Gets or sets a collection of examples.
 	/// </summary>
@@ -100,47 +100,47 @@ public class Parameter : IRefTargetContainer
 	private protected Parameter(){}
 #pragma warning restore CS8618
 
-	internal static Parameter FromNode(JsonNode? node, JsonSerializerOptions? options)
+	internal static Parameter FromNode(JsonElement node, BuildOptions buildOptions)
 	{
-		if (node is not JsonObject obj)
+		if (node.ValueKind is not JsonValueKind.Object)
 			throw new JsonException("Expected an object");
 
 		Parameter response;
-		if (obj.ContainsKey("$ref"))
+		if (node.TryGetProperty("$ref", out _))
 		{
-			response = new ParameterRef(obj.ExpectUri("$ref", "reference"))
+			response = new ParameterRef(node.ExpectUri("$ref", "reference"))
 			{
-				Description = obj.MaybeString("description", "reference"),
-				Summary = obj.MaybeString("summary", "reference")
+				Description = node.MaybeString("description", "reference"),
+				Summary = node.MaybeString("summary", "reference")
 			};
 
-			obj.ValidateReferenceKeys();
+            node.ValidateReferenceKeys();
 		}
 		else
 		{
 			response = new Parameter(
-				obj.ExpectString("name", "parameter"),
-				obj.ExpectEnum<ParameterLocation>("in", "parameter"));
-			response.Import(obj, options);
+                node.ExpectString("name", "parameter"),
+                node.ExpectEnum<ParameterLocation>("in", "parameter"));
+			response.Import(node, buildOptions);
 
-			obj.ValidateNoExtraKeys(KnownKeys, response.ExtensionData?.Keys);
+            node.ValidateNoExtraKeys(KnownKeys, response.ExtensionData?.Keys);
 		}
 		return response;
 	}
 
-	private protected void Import(JsonObject obj, JsonSerializerOptions? options)
+	private protected void Import(JsonElement obj, BuildOptions buildOptions)
 	{
 		Description = obj.MaybeString("description", "parameter");
 		Required = obj.MaybeBool("required", "parameter");
 		Deprecated = obj.MaybeBool("deprecated", "parameter");
 		AllowEmptyValue = obj.MaybeBool("allowEmptyValue", "parameter");
-		Style = obj.MaybeEnum<ParameterStyle>("style", options);
+		Style = obj.MaybeEnum<ParameterStyle>("style", "parameter");
 		Explode = obj.MaybeBool("explode", "parameter");
 		AllowReserved = obj.MaybeBool("allowReserved", "parameter");
-		Schema = obj.MaybeDeserialize<JsonSchema>("schema", options);
-		Example = obj.TryGetPropertyValue("example", out var v) ? v : null;
+		Schema = obj.MaybeSchema("schema", buildOptions);
+		Example = obj.TryGetProperty("example", out var v) ? v : null;
 		Examples = obj.MaybeMap("examples", Models.Example.FromNode);
-		Content = obj.MaybeMap("content", x => MediaType.FromNode(x, options));
+		Content = obj.MaybeMap("content", node => MediaType.FromNode(node, buildOptions));
 		ExtensionData = ExtensionData.FromNode(obj);
 	}
 
@@ -168,7 +168,7 @@ public class Parameter : IRefTargetContainer
 			obj.MaybeAdd("explode", parameter.Explode);
 			obj.MaybeAdd("allowReserved", parameter.AllowReserved);
 			obj.MaybeSerialize("schema", parameter.Schema, options);
-			obj.MaybeAdd("example", parameter.Example?.DeepClone());
+			obj.MaybeAdd("example", parameter.Example?.AsNode());
 			obj.MaybeAddMap("examples", parameter.Examples, Models.Example.ToNode);
 			obj.MaybeAddMap("content", parameter.Content, x => MediaType.ToNode(x, options));
 			obj.AddExtensions(parameter.ExtensionData);
@@ -191,7 +191,7 @@ public class Parameter : IRefTargetContainer
 				// TODO: consider some other kind of value being buried in a schema
 				throw new NotImplementedException();
 			case "example":
-				return Example?.GetFromNode(keys.Slice(1));
+				return Example?.GetFromNode(keys[1..]);
 			case "examples":
 				if (keys.Length == 1) return null;
 				keysConsumed++;
@@ -281,16 +281,16 @@ public class ParameterRef : Parameter, IComponentRef
 		Ref = new Uri(reference ?? throw new ArgumentNullException(nameof(reference)), UriKind.RelativeOrAbsolute);
 	}
 
-	async Task IComponentRef.Resolve(OpenApiDocument root, JsonSerializerOptions? options)
+	async Task IComponentRef.Resolve(OpenApiDocument root, BuildOptions buildOptions)
 	{
-		bool import(JsonNode? node)
+		bool import(JsonElement? node)
 		{
-			if (node is not JsonObject obj) return false;
+			if (node?.ValueKind is not JsonValueKind.Object) return false;
 
-			Name = obj.ExpectString("name", "parameter");
-			In = obj.ExpectEnum<ParameterLocation>("in", "parameter");
+			Name = node.Value.ExpectString("name", "parameter");
+			In = node.Value.ExpectEnum<ParameterLocation>("in", "parameter");
 
-			Import(obj, options);
+			Import(node.Value, buildOptions);
 			return true;
 		}
 
@@ -319,11 +319,12 @@ public class ParameterRef : Parameter, IComponentRef
 internal class ParameterJsonConverter : JsonConverter<Parameter>
 {
 	public override Parameter Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-	{
-		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
-		          throw new JsonException("Expected an object");
+    {
+        var obj = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+        if (obj.ValueKind is not JsonValueKind.Object)
+            throw new JsonException("Expected an object");
 
-		return Parameter.FromNode(obj, options);
+		return Parameter.FromNode(obj, BuildOptions.Default);
 	}
 
 	public override void Write(Utf8JsonWriter writer, Parameter value, JsonSerializerOptions options)

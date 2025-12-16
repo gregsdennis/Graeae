@@ -52,36 +52,36 @@ public class Response : IRefTargetContainer
 	private protected Response(){}
 #pragma warning restore CS8618
 
-	internal static Response FromNode(JsonNode? node, JsonSerializerOptions? options)
+	internal static Response FromNode(JsonElement node, BuildOptions buildOptions)
 	{
-		if (node is not JsonObject obj)
+		if (node.ValueKind is not JsonValueKind.Object)
 			throw new JsonException("Expected an object");
 
 		Response response;
-		if (obj.ContainsKey("$ref"))
+		if (node.TryGetProperty("$ref", out _))
 		{
-			response = new ResponseRef(obj.ExpectUri("$ref", "reference"))
+			response = new ResponseRef(node.ExpectUri("$ref", "reference"))
 			{
-				Description = obj.MaybeString("description", "reference"),
-				Summary = obj.MaybeString("summary", "reference")
+				Description = node.MaybeString("description", "reference"),
+				Summary = node.MaybeString("summary", "reference")
 			};
 
-			obj.ValidateReferenceKeys();
+            node.ValidateReferenceKeys();
 		}
 		else
 		{
-			response = new Response(obj.ExpectString("description", "response"));
-			response.Import(obj, options);
+			response = new Response(node.ExpectString("description", "response"));
+			response.Import(node, buildOptions);
 
-			obj.ValidateNoExtraKeys(KnownKeys, response.ExtensionData?.Keys);
+            node.ValidateNoExtraKeys(KnownKeys, response.ExtensionData?.Keys);
 		}
 		return response;
 	}
 
-	private protected void Import(JsonObject obj, JsonSerializerOptions? options)
+	private protected void Import(JsonElement obj, BuildOptions buildOptions)
 	{
-		Headers = obj.MaybeMap("headers", x => Header.FromNode(x, options));
-		Content = obj.MaybeMap("content", x => MediaType.FromNode(x, options));
+		Headers = obj.MaybeMap("headers", node => Header.FromNode(node, buildOptions));
+		Content = obj.MaybeMap("content", node => MediaType.FromNode(node, buildOptions));
 		Links = obj.MaybeMap("links", Link.FromNode);
 		ExtensionData = ExtensionData.FromNode(obj);
 	}
@@ -209,14 +209,14 @@ public class ResponseRef : Response, IComponentRef
 		Ref = new Uri(reference ?? throw new ArgumentNullException(nameof(reference)), UriKind.RelativeOrAbsolute);
 	}
 
-	async Task IComponentRef.Resolve(OpenApiDocument root, JsonSerializerOptions? options)
+	async Task IComponentRef.Resolve(OpenApiDocument root, BuildOptions buildOptions)
 	{
-		bool import(JsonNode? node)
+		bool import(JsonElement? node)
 		{
-			if (node is not JsonObject obj) return false;
+			if (node?.ValueKind is not JsonValueKind.Object) return false;
 
-			base.Description = obj.ExpectString("description", "response");
-			Import(obj, options);
+			base.Description = node.Value.ExpectString("description", "response");
+			Import(node.Value, buildOptions);
 			return true;
 		}
 
@@ -236,11 +236,12 @@ public class ResponseRef : Response, IComponentRef
 internal class ResponseJsonConverter : JsonConverter<Response>
 {
 	public override Response Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-	{
-		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
-		          throw new JsonException("Expected an object");
+    {
+        var obj = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+        if (obj.ValueKind is not JsonValueKind.Object)
+            throw new JsonException("Expected an object");
 
-		return Response.FromNode(obj, options);
+		return Response.FromNode(obj, BuildOptions.Default);
 	}
 
 	public override void Write(Utf8JsonWriter writer, Response value, JsonSerializerOptions options)

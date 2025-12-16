@@ -1,4 +1,5 @@
-﻿using Json.Schema;
+﻿using System.Text.Json.Nodes;
+using Json.Schema;
 
 namespace Graeae.Models.SchemaDraft4;
 
@@ -15,7 +16,7 @@ public static class JsonSchemaKeywordExtensions
 	/// <returns>The builder</returns>
 	public static JsonSchemaBuilder ExclusiveMaximum(this JsonSchemaBuilder builder, bool value)
 	{
-		builder.Add(new Draft4ExclusiveMaximumKeyword(value));
+		builder.Add("exclusiveMaximum", (JsonNode?)value);
 		return builder;
 	}
 
@@ -26,8 +27,8 @@ public static class JsonSchemaKeywordExtensions
 	/// <param name="value">The value</param>
 	/// <returns>The builder</returns>
 	public static JsonSchemaBuilder ExclusiveMinimum(this JsonSchemaBuilder builder, bool value)
-	{
-		builder.Add(new Draft4ExclusiveMinimumKeyword(value));
+    {
+        builder.Add("exclusiveMinimum", (JsonNode?)value);
 		return builder;
 	}
 
@@ -39,7 +40,7 @@ public static class JsonSchemaKeywordExtensions
 	/// <returns>The builder</returns>
 	public static JsonSchemaBuilder OasId(this JsonSchemaBuilder builder, Uri id)
 	{
-		builder.Add(new Draft4IdKeyword(id));
+		builder.Add("id", id.OriginalString);
 		return builder;
 	}
 
@@ -51,19 +52,7 @@ public static class JsonSchemaKeywordExtensions
 	/// <returns>The builder</returns>
 	public static JsonSchemaBuilder OasId(this JsonSchemaBuilder builder, string id)
 	{
-		builder.Add(new Draft4IdKeyword(new Uri(id, UriKind.RelativeOrAbsolute)));
-		return builder;
-	}
-
-	/// <summary>
-	/// Adds the draft 4 `type` override.
-	/// </summary>
-	/// <param name="builder">The builder</param>
-	/// <param name="type">The type</param>
-	/// <returns>The builder</returns>
-	public static JsonSchemaBuilder OasType(this JsonSchemaBuilder builder, SchemaValueType type)
-	{
-		builder.Add(new Draft4TypeKeyword(type));
+        builder.Add("id", id);
 		return builder;
 	}
 
@@ -75,7 +64,7 @@ public static class JsonSchemaKeywordExtensions
 	/// <returns>The builder</returns>
 	public static JsonSchemaBuilder Nullable(this JsonSchemaBuilder builder, bool value)
 	{
-		builder.Add(new NullableKeyword(value));
+        builder.Add("nullable", (JsonNode?)value);
 		return builder;
 	}
 }

@@ -16,38 +16,38 @@ public class Callback : Dictionary<CallbackKeyExpression, PathItem>, IRefTargetC
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	internal static Callback FromNode(JsonNode? node, JsonSerializerOptions? options)
+	internal static Callback FromNode(JsonElement node, BuildOptions buildOptions)
 	{
-		if (node is not JsonObject obj)
+		if (node.ValueKind is not JsonValueKind.Object)
 			throw new JsonException("Expected an object");
 
 		Callback callback;
-		if (obj.ContainsKey("$ref"))
+		if (node.TryGetProperty("$ref", out _))
 		{
-			callback = new CallbackRef(obj.ExpectUri("$ref", "reference"))
+			callback = new CallbackRef(node.ExpectUri("$ref", "reference"))
 			{
-				Description = obj.MaybeString("description", "reference"),
-				Summary = obj.MaybeString("summary", "reference")
+				Description = node.MaybeString("description", "reference"),
+				Summary = node.MaybeString("summary", "reference")
 			};
 
-			obj.ValidateReferenceKeys();
+            node.ValidateReferenceKeys();
 		}
 		else
 		{
 			callback = new Callback();
-			callback.Import(obj, options);
+			callback.Import(node, buildOptions);
 		}
 		return callback;
 	}
 
-	private protected void Import(JsonObject obj, JsonSerializerOptions? options)
+	private protected void Import(JsonElement obj, BuildOptions buildOptions)
 	{
 		ExtensionData = ExtensionData.FromNode(obj);
 
-		foreach (var kvp in obj)
+		foreach (var kvp in obj.EnumerateObject())
 		{
-			if (kvp.Key.StartsWith("x-")) continue;
-			Add(CallbackKeyExpression.Parse(kvp.Key), PathItem.FromNode(kvp.Value, options));
+			if (kvp.Name.StartsWith("x-")) continue;
+			Add(CallbackKeyExpression.Parse(kvp.Name), PathItem.FromNode(kvp.Value, buildOptions));
 		}
 	}
 
@@ -145,13 +145,13 @@ public class CallbackRef : Callback, IComponentRef
 		Ref = new Uri(reference ?? throw new ArgumentNullException(nameof(reference)), UriKind.RelativeOrAbsolute);
 	}
 
-	async Task IComponentRef.Resolve(OpenApiDocument root, JsonSerializerOptions? options)
+	async Task IComponentRef.Resolve(OpenApiDocument root, BuildOptions buildOptions)
 	{
-		bool import(JsonNode? node)
+		bool import(JsonElement? node)
 		{
-			if (node is not JsonObject obj) return false;
+			if (node?.ValueKind is not JsonValueKind.Object) return false;
 
-			Import(obj, options);
+			Import(node.Value, buildOptions);
 			return true;
 		}
 
@@ -171,11 +171,12 @@ public class CallbackRef : Callback, IComponentRef
 internal class CallbackJsonConverter : JsonConverter<Callback>
 {
 	public override Callback Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-	{
-		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
-		          throw new JsonException("Expected an object");
+    {
+        var obj = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+        if (obj.ValueKind is not JsonValueKind.Object)
+            throw new JsonException("Expected an object");
 
-		return Callback.FromNode(obj, options);
+		return Callback.FromNode(obj, BuildOptions.Default);
 	}
 
 	public override void Write(Utf8JsonWriter writer, Callback value, JsonSerializerOptions options)

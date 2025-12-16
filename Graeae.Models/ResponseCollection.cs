@@ -21,27 +21,27 @@ public class ResponseCollection : Dictionary<HttpStatusCode, Response>, IRefTarg
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	internal static ResponseCollection FromNode(JsonNode? node, JsonSerializerOptions? options)
+	internal static ResponseCollection FromNode(JsonElement node, BuildOptions buildOptions)
 	{
-		if (node is not JsonObject obj)
+		if (node.ValueKind is not JsonValueKind.Object)
 			throw new JsonException("Expected an object");
 
 		var collection = new ResponseCollection
 		{
-			Default = obj.Maybe("default", x => Response.FromNode(x, options)),
-			ExtensionData = ExtensionData.FromNode(obj)
+			Default = node.Maybe("default", node1 => Response.FromNode(node1, buildOptions)),
+			ExtensionData = ExtensionData.FromNode(node)
 		};
 
-		foreach (var kvp in obj)
+		foreach (var kvp in node.EnumerateObject())
 		{
-			if (kvp.Key == "default") continue;
-			if (kvp.Key.StartsWith("x-")) continue;
-			if (!short.TryParse(kvp.Key, out var code))
-				throw new JsonException($"`{kvp.Key}` is not a valid status code");
+			if (kvp.Name == "default") continue;
+			if (kvp.Name.StartsWith("x-")) continue;
+			if (!short.TryParse(kvp.Name, out var code))
+				throw new JsonException($"`{kvp.Name}` is not a valid status code");
 			if (Enum.GetName(typeof(HttpStatusCode), code) == null)
-				throw new JsonException($"`{kvp.Key}` is not a known status code");
+				throw new JsonException($"`{kvp.Name}` is not a known status code");
 
-			collection.Add((HttpStatusCode)code, Response.FromNode(kvp.Value, options));
+			collection.Add((HttpStatusCode)code, Response.FromNode(kvp.Value, buildOptions));
 		}
 
 		// Validating extra keys is done in the loop.
@@ -101,11 +101,12 @@ public class ResponseCollection : Dictionary<HttpStatusCode, Response>, IRefTarg
 internal class ResponseCollectionJsonConverter : JsonConverter<ResponseCollection>
 {
 	public override ResponseCollection Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-	{
-		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
-		          throw new JsonException("Expected an object");
+    {
+        var obj = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+        if (obj.ValueKind is not JsonValueKind.Object)
+            throw new JsonException("Expected an object");
 
-		return ResponseCollection.FromNode(obj, options);
+		return ResponseCollection.FromNode(obj, BuildOptions.Default);
 	}
 
 	public override void Write(Utf8JsonWriter writer, ResponseCollection value, JsonSerializerOptions options)

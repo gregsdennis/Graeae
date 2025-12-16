@@ -43,19 +43,19 @@ public class Server : IRefTargetContainer
 		Url = url;
 	}
 
-	internal static Server FromNode(JsonNode? node)
+	internal static Server FromNode(JsonElement node)
 	{
-		if (node is not JsonObject obj)
+		if (node.ValueKind is not JsonValueKind.Object)
 			throw new JsonException("Expected an object");
 
-		var server = new Server(obj.ExpectString("url", "server"))
+		var server = new Server(node.ExpectString("url", "server"))
 		{
-			Description = obj.MaybeString("description", "server"),
-			Variables = obj.MaybeMap("variables", ServerVariable.FromNode),
-			ExtensionData = ExtensionData.FromNode(obj)
+			Description = node.MaybeString("description", "server"),
+			Variables = node.MaybeMap("variables", ServerVariable.FromNode),
+			ExtensionData = ExtensionData.FromNode(node)
 		};
 
-		obj.ValidateNoExtraKeys(KnownKeys, server.ExtensionData?.Keys);
+        node.ValidateNoExtraKeys(KnownKeys, server.ExtensionData?.Keys);
 
 		return server;
 	}
@@ -94,8 +94,9 @@ internal class ServerJsonConverter : JsonConverter<Server>
 {
 	public override Server Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
-		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
-		          throw new JsonException("Expected an object");
+		var obj = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+        if (obj.ValueKind is not JsonValueKind.Object)
+            throw new JsonException("Expected an object");
 
 		return Server.FromNode(obj);
 	}

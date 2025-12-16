@@ -49,19 +49,19 @@ public class Tag : IRefTargetContainer
 	/// <param name="node">The `JsonNode`.</param>
 	/// <returns>The model.</returns>
 	/// <exception cref="JsonException">Thrown when the JSON does not accurately represent the model.</exception>
-	internal static Tag FromNode(JsonNode? node)
+	internal static Tag FromNode(JsonElement node)
 	{
-		if (node is not JsonObject obj)
+		if (node.ValueKind is not JsonValueKind.Object)
 			throw new JsonException("Expected an object");
 
-		var tag = new Tag(obj.ExpectString("name", "tag"))
+		var tag = new Tag(node.ExpectString("name", "tag"))
 		{
-			Description = obj.MaybeString("description", "tag"),
-			ExternalDocs = obj.Maybe("externalDocs", ExternalDocumentation.FromNode),
-			ExtensionData = ExtensionData.FromNode(obj)
+			Description = node.MaybeString("description", "tag"),
+			ExternalDocs = node.Maybe("externalDocs", ExternalDocumentation.FromNode),
+			ExtensionData = ExtensionData.FromNode(node)
 		};
 
-		obj.ValidateNoExtraKeys(KnownKeys, tag.ExtensionData?.Keys);
+        node.ValidateNoExtraKeys(KnownKeys, tag.ExtensionData?.Keys);
 
 		return tag;
 	}
@@ -99,9 +99,10 @@ public class Tag : IRefTargetContainer
 internal class TagJsonConverter : JsonConverter<Tag>
 {
 	public override Tag Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-	{
-		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
-		          throw new JsonException("Expected an object");
+    {
+        var obj = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+        if (obj.ValueKind is not JsonValueKind.Object)
+            throw new JsonException("Expected an object");
 
 		return Tag.FromNode(obj);
 	}

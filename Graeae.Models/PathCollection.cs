@@ -16,23 +16,23 @@ public class PathCollection : Dictionary<PathTemplate, PathItem>, IRefTargetCont
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	internal static PathCollection FromNode(JsonNode? node, JsonSerializerOptions? options)
+	internal static PathCollection FromNode(JsonElement node, BuildOptions buildOptions)
 	{
-		if (node is not JsonObject obj)
+		if (node.ValueKind is not JsonValueKind.Object)
 			throw new JsonException("Expected an object");
 
 		var collection = new PathCollection
 		{
-			ExtensionData = ExtensionData.FromNode(obj)
+			ExtensionData = ExtensionData.FromNode(node)
 		};
 
-		foreach (var kvp in obj)
+		foreach (var kvp in node.EnumerateObject())
 		{
-			if (kvp.Key.StartsWith("x-")) continue;
-			if (!PathTemplate.TryParse(kvp.Key, out var template))
-				throw new JsonException($"`{kvp.Key}` is not a valid path template");
+			if (kvp.Name.StartsWith("x-")) continue;
+			if (!PathTemplate.TryParse(kvp.Name, out var template))
+				throw new JsonException($"`{kvp.Name}` is not a valid path template");
 
-			collection.Add(template, PathItem.FromNode(kvp.Value, options));
+			collection.Add(template, PathItem.FromNode(kvp.Value, buildOptions));
 		}
 
 		// Validating extra keys is done in the loop.
@@ -78,11 +78,12 @@ public class PathCollection : Dictionary<PathTemplate, PathItem>, IRefTargetCont
 internal class PathCollectionJsonConverter : JsonConverter<PathCollection>
 {
 	public override PathCollection Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-	{
-		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
-		          throw new JsonException("Expected an object");
+    {
+        var obj = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+        if (obj.ValueKind is not JsonValueKind.Object)
+            throw new JsonException("Expected an object");
 
-		return PathCollection.FromNode(obj, options);
+		return PathCollection.FromNode(obj, BuildOptions.Default);
 	}
 
 	public override void Write(Utf8JsonWriter writer, PathCollection value, JsonSerializerOptions options)

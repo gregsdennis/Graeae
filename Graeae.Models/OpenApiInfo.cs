@@ -65,24 +65,24 @@ public class OpenApiInfo : IRefTargetContainer
 		Version = version;
 	}
 
-	internal static OpenApiInfo FromNode(JsonNode? node)
+	internal static OpenApiInfo FromNode(JsonElement node)
 	{
-		if (node is not JsonObject obj)
+		if (node.ValueKind is not JsonValueKind.Object)
 			throw new JsonException("Expected an object");
 
 		var info = new OpenApiInfo(
-			obj.ExpectString("title", "open api info"),
-			obj.ExpectString("version", "open api info"))
+            node.ExpectString("title", "open api info"),
+            node.ExpectString("version", "open api info"))
 		{
-			Summary = obj.MaybeString("summary", "open api info"),
-			Description = obj.MaybeString("description", "open api info"),
-			TermsOfService = obj.MaybeUri("termsOfService", "open api info"),
-			Contact = obj.Maybe("contact", ContactInfo.FromNode),
-			License = obj.Maybe("license", LicenseInfo.FromNode),
-			ExtensionData = ExtensionData.FromNode(obj)
+			Summary = node.MaybeString("summary", "open api info"),
+			Description = node.MaybeString("description", "open api info"),
+			TermsOfService = node.MaybeUri("termsOfService", "open api info"),
+			Contact = node.Maybe("contact", ContactInfo.FromNode),
+			License = node.Maybe("license", LicenseInfo.FromNode),
+			ExtensionData = ExtensionData.FromNode(node)
 		};
 
-		obj.ValidateNoExtraKeys(KnownKeys, info.ExtensionData?.Keys);
+        node.ValidateNoExtraKeys(KnownKeys, info.ExtensionData?.Keys);
 
 		return info;
 	}
@@ -127,9 +127,10 @@ public class OpenApiInfo : IRefTargetContainer
 internal class OpenApiInfoJsonConverter : JsonConverter<OpenApiInfo>
 {
 	public override OpenApiInfo Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-	{
-		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
-		          throw new JsonException("Expected an object");
+    {
+        var obj = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+        if (obj.ValueKind is not JsonValueKind.Object)
+            throw new JsonException("Expected an object");
 
 		return OpenApiInfo.FromNode(obj);
 	}

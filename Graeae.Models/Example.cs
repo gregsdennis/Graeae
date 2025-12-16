@@ -2,6 +2,8 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using Json.More;
+using Json.Schema;
 
 namespace Graeae.Models;
 
@@ -30,7 +32,7 @@ public class Example : IRefTargetContainer
 	/// <summary>
 	/// Gets or sets the example value.
 	/// </summary>
-	public JsonNode? Value { get; set; }
+	public JsonElement? Value { get; set; }
 	/// <summary>
 	/// Gets or sets a URI that points to the literal example.
 	/// </summary>
@@ -40,38 +42,38 @@ public class Example : IRefTargetContainer
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	internal static Example FromNode(JsonNode? node)
+	internal static Example FromNode(JsonElement node)
 	{
-		if (node is not JsonObject obj)
+		if (node.ValueKind is not JsonValueKind.Object)
 			throw new JsonException("Expected an object");
 
 		Example example;
-		if (obj.ContainsKey("$ref"))
+		if (node.TryGetProperty("$ref", out _))
 		{
-			example = new ExampleRef(obj.ExpectUri("$ref", "reference"))
+			example = new ExampleRef(node.ExpectUri("$ref", "reference"))
 			{
-				Description = obj.MaybeString("description", "reference"),
-				Summary = obj.MaybeString("summary", "reference")
+				Description = node.MaybeString("description", "reference"),
+				Summary = node.MaybeString("summary", "reference")
 			};
 
-			obj.ValidateReferenceKeys();
+            node.ValidateReferenceKeys();
 		}
 		else
 		{
 			example = new Example();
-			example.Import(obj);
+			example.Import(node);
 
-			obj.ValidateNoExtraKeys(KnownKeys, example.ExtensionData?.Keys);
+            node.ValidateNoExtraKeys(KnownKeys, example.ExtensionData?.Keys);
 		}
 		
 		return example;
 	}
 
-	private protected void Import(JsonObject obj)
+	private protected void Import(JsonElement obj)
 	{
 		Summary = obj.MaybeString("summary", "example");
 		Description = obj.MaybeString("description", "example");
-		Value = obj.TryGetPropertyValue("value", out var v) ? v : null;
+		Value = obj.TryGetProperty("value", out var v) ? v : null;
 		ExternalValue = obj.MaybeString("externalValue", "example");
 		ExtensionData = ExtensionData.FromNode(obj);
 	}
@@ -92,7 +94,7 @@ public class Example : IRefTargetContainer
 		{
 			obj.MaybeAdd("summary", example.Summary);
 			obj.MaybeAdd("description", example.Description);
-			obj.MaybeAdd("value", example.Value?.DeepClone());
+			obj.MaybeAdd("value", example.Value?.AsNode());
 			obj.MaybeAdd("externalValue", example.ExternalValue);
 			obj.AddExtensions(example.ExtensionData);
 		}
@@ -103,11 +105,12 @@ public class Example : IRefTargetContainer
 	object? IRefTargetContainer.Resolve(ReadOnlySpan<string> keys)
 	{
 		if (keys.Length == 0) return this;
+        if (Value is null) return null;
 
 		if (keys[0] == "value")
 		{
 			if (keys.Length == 1) return Value;
-			keys[1..].ToPointer().TryEvaluate(Value, out var target);
+            var target = keys[1..].ToPointer().Evaluate(Value.Value);
 			return target;
 		}
 
@@ -164,13 +167,13 @@ public class ExampleRef : Example, IComponentRef
 		Ref = new Uri(reference ?? throw new ArgumentNullException(nameof(reference)), UriKind.RelativeOrAbsolute);
 	}
 
-	async Task IComponentRef.Resolve(OpenApiDocument root, JsonSerializerOptions? options)
+	async Task IComponentRef.Resolve(OpenApiDocument root, BuildOptions buildOptions)
 	{
-		bool import(JsonNode? node)
+		bool import(JsonElement? node)
 		{
-			if (node is not JsonObject obj) return false;
+			if (node?.ValueKind is not JsonValueKind.Object) return false;
 
-			Import(obj);
+			Import(node.Value);
 			return true;
 		}
 
@@ -193,8 +196,9 @@ internal class ExampleJsonConverter : JsonConverter<Example>
 	[UnconditionalSuppressMessage("AOT", "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.", Justification = "<Pending>")]
 	public override Example Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
-		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
-		          throw new JsonException("Expected an object");
+		var obj = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+        if (obj.ValueKind is not JsonValueKind.Object)
+            throw new JsonException("Expected an object");
 
 		return Example.FromNode(obj);
 	}

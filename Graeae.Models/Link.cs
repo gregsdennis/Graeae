@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using Json.Schema;
 
 namespace Graeae.Models;
 
@@ -49,33 +50,33 @@ public class Link : IRefTargetContainer
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	internal static Link FromNode(JsonNode? node)
+	internal static Link FromNode(JsonElement node)
 	{
-		if (node is not JsonObject obj)
+		if (node.ValueKind is not JsonValueKind.Object)
 			throw new JsonException("Expected an object");
 
 		Link link;
-		if (obj.ContainsKey("$ref"))
+		if (node.TryGetProperty("$ref", out _))
 		{
-			link = new LinkRef(obj.ExpectUri("$ref", "reference"))
+			link = new LinkRef(node.ExpectUri("$ref", "reference"))
 			{
-				Description = obj.MaybeString("description", "reference"),
-				Summary = obj.MaybeString("summary", "reference")
+				Description = node.MaybeString("description", "reference"),
+				Summary = node.MaybeString("summary", "reference")
 			};
 
-			obj.ValidateReferenceKeys();
+            node.ValidateReferenceKeys();
 		}
 		else
 		{
 			link = new Link();
-			link.Import(obj);
+			link.Import(node);
 
-			obj.ValidateNoExtraKeys(KnownKeys, link.ExtensionData?.Keys);
+            node.ValidateNoExtraKeys(KnownKeys, link.ExtensionData?.Keys);
 		}
 		return link;
 	}
 
-	private protected void Import(JsonObject obj)
+	private protected void Import(JsonElement obj)
 	{
 		OperationRef = obj.MaybeUri("operationRef", "link");
 		OperationId = obj.MaybeString("operationId", "link");
@@ -175,13 +176,13 @@ public class LinkRef : Link, IComponentRef
 		Ref = new Uri(reference ?? throw new ArgumentNullException(nameof(reference)), UriKind.RelativeOrAbsolute);
 	}
 
-	async Task IComponentRef.Resolve(OpenApiDocument root, JsonSerializerOptions? options)
+	async Task IComponentRef.Resolve(OpenApiDocument root, BuildOptions buildOptions)
 	{
-		bool import(JsonNode? node)
+		bool import(JsonElement? node)
 		{
-			if (node is not JsonObject obj) return false;
+			if (node?.ValueKind is not JsonValueKind.Object) return false;
 
-			Import(obj);
+			Import(node.Value);
 			return true;
 		}
 
@@ -204,8 +205,9 @@ internal class LinkJsonConverter : JsonConverter<Link>
 {
 	public override Link Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
-		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
-		          throw new JsonException("Expected an object");
+		var obj = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+        if (obj.ValueKind is not JsonValueKind.Object)
+            throw new JsonException("Expected an object");
 
 		return Link.FromNode(obj);
 	}

@@ -62,7 +62,7 @@ public class Header : IRefTargetContainer
 	/// <summary>
 	/// Gets or sets an example.
 	/// </summary>
-	public JsonNode? Example { get; set; }
+	public JsonElement? Example { get; set; }
 	/// <summary>
 	/// Gets or sets a collection of examples.
 	/// </summary>
@@ -76,46 +76,46 @@ public class Header : IRefTargetContainer
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	internal static Header FromNode(JsonNode? node, JsonSerializerOptions? options)
+	internal static Header FromNode(JsonElement node, BuildOptions buildOptions)
 	{
-		if (node is not JsonObject obj)
+		if (node.ValueKind is not JsonValueKind.Object)
 			throw new JsonException("Expected an object");
 
 		Header response;
-		if (obj.ContainsKey("$ref"))
+		if (node.TryGetProperty("$ref", out _))
 		{
-			response = new HeaderRef(obj.ExpectUri("$ref", "reference"))
+			response = new HeaderRef(node.ExpectUri("$ref", "reference"))
 			{
-				Description = obj.MaybeString("description", "reference"),
-				Summary = obj.MaybeString("summary", "reference")
+				Description = node.MaybeString("description", "reference"),
+				Summary = node.MaybeString("summary", "reference")
 			};
 
-			obj.ValidateReferenceKeys();
+            node.ValidateReferenceKeys();
 		}
 		else
 		{
 			response = new Header();
-			response.Import(obj, options);
+			response.Import(node, buildOptions);
 
-			obj.ValidateNoExtraKeys(KnownKeys, response.ExtensionData?.Keys);
+            node.ValidateNoExtraKeys(KnownKeys, response.ExtensionData?.Keys);
 		}
 
 		return response;
 	}
 
-	private protected void Import(JsonObject obj, JsonSerializerOptions? options)
+	private protected void Import(JsonElement obj, BuildOptions buildOptions)
 	{
 		Description = obj.MaybeString("description", "header");
 		Required = obj.MaybeBool("required", "header");
 		Deprecated = obj.MaybeBool("deprecated", "header");
 		AllowEmptyValue = obj.MaybeBool("allowEmptyValue", "header");
-		Style = obj.MaybeEnum<ParameterStyle>("style", options);
+		Style = obj.MaybeEnum<ParameterStyle>("style", "header");
 		Explode = obj.MaybeBool("explode", "header");
 		AllowReserved = obj.MaybeBool("allowReserved", "header");
-		Schema = obj.MaybeDeserialize<JsonSchema>("schema", options);
-		Example = obj.TryGetPropertyValue("example", out var v) ? v : null;
+		Schema = obj.MaybeSchema("schema", buildOptions);
+		Example = obj.TryGetProperty("example", out var v) ? v : null;
 		Examples = obj.MaybeMap("examples", Models.Example.FromNode);
-		Content = obj.MaybeMap("content", x => MediaType.FromNode(x, options));
+		Content = obj.MaybeMap("content", node => MediaType.FromNode(node, buildOptions));
 		ExtensionData = ExtensionData.FromNode(obj);
 	}
 
@@ -141,7 +141,7 @@ public class Header : IRefTargetContainer
 			obj.MaybeAdd("explode", header.Explode);
 			obj.MaybeAdd("allowReserved", header.AllowReserved);
 			obj.MaybeSerialize("schema", header.Schema, options);
-			obj.MaybeAdd("example", header.Example?.DeepClone());
+			obj.MaybeAdd("example", header.Example?.AsNode());
 			obj.MaybeAddMap("examples", header.Examples, Models.Example.ToNode);
 			obj.MaybeAddMap("content", header.Content, x => MediaType.ToNode(x, options));
 			obj.AddExtensions(header.ExtensionData);
@@ -164,7 +164,7 @@ public class Header : IRefTargetContainer
 				// TODO: consider some other kind of value being buried in a schema
 				throw new NotImplementedException();
 			case "example":
-				return Example?.GetFromNode(keys.Slice(1));
+				return Example?.GetFromNode(keys[1..]);
 			case "examples":
 				if (keys.Length == 1) return null;
 				keysConsumed++;
@@ -178,7 +178,7 @@ public class Header : IRefTargetContainer
 		}
 
 		return target != null
-			? target.Resolve(keys.Slice(keysConsumed))
+			? target.Resolve(keys[keysConsumed..])
 			: ExtensionData?.Resolve(keys);
 	}
 
@@ -255,13 +255,13 @@ public class HeaderRef : Header, IComponentRef
 		Ref = new Uri(reference ?? throw new ArgumentNullException(nameof(reference)), UriKind.RelativeOrAbsolute);
 	}
 
-	async Task IComponentRef.Resolve(OpenApiDocument root, JsonSerializerOptions? options)
+	async Task IComponentRef.Resolve(OpenApiDocument root, BuildOptions buildOptions)
 	{
-		bool import(JsonNode? node)
+		bool import(JsonElement? node)
 		{
-			if (node is not JsonObject obj) return false;
+			if (node?.ValueKind is not JsonValueKind.Object) return false;
 
-			Import(obj, options);
+			Import(node.Value, buildOptions);
 			return true;
 		}
 
@@ -289,10 +289,11 @@ internal class HeaderJsonConverter : JsonConverter<Header>
 {
 	public override Header Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
-		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
-		          throw new JsonException("Expected an object");
+		var obj = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+        if (obj.ValueKind is not JsonValueKind.Object)
+            throw new JsonException("Expected an object");
 
-		return Header.FromNode(obj, options);
+		return Header.FromNode(obj, BuildOptions.Default);
 	}
 
 	public override void Write(Utf8JsonWriter writer, Header value, JsonSerializerOptions options)

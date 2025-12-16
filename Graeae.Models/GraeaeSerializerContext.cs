@@ -6,10 +6,6 @@ using Json.Schema;
 namespace Graeae.Models;
 
 [JsonSerializable(typeof(OpenApiDocument))]
-[JsonSerializable(typeof(Draft4ExclusiveMaximumKeyword))]
-[JsonSerializable(typeof(Draft4ExclusiveMinimumKeyword))]
-[JsonSerializable(typeof(Draft4IdKeyword))]
-[JsonSerializable(typeof(Draft4TypeKeyword))]
 [JsonSerializable(typeof(NullableKeyword))]
 [JsonSerializable(typeof(ParameterStyle))]
 [JsonSerializable(typeof(ParameterStyle?))]

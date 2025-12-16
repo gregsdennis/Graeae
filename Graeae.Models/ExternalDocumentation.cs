@@ -47,18 +47,18 @@ public class ExternalDocumentation : IRefTargetContainer
 		Url = new Uri(url, UriKind.RelativeOrAbsolute);
 	}
 
-	internal static ExternalDocumentation FromNode(JsonNode? node)
+	internal static ExternalDocumentation FromNode(JsonElement node)
 	{
-		if (node is not JsonObject obj)
+		if (node.ValueKind is not JsonValueKind.Object)
 			throw new JsonException("Expected an object");
 
-		var docs = new ExternalDocumentation(obj.ExpectUri("url", "external documentation"))
+		var docs = new ExternalDocumentation(node.ExpectUri("url", "external documentation"))
 		{
-			Description = obj.MaybeString("description", "external documentation"),
-			ExtensionData = ExtensionData.FromNode(obj)
+			Description = node.MaybeString("description", "external documentation"),
+			ExtensionData = ExtensionData.FromNode(node)
 		};
 
-		obj.ValidateNoExtraKeys(KnownKeys, docs.ExtensionData?.Keys);
+        node.ValidateNoExtraKeys(KnownKeys, docs.ExtensionData?.Keys);
 
 		return docs;
 	}
@@ -90,8 +90,9 @@ internal class ExternalDocumentationJsonConverter : JsonConverter<ExternalDocume
 {
 	public override ExternalDocumentation Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
-		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
-		          throw new JsonException("Expected an object");
+		var obj = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+        if (obj.ValueKind is not JsonValueKind.Object)
+            throw new JsonException("Expected an object");
 
 		return ExternalDocumentation.FromNode(obj);
 	}

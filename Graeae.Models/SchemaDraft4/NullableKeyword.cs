@@ -1,6 +1,4 @@
 ﻿using System.Text.Json;
-using System.Text.Json.Serialization;
-using Json.More;
 using Json.Schema;
 
 namespace Graeae.Models.SchemaDraft4;
@@ -8,76 +6,40 @@ namespace Graeae.Models.SchemaDraft4;
 /// <summary>
 /// Provides the OpenAPI `nullable` keyword.
 /// </summary>
-[SchemaKeyword(Name)]
-[SchemaSpecVersion(Draft4Support.Draft4Version)]
-[JsonConverter(typeof(NullableKeywordJsonConverter))]
-public class NullableKeyword : IJsonSchemaKeyword
+public class NullableKeyword : IKeywordHandler
 {
-	/// <summary>
-	/// The name of the keyword.
-	/// </summary>
-	public const string Name = "nullable";
+    public static NullableKeyword Instance { get; set; } = new();
 
-	/// <summary>
-	/// The ID.
-	/// </summary>
-	public bool Value { get; }
+    /// <summary>
+    /// The name of the keyword.
+    /// </summary>
+    public string Name => "nullable";
 
-	/// <summary>
-	/// Creates a new <see cref="IdKeyword"/>.
-	/// </summary>
-	/// <param name="value">Whether the `minimum` value should be considered exclusive.</param>
-	public NullableKeyword(bool value)
-	{
-		Value = value;
-	}
+    private NullableKeyword()
+    {
+    }
 
-	/// <summary>Builds a constraint object for a keyword.</summary>
-	/// <param name="schemaConstraint">The <see cref="T:Json.Schema.SchemaConstraint" /> for the schema object that houses this keyword.</param>
-	/// <param name="localConstraints">
-	/// The set of other <see cref="T:Json.Schema.KeywordConstraint" />s that have been processed prior to this one.
-	/// Will contain the constraints for keyword dependencies.
-	/// </param>
-	/// <param name="context">The <see cref="T:Json.Schema.EvaluationContext" />.</param>
-	/// <returns>A constraint object.</returns>
-	public KeywordConstraint GetConstraint(SchemaConstraint schemaConstraint, ReadOnlySpan<KeywordConstraint> localConstraints, EvaluationContext context)
-	{
-		return new KeywordConstraint(Name, Evaluator);
-	}
+    public object? ValidateKeywordValue(JsonElement value)
+    {
+        return value.ValueKind switch
+        {
+            JsonValueKind.True => true,
+            JsonValueKind.False => false,
+            _ => throw new JsonSchemaException($"'{Name}' value must be a boolean, found {value.ValueKind}")
+        };
+    }
 
-	private void Evaluator(KeywordEvaluation evaluation, EvaluationContext context)
-	{
-		var schemaValueType = evaluation.LocalInstance.GetSchemaValueType();
-		if (schemaValueType == SchemaValueType.Null && !Value) 
-			evaluation.Results.Fail(Name, "nulls are not allowed"); // TODO: localize error message
+    public void BuildSubschemas(KeywordData keyword, BuildContext context)
+    {
+    }
 
-	}
-}
-
-/// <summary>
-/// JSON converter for <see cref="NullableKeyword"/>
-/// </summary>
-public class NullableKeywordJsonConverter : WeaklyTypedJsonConverter<NullableKeyword>
-{
-	/// <summary>Reads and converts the JSON to type <typeparamref name="T" />.</summary>
-	/// <param name="reader">The reader.</param>
-	/// <param name="typeToConvert">The type to convert.</param>
-	/// <param name="options">An object that specifies serialization options to use.</param>
-	/// <returns>The converted value.</returns>
-	public override NullableKeyword Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-	{
-		if (reader.TokenType is not (JsonTokenType.True or JsonTokenType.False))
-			throw new JsonException("Expected boolean");
-
-		return new NullableKeyword(reader.GetBoolean());
-	}
-
-	/// <summary>Writes a specified value as JSON.</summary>
-	/// <param name="writer">The writer to write to.</param>
-	/// <param name="value">The value to convert to JSON.</param>
-	/// <param name="options">An object that specifies serialization options to use.</param>
-	public override void Write(Utf8JsonWriter writer, NullableKeyword value, JsonSerializerOptions options)
-	{
-		writer.WriteBooleanValue(value.Value);
-	}
+    public KeywordEvaluation Evaluate(KeywordData keyword, EvaluationContext context)
+    {
+        var nullable = (bool)keyword.Value!;
+        return new KeywordEvaluation
+        {
+            Keyword = Name,
+            IsValid = context.Instance.ValueKind is not JsonValueKind.Null || nullable
+        };
+    }
 }

@@ -1,81 +1,131 @@
-﻿using System.Text.Json;
-using System.Text.Json.Serialization;
-using Json.More;
-using Json.Schema;
+﻿using Json.Schema;
+using System.Collections.Immutable;
+using System.Text.Json;
 
 namespace Graeae.Models.SchemaDraft4;
 
 /// <summary>
 /// Overrides the JSON Schema <see cref="TypeKeyword"/> to support draft 4.
 /// </summary>
-[SchemaKeyword(Name)]
-[SchemaSpecVersion(Draft4Support.Draft4Version)]
-[SchemaSpecVersion(SpecVersion.Draft202012)]
-[JsonConverter(typeof(Draft4TypeKeywordConverter))]
-public class Draft4TypeKeyword : IJsonSchemaKeyword
+public class TypeKeyword : IKeywordHandler
 {
-	/// <summary>
-	/// The name of the keyword.
-	/// </summary>
-	public const string Name = "type";
+    private static readonly ImmutableDictionary<string, SchemaValueType> _types =
+        new Dictionary<string, SchemaValueType>
+        {
+            { "array", SchemaValueType.Array },
+            { "object", SchemaValueType.Object },
+            { "string", SchemaValueType.String },
+            { "number", SchemaValueType.Number },
+            { "integer", SchemaValueType.Integer },
+            { "boolean", SchemaValueType.Boolean }
+        }.ToImmutableDictionary();
 
-	private readonly TypeKeyword _basicSupport;
-	private readonly TypeKeyword _draft4Support;
+    /// <summary>
+    /// Gets the singleton instance of the <see cref="TypeKeyword"/>.
+    /// </summary>
+    public static TypeKeyword Instance { get; } = new();
 
-	/// <summary>
-	/// The ID.
-	/// </summary>
-	public SchemaValueType Type => _basicSupport.Type;
+    /// <summary>
+    /// Gets the name of the handled keyword.
+    /// </summary>
+    public string Name => "type";
 
-	/// <summary>
-	/// Creates a new <see cref="IdKeyword"/>.
-	/// </summary>
-	/// <param name="type">The instance type that is allowed.</param>
-	public Draft4TypeKeyword(SchemaValueType type)
-	{
-		_basicSupport = new TypeKeyword(type);
-		_draft4Support = new TypeKeyword(type | SchemaValueType.Null);
-	}
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TypeKeyword"/> class.
+    /// </summary>
+    protected TypeKeyword()
+    {
+    }
 
-	/// <summary>Builds a constraint object for a keyword.</summary>
-	/// <param name="schemaConstraint">The <see cref="T:Json.Schema.SchemaConstraint" /> for the schema object that houses this keyword.</param>
-	/// <param name="localConstraints">
-	/// The set of other <see cref="T:Json.Schema.KeywordConstraint" />s that have been processed prior to this one.
-	/// Will contain the constraints for keyword dependencies.
-	/// </param>
-	/// <param name="context">The <see cref="T:Json.Schema.EvaluationContext" />.</param>
-	/// <returns>A constraint object.</returns>
-	public KeywordConstraint GetConstraint(SchemaConstraint schemaConstraint, ReadOnlySpan<KeywordConstraint> localConstraints, EvaluationContext context)
-	{
-		return context.Options.EvaluateAs == Draft4Support.Draft4Version
-			? _draft4Support.GetConstraint(schemaConstraint, localConstraints, context)
-			: _basicSupport.GetConstraint(schemaConstraint, localConstraints, context);
-	}
-}
+    /// <summary>
+    /// Validates the specified JSON element as a keyword value and optionally returns a value to be shared across the other methods.
+    /// </summary>
+    /// <param name="value">The JSON element to validate and convert. Represents the value to be checked for keyword compliance.</param>
+    /// <returns>An object that is shared with the other methods.  This object is saved to <see cref="KeywordData.Value"/>.</returns>
+    public object? ValidateKeywordValue(JsonElement value)
+    {
+        if (value.ValueKind == JsonValueKind.String)
+        {
+            var typeName = value.GetString();
+            if (!_types.TryGetValue(typeName!, out var valueType))
+                throw new JsonSchemaException($"'{typeName}' is not a valid JSON Schema value type");
 
-/// <summary>
-/// JSON converter for <see cref="Draft4TypeKeyword"/>
-/// </summary>
-public class Draft4TypeKeywordConverter : WeaklyTypedJsonConverter<Draft4TypeKeyword>
-{
-	/// <summary>Reads and converts the JSON to type <typeparamref name="T" />.</summary>
-	/// <param name="reader">The reader.</param>
-	/// <param name="typeToConvert">The type to convert.</param>
-	/// <param name="options">An object that specifies serialization options to use.</param>
-	/// <returns>The converted value.</returns>
-	public override Draft4TypeKeyword Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-	{
-		var type = options.Read(ref reader, GraeaeSerializerContext.Default.SchemaValueType);
+            return valueType;
+        }
 
-		return new Draft4TypeKeyword(type);
-	}
+        if (value.ValueKind == JsonValueKind.Array)
+        {
+            SchemaValueType finalType = 0;
+            foreach (var typeElement in value.EnumerateArray())
+            {
+                if (typeElement.ValueKind != JsonValueKind.String)
+                    throw new JsonSchemaException($"A '{Name}' array may only contain strings");
 
-	/// <summary>Writes a specified value as JSON.</summary>
-	/// <param name="writer">The writer to write to.</param>
-	/// <param name="value">The value to convert to JSON.</param>
-	/// <param name="options">An object that specifies serialization options to use.</param>
-	public override void Write(Utf8JsonWriter writer, Draft4TypeKeyword value, JsonSerializerOptions options)
-	{
-		options.Write(writer, value.Type, GraeaeSerializerContext.Default.SchemaValueType);
-	}
+                var type = typeElement.GetString()!;
+                if (!_types.TryGetValue(type, out var valueType))
+                    throw new JsonSchemaException($"'{type}' is not a valid JSON Schema value type");
+
+                finalType |= valueType;
+            }
+
+            return finalType;
+        }
+
+        throw new JsonSchemaException($"'{Name}' must be either a string or an array of strings");
+    }
+
+    /// <summary>
+    /// Builds and registers subschemas based on the specified keyword data within the provided build context.
+    /// </summary>
+    /// <param name="keyword">The keyword data used to determine which subschemas to build. Cannot be null.</param>
+    /// <param name="context">The context in which subschemas are constructed and registered. Cannot be null.</param>
+    public void BuildSubschemas(KeywordData keyword, BuildContext context)
+    {
+    }
+
+    /// <summary>
+    /// Evaluates the specified keyword using the provided evaluation context and returns the result of the evaluation.
+    /// </summary>
+    /// <param name="keyword">The keyword data to be evaluated. Cannot be null.</param>
+    /// <param name="context">The context in which the keyword evaluation is performed. Cannot be null.</param>
+    /// <returns>A KeywordEvaluation object containing the results of the evaluation.</returns>
+    public KeywordEvaluation Evaluate(KeywordData keyword, EvaluationContext context)
+    {
+        var instanceType = context.Instance.GetSchemaValueType();
+        var expectedType = (SchemaValueType)keyword.Value!;
+        if (expectedType.HasFlag(instanceType))
+            return new KeywordEvaluation
+            {
+                Keyword = Name,
+                IsValid = true
+            };
+
+        if (instanceType == SchemaValueType.Integer && expectedType.HasFlag(SchemaValueType.Number))
+            return new KeywordEvaluation
+            {
+                Keyword = Name,
+                IsValid = true
+            };
+
+        // instance is n.0 and expected type has integer but not number
+        if (instanceType == SchemaValueType.Number && expectedType.HasFlag(SchemaValueType.Integer))
+        {
+            // TODO: consider number handling
+            if (context.Instance.TryGetDouble(out var number) && number == Math.Truncate(number))
+                return new KeywordEvaluation
+                {
+                    Keyword = Name,
+                    IsValid = true
+                };
+        }
+
+        return new KeywordEvaluation
+        {
+            Keyword = Name,
+            IsValid = false,
+            Error = ErrorMessages.GetType(context.Options.Culture).
+                ReplaceToken("received", instanceType, GraeaeSerializerContext.Default.SchemaValueType).
+                ReplaceToken("expected", expectedType.ToString().ToLower())
+        };
+    }
 }

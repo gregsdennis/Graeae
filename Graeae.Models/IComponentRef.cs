@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Json.Schema;
 
 namespace Graeae.Models;
 
@@ -24,11 +25,11 @@ internal interface IComponentRef
 	/// </summary>
 	bool IsResolved { get; }
 
-	/// <summary>
-	/// Resolves the reference.
-	/// </summary>
-	/// <param name="root">The document root.</param>
-	/// <param name="options">Serializer options</param>
-	/// <returns>A task.</returns>
-	Task Resolve(OpenApiDocument root, JsonSerializerOptions? options);
+    /// <summary>
+    /// Resolves the reference.
+    /// </summary>
+    /// <param name="root">The document root.</param>
+    /// <param name="buildOptions"></param>
+    /// <returns>A task.</returns>
+    Task Resolve(OpenApiDocument root, BuildOptions buildOptions);
 }

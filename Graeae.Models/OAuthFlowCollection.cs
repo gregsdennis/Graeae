@@ -39,33 +39,33 @@ public class OAuthFlowCollection : IRefTargetContainer
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	internal static OAuthFlowCollection FromNode(JsonNode? node)
+	internal static OAuthFlowCollection FromNode(JsonElement node)
 	{
-		if (node is not JsonObject obj)
+		if (node.ValueKind is not JsonValueKind.Object)
 			throw new JsonException("Expected an object");
 
 		var flows = new OAuthFlowCollection
 		{
-			Implicit = obj.Maybe("implicit", OAuthFlow.FromNode),
-			Password = obj.Maybe("password", OAuthFlow.FromNode),
-			ClientCredentials = obj.Maybe("clientCredentials", OAuthFlow.FromNode),
-			AuthorizationCode = obj.Maybe("authorizationCode", OAuthFlow.FromNode),
-			ExtensionData = ExtensionData.FromNode(obj)
+			Implicit = node.Maybe("implicit", OAuthFlow.FromNode),
+			Password = node.Maybe("password", OAuthFlow.FromNode),
+			ClientCredentials = node.Maybe("clientCredentials", OAuthFlow.FromNode),
+			AuthorizationCode = node.Maybe("authorizationCode", OAuthFlow.FromNode),
+			ExtensionData = ExtensionData.FromNode(node)
 		};
         
         if (flows.Implicit is not null && flows.Implicit.AuthorizationUrl is null)
-            throw new JsonException($"`authorizationUrl` is required for implicit oauth flow object");
+            throw new JsonException("`authorizationUrl` is required for implicit oauth flow object");
         if (flows.Password is not null && flows.Password.TokenUrl is null)
-            throw new JsonException($"`tokenUrl` is required for password oauth flow object");
+            throw new JsonException("`tokenUrl` is required for password oauth flow object");
         if (flows.ClientCredentials is not null && flows.ClientCredentials.TokenUrl is null)
-            throw new JsonException($"`tokenUrl` is required for clientCredentials oauth flow object");
+            throw new JsonException("`tokenUrl` is required for clientCredentials oauth flow object");
         if (flows.AuthorizationCode is not null)
         {
             if (flows.AuthorizationCode.AuthorizationUrl is null) throw new JsonException($"`authorizationUrl` is required for authorizationCode oauth flow object");
             if (flows.AuthorizationCode.TokenUrl is null) throw new JsonException($"`tokenUrl` is required for authorizationCode oauth flow object");
         }
 
-		obj.ValidateNoExtraKeys(KnownKeys, flows.ExtensionData?.Keys);
+        node.ValidateNoExtraKeys(KnownKeys, flows.ExtensionData?.Keys);
 
 		return flows;
 	}
@@ -116,9 +116,10 @@ public class OAuthFlowCollection : IRefTargetContainer
 internal class OAuthFlowCollectionJsonConverter : JsonConverter<OAuthFlowCollection>
 {
 	public override OAuthFlowCollection Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-	{
-		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
-		          throw new JsonException("Expected an object");
+    {
+        var obj = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+        if (obj.ValueKind is not JsonValueKind.Object)
+            throw new JsonException("Expected an object");
 
 		return OAuthFlowCollection.FromNode(obj);
 	}

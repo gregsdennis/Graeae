@@ -34,20 +34,20 @@ public class ContactInfo : IRefTargetContainer
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	internal static ContactInfo FromNode(JsonNode? node)
+	internal static ContactInfo FromNode(JsonElement node)
 	{
-		if (node is not JsonObject obj)
+		if (node.ValueKind is not JsonValueKind.Object)
 			throw new JsonException("Expected an object");
 
 		var info = new ContactInfo
 		{
-			Name = obj.MaybeString("name", "contact info"),
-			Url = obj.MaybeUri("url", "contact info"),
-			Email = obj.MaybeString("email", "contact info"),
-			ExtensionData = ExtensionData.FromNode(obj)
+			Name = node.MaybeString("name", "contact info"),
+			Url = node.MaybeUri("url", "contact info"),
+			Email = node.MaybeString("email", "contact info"),
+			ExtensionData = ExtensionData.FromNode(node)
 		};
 
-		obj.ValidateNoExtraKeys(KnownKeys, info.ExtensionData?.Keys);
+        node.ValidateNoExtraKeys(KnownKeys, info.ExtensionData?.Keys);
 
 		return info;
 	}
@@ -77,9 +77,10 @@ public class ContactInfo : IRefTargetContainer
 internal class ContactInfoJsonConverter : JsonConverter<ContactInfo>
 {
 	public override ContactInfo Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-	{
-		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
-		          throw new JsonException("Expected an object");
+    {
+        var obj = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+        if (obj.ValueKind is not JsonValueKind.Object)
+            throw new JsonException("Expected an object");
 
 		return ContactInfo.FromNode(obj);
 	}

@@ -45,22 +45,22 @@ public class Encoding : IRefTargetContainer
 	/// </summary>
 	public ExtensionData? ExtensionData { get; set; }
 
-	internal static Encoding FromNode(JsonNode? node, JsonSerializerOptions? options)
+	internal static Encoding FromNode(JsonElement node, BuildOptions buildOptions)
 	{
-		if (node is not JsonObject obj)
+		if (node.ValueKind is not JsonValueKind.Object)
 			throw new JsonException("Expected an object");
 
 		var encoding = new Encoding
 		{
-			ContentType = obj.MaybeString("contentType", "encoding"),
-			Headers = obj.MaybeMap("headers", x => Header.FromNode(x, options)),
-			Style = obj.MaybeEnum<ParameterStyle>("style", options),
-			Explode = obj.MaybeBool("explode", "encoding"),
-			AllowReserved = obj.MaybeBool("allowReserved", "encoding"),
-			ExtensionData = ExtensionData.FromNode(obj)
+			ContentType = node.MaybeString("contentType", "encoding"),
+			Headers = node.MaybeMap("headers", node1 => Header.FromNode(node1, buildOptions)),
+			Style = node.MaybeEnum<ParameterStyle>("style", "encoding"),
+			Explode = node.MaybeBool("explode", "encoding"),
+			AllowReserved = node.MaybeBool("allowReserved", "encoding"),
+			ExtensionData = ExtensionData.FromNode(node)
 		};
 
-		obj.ValidateNoExtraKeys(KnownKeys, encoding.ExtensionData?.Keys);
+        node.ValidateNoExtraKeys(KnownKeys, encoding.ExtensionData?.Keys);
 
 		return encoding;
 	}
@@ -88,7 +88,7 @@ public class Encoding : IRefTargetContainer
 		if (keys[0] == "headers")
 		{
 			if (keys.Length == 1) return null;
-			return Headers.GetFromMap(keys[1])?.Resolve(keys.Slice(2));
+			return Headers.GetFromMap(keys[1])?.Resolve(keys[2..]);
 		}
 
 		return ExtensionData?.Resolve(keys);
@@ -96,7 +96,7 @@ public class Encoding : IRefTargetContainer
 
 	internal IEnumerable<JsonSchema> FindSchemas()
 	{
-		return Headers?.Values.SelectMany(x => x.FindSchemas()) ?? Enumerable.Empty<JsonSchema>();
+		return Headers?.Values.SelectMany(x => x.FindSchemas()) ?? [];
 	}
 
 	internal IEnumerable<IComponentRef> FindRefs()
@@ -110,11 +110,12 @@ public class Encoding : IRefTargetContainer
 internal class EncodingJsonConverter : JsonConverter<Encoding>
 {
 	public override Encoding Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-	{
-		var obj = JsonSerializer.Deserialize<JsonObject>(ref reader, options) ??
-		          throw new JsonException("Expected an object");
+    {
+        var obj = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+        if (obj.ValueKind is not JsonValueKind.Object)
+            throw new JsonException("Expected an object");
 
-		return Encoding.FromNode(obj, options);
+		return Encoding.FromNode(obj, BuildOptions.Default);
 	}
 
 	public override void Write(Utf8JsonWriter writer, Encoding value, JsonSerializerOptions options)

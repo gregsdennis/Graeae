@@ -73,12 +73,12 @@ public class RuntimeExpression : IEquatable<string>, IEquatable<RuntimeExpressio
 	private RuntimeExpression(){}
 #pragma warning restore CS8618
 
-	internal static RuntimeExpression FromNode(JsonNode? node)
+	internal static RuntimeExpression FromNode(JsonElement node)
 	{
-		if (node is not JsonValue value || !value.TryGetValue(out string? source))
+		if (node.ValueKind is not JsonValueKind.String)
 			throw new JsonException("runtime expressions must be strings");
 
-		return Parse(source);
+		return Parse(node.GetString()!);
 	}
 
 	/// <summary>
@@ -122,24 +122,24 @@ public class RuntimeExpression : IEquatable<string>, IEquatable<RuntimeExpressio
 				{
 					j++;
 				}
-				expr.Token = source.Substring(i, j-i);
+                expr.Token = source.Substring(i, j - i);
 				break;
 			case "query":
 				expr.SourceType = RuntimeExpressionSourceType.Query;
 				source.Expect(ref i, ".");
-				expr.Name = source.Substring(i);
+				expr.Name = source[i..];
 				break;
 			case "path":
 				expr.SourceType = RuntimeExpressionSourceType.Path;
 				source.Expect(ref i, ".");
-				expr.Name = source.Substring(i);
+				expr.Name = source[i..];
 				break;
 			case "body":
 				expr.SourceType = RuntimeExpressionSourceType.Body;
 				source.Expect(ref i, "#");
 				if (i < source.Length)
 				{
-					if (JsonPointer.TryParse(source.Substring(i), out var jp))
+					if (Json.Pointer.JsonPointer.TryParse(source[i..], out var jp))
 						expr.JsonPointer = jp;
 					else
 						throw new JsonException("Text after `#` must be a valid JSON Pointer");

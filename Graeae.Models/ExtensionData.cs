@@ -1,18 +1,18 @@
-﻿using System.Text.Json.Nodes;
+﻿using System.Text.Json;
 
 namespace Graeae.Models;
 
 /// <summary>
 /// Supports extension data for all types.
 /// </summary>
-public class ExtensionData : Dictionary<string, JsonNode?>, IRefTargetContainer
+public class ExtensionData : Dictionary<string, JsonElement>, IRefTargetContainer
 {
-	internal static ExtensionData? FromNode(JsonObject obj)
+	internal static ExtensionData? FromNode(JsonElement obj)
 	{
 		var data = new ExtensionData();
-		foreach (var kvp in obj.Where(x => x.Key.StartsWith("x-")))
+		foreach (var kvp in obj.EnumerateObject().Where(x => x.Name.StartsWith("x-")))
 		{
-			data.Add(kvp.Key, kvp.Value);
+			data.Add(kvp.Name, kvp.Value);
 		}
 
 		return data.Any() ? data : null;
@@ -26,7 +26,7 @@ public class ExtensionData : Dictionary<string, JsonNode?>, IRefTargetContainer
 		if (!TryGetValue(keys[0], out var jn)) return null;
 		if (keys.Length == 1) return jn;
 
-		keys.Slice(1).ToPointer().TryEvaluate(jn, out var result);
+		var result = keys[1..].ToPointer().Evaluate(jn);
 
 		return result;
 	}
